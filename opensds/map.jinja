@@ -1,0 +1,39 @@
+#Defaults
+{% import_yaml "opensds/defaults.yaml" as defaults %}
+{# import_yaml "opensds/osfamilymap.yaml" as osfamilymap #}
+
+# Merge site-specific data
+{% set opensds = salt['grains.filter_by'](
+    defaults,
+    merge=salt['grains.filter_by'](
+        docker,
+        merge=salt['grains.filter_by'](
+            db,
+            merge=salt['grains.filter_by'](
+                isns,
+                merge=salt['grains.filter_by'](
+                    osfamilymap,
+                    grain='os_family',
+                    merge=salt['grains.filter_by'](
+                        oscodenames,
+                        grain='oscodename',
+                        merge=salt['pillar.get']('opensds', {}),
+                    ),
+                    base='opensds',
+                ),
+                base='opensds',
+            ),
+            base='opensds',
+        ),
+        base='db',
+    ),
+    base='docker',
+) %}
+
+{%- do opensds.salt.solutions.update( opensds.salt.formulas ) %}
+{%- do opensds.dock.update({ 'backend': opensds.dock.conf.enabled_backend|lower }) %}
+{%- do opensds.update({ 'plugin': opensds.nbp.plugin_type|trim }) %}
+{%- do opensds.nbp.csi.configmap.update({ 'opensdsendpoint': opensds.endpoint,
+                                          'opensdsauthstrategy': opensds.auth.strategy,
+                                          'osauthurl': opensds.auth.os_url,
+                                        }) %}

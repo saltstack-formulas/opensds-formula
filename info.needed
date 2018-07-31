@@ -1,0 +1,8 @@
+
+nbp_plugin_type: hotpot_only               ## or 'csi' or 'flexvolume'
+opensds_endpoint: http://127.0.0.1:50040   ## or ..
+enabled_backend: lvm                       ## or 'ceph' or 'cinder'
+iscsi_target_ip: 127.0.0.1                 ## or ..
+dock_container_enabled: False              ## or True
+cinder_container_enabled: True             ## (if enabled_backend: cinder), or False
+

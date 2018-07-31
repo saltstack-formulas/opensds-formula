@@ -1,0 +1,103 @@
+
+opensds:
+  gohome: /usr/local/go
+  gosrc: /usr/local/go/bin/src/github.com/opensds
+  cinder:
+    authOptions:
+      noAuth: true
+      endpoint: "http://127.0.0.1/identity"
+      cinderEndpoint: "http://127.0.0.1:8776/v2"
+      domainId: "Default"
+      domainName: "Default"
+      username: ""
+      password: ""
+      tenantId: "myproject"
+      tenantName: "myproject"
+
+packages:
+  archives:
+    unwanted:
+      - /tmp/opensds/usr/local/go
+      - /tmp/opensds/usr/local/go/bin/src/github.com/opensds/nbp
+      - /tmp/opensds/opt/opensds-k8s-linux-amd64
+      - /tmp/opensds/opt/opensds-linux-amd64
+    wanted:
+      golang:
+        dest: /tmp/opensds/usr/local/go
+        options: '--strip-components=1'
+        dl:
+          source: https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz
+          hashsum: md5=9889923de1bc996b74bd4929ac0b6c8e
+      opensds-nbp-src:
+        dest: /tmp/opensds/usr/local/go/bin/src/github.com/opensds/nbp
+        options: '--strip-components=1'
+        dl:
+          source: https://github.com/opensds/nbp/archive/v0.3.0.tar.gz
+          hashsum: md5=c733837e4c7da1456fe71d81a4a9ff77
+      opensds-nbp-k8s:
+        dest: /tmp/opensds/opt/opensds-k8s-linux-amd64
+        options: '--strip-components=1'
+        mode: '0755'
+        dl:
+          source: https://github.com/opensds/nbp/releases/download/v0.2.0/opensds-k8s-v0.2.0-linux-amd64.tar.gz
+          hashsum: md5=110fee79c335e56a519bd50084825ebd
+      opensds:
+        dest: /tmp/opensds/opt/opensds-linux-amd64
+        options: '--strip-components=1'
+        dl:
+          source: https://github.com/opensds/opensds/releases/download/v0.2.0/opensds-v0.2.0-linux-amd64.tar.gz
+          hashsum: md5=2dbb88521062d65b6e1c4c262f2e8282
+
+docker:
+  compose:
+    controller:
+      image: opensdsio/opensds-controller:latest
+      container_name: opensds-controller
+      network_mode: host
+      ports:
+        - '127.0.0.1:50040:50040'
+      volumes:
+        - "/etc/opensds/:/etc/opensds"
+        # /usr/share/ca-certificates/:/etc/ssl/certs
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    dock:
+      image: opensdsio/opensds-dock:latest
+      container_name: osdsdock
+      privileged: True
+      network_mode: host
+      ports: []
+      volumes:
+        - "/etc/opensds/:/etc/opensds"
+        - "/etc/ceph/:/etc/ceph"
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    dashboard:
+      image: opensdsio/dashboard:latest
+      container_name: dashboard
+      privileged: True
+      network_mode: host
+      ports: []
+      volumes: []
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+
+etcd:
+  version: 3.2.0
+  service:
+    name: osdsdb
+    etcd_endpoints: 'https://127.0.0.1:2379,https://127.0.0.1:2380'
+  docker:
+    enabled: True

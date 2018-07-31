@@ -1,0 +1,19 @@
+# vim: sts=2 ts=2 sw=2 et ai
+#
+opensds:
+  salt:
+    basedir:
+      states: /srv/salt
+      pillars: /srv/pillar
+      formula: /srv/formula
+    formulas:
+      ceph:      https://github.com/saltstack-formulas/ceph-formula.git
+      deepsea:   https://github.com/saltstack-formulas/deepsea-formula.git
+      docker:    https://github.com/saltstack-formulas/docker-formula.git
+      etcd:      https://github.com/saltstack-formulas/etcd-formula.git
+      firewalld: https://github.com/saltstack-formulas/firewalld-formula.git
+      helm:      https://github.com/saltstack-formulas/helm-formula.git
+      iscsi:     https://github.com/saltstack-formulas/iscsi-formula.git
+      packages:  https://github.com/saltstack-formulas/packages-formula.git
+    solutions:
+      ceph: https://github.com/SUSE/DeepSea.git

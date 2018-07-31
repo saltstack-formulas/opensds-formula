@@ -1,0 +1,107 @@
+# vim: sts=2 ts=2 sw=2 et ai
+#
+opensds:
+  dir:
+    work: /opt/opensds-linux-amd64
+    config: /etc/opensds
+    devstack: /opt/opensds-linux-amd64-devstack
+    driver: /etc/opensds/driver
+    log: /var/log/opensds
+    tmp: /tmp/opensds
+    mode: '0700'
+    user: root
+  endpoint: http://127.0.0.1:50040
+
+  controller:
+    release: v0.2.0
+    install_from: release
+    repo:
+      url: https://github.com/opensds/opensds.git
+      branch: development
+    container:
+      enabled: False
+      compose: False
+
+  database:
+    service: osdsdb
+    provider: etcd
+    container:
+      enabled: True
+      compose: False
+
+  auth:
+    service: osdsauth
+    provider: keystone
+    url: http://127.0.0.1/identity
+    uninstall: True
+    cleanup: True
+    osdsauth:
+      keystone_authtoken:
+        memcached_servers: {{ grains.fqdn_ip4 or grains.fqdn_ip6 }}:11211
+        signing_dir: /var/cache/opensds
+        cafile: /opt/stack/data/ca-bundle.pem
+        auth_uri: http://{{ grains.fqdn_ip4 or grains.fqdn_ip6 }}/identity
+        project_domain_name: Default
+        project_name: service
+        user_domain_name: Default
+        auth_url: http://{{ grains.fqdn_ip4 or grains.fqdn_ip6 }}/identity
+        auth_type: password
+    container:
+      enabled: False
+      compose: False
+
+  dashboard:
+    from: source
+    service: 'dashboard'
+    container:
+      enabled: false
+    source:
+      gopath: ~/gopath
+      subpath: /src/github.com/opensds/opensds
+    conf:
+      api_endpoint: 0.0.0.0:50050
+      log_file: /var/log/opensds/osdsdashboard.log
+      #choose the type of dashboard resource, only support 'provisioner' and 'attacher'.
+      dashboard_type: provisioner
+      #specify which backends should be enabled, sample,ceph,cinder,lvm and so on.
+      enabled_backends: lvm
+
+  dock:
+    provider: osdsdock
+    container:
+      enabled: True
+      compose: True
+    block:
+      enabled: True
+      provider: lvm
+      container:
+        enabled: True
+        compose: True
+    osdsdock:
+      log_file: /var/log/opensds/osdsdock.log
+      endpoint: localhost:50050
+      type: provisioner            #provisioner or attacher
+      driver: lvm                  #lvm; or ceph or cinder
+      pools:
+        - opensds-volumes          #lvm
+        # rbd                      #ceph
+        # cinder-lvm@lvm#lvm       #cinder
+
+    blockaas:
+      enabled: True
+      platform: debian:stretch
+      image: debian-cinder
+      volume_group: cinder-volumes
+      datadir: "/opt/opensds/driver/container/data_dir"
+
+
+  devstack:
+    from: repo
+    username: stack
+    password: opensds@123
+    base: /opt/stack
+    home: /opt/stack/devstack
+    repository:
+      branch: stable/queens
+      url: https://git.openstack.org/openstack-dev/devstack 
+
