@@ -1,0 +1,22 @@
+# vim: sts=2 ts=2 sw=2 et ai
+#
+opensds:
+  dashboard:
+    install_from: repo    #release or repo
+    service: dashboard
+    container:
+      enabled: False
+      composed: false
+      image: opensdsio/dashboard:latest
+    repo:
+      url: https://github.com/opensds/opensds.git
+      branch: development
+    conf:
+      api_endpoint: 0.0.0.0:50050
+      log_file: /var/log/opensds/osdsdashboard.log
+      #choose the type of dashboard resource, only support 'provisioner' and 'attacher'.
+      dashboard_type: provisioner
+      #specify which backends should be enabled, sample,ceph,cinder,lvm and so on.
+      enabled_backends: lvm
+    webservers:
+      restart: apache2 restart && nginx restart

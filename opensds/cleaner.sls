@@ -2,55 +2,24 @@
 # vim: ft=sls
 {% from "opensds/map.jinja" import opensds with context %}
 
+  # remove system profile
+opensds controller {{ opensds.controller.release }} ensure system profile file absent:
+  file.absent:
+    - name: /etc/profile.d/opensds.sh
+
+  # cleanup components
 include:
+  - opensds.auth.clean
+  - opensds.dashboard.clean
+  - opensds.dock.clean
+  - opensds.database.clean
   - opensds.let.clean
-
-opensds kill osds containerized services:
-  docker_container.stopped:
-    - containers:
-      - {{ opensds.svc.let.controller.docker_img }}
-      - {{ opensds.svc.dock.docker_img }}
-    - onlyif: {{ opensds.svc.let.container_enabled }} || {{ opensds.svc.dock.container_enabled }}
-
-  {% for dir in [opensds.prefix, opensds.tmpdir, opensds.cfgdir, opensds.logdir,] %}
-opensds clean release {{ dir }} files:
-  file.absent:
-    name: {{ dir }}
-    require:
-      - docker_container: opensds kill osds containerized services
-  {% endfor %}
-
-opensds clean opensds csi plugin if csi plugin specified:
-  cmd.run:
-    - name: . /etc/profile && kubectl delete -f deploy/kubernetes
-    - cwd: {{ opensds.sds.prefix }}/csi
-    - onlyif: test "{{ opensds.nbp.type|lower }}" == "csi"
-
-  {% for dir in [opensds.nbp.prefix, opensds.nbp.tmpdir, opensds.nbp.flexvoldir,] %}
-opensds clean nbp {{ dir }} release files:
-  file.absent:
-    name: {{ dir }}
-    require:
-      - docker_container: opensds kill osds containerized services
-  {% endfor %}
-
-  {% if opensds.svc.dock.backend|lower == "lvm" %}
-
-    {% for vg in opensds.backend.lvm.vg %}
-remove {{ vg }} volume group if lvm backend specified:
-  lvm.vg_absent:
-    - name: {{ vg }}
-    {% endfor %}
-
-    {% for pv in opensds.backend.lvm.pv %}
-remove {{ pv }} physical volume if lvm backend specified:
-  lvm.pv_absent:
-    - name: {{ pv }}
-    {% endfor %}
+  - opensds.env.clean
+  - opensds.salt.clean
 
   {% elif opensds.svc.dock.backend|lower == "cinder" %}
 
-stop cinder-standalone service:
+opensds nbp {{ opensds.nbp.release }} block stop CinderaaS:
   cmd.run:
     - name: docker-compose down
     - cwd: {{ opensds.backend.cinder.data_dir }}/cinder/contrib/block-box

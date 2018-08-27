@@ -2,10 +2,13 @@
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
+include:
+  - opensds.env.lang
+
 opensds controller {{ opensds.controller.release}} repo download from git:
   git.latest:
     - name: {{ opensds.controller.repo.url }}
-    - target: {{ opensds.dir.tmp }}/opensds-linux-amd64
+    - target: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     - rev: {{ opensds.repo.get('branch', 'master') }}
     - force_checkout: True
     - force_clone: True
@@ -13,16 +16,15 @@ opensds controller {{ opensds.controller.release}} repo download from git:
     - force_reset: True
   cmd.run:
     - name: make
-    - cwd: {{ opensds.dir.tmp }}/controller
+    - cwd: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     - env:
-       - GOPATH: {{ opensds.gohome }}/bin
+       - GOPATH: {{ opensds.lang.home }}/bin
     - require:
       - git: opensds controller {{ opensds.controller.release }} repo download from git
 
-opensds controller copy {{ opensds.controller.release }} repo content to work directory:
+opensds controller {{ opensds.controller.release }} copy repo content to work directory:
   file.copy:
     name: {{ opensds.dir.work }}
-    source: {{ opensds.dir.tmp }}/opensds-linux-amd64
+    source: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     makedirs: True
     force: True
-

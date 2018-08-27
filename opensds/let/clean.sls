@@ -2,18 +2,22 @@
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
-  {%- if "let" in docker.compose and docker.compose.let.container_name is defined %}
+ {%- if opensds.let.container.enabled %}
 
-opensds let container service stopped:
+opensds let {{ opensds.controller.release }} container service stopped:
   docker_container.stopped:
     - names:
-       - docker.compose.let.container_name
+       - {{ opensds.let.service }}
+      {%- if opensds.let.container.compose and "osdslet" in docker.compose %}
+       - {{ docker.compose.osdslet.container_name }}
+      {%- endif %}
+    - error_on_absent:False
 
   {%- else %}
 
-opensds let kill daemon service:
+opensds let {{ opensds.controller.release }} kill daemon service:
   process.absent:
-    - name: {{ opensds.let.provider }}
+    - name: {{ opensds.let.service }}
 
   {% endif %}
 

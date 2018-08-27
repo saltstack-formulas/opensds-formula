@@ -1,0 +1,6 @@
+# vim: sts=2 ts=2 sw=2 et ai
+#
+opensds:
+  lang:
+    home: /usr/local/go
+    src: bin/src/github.com/opensds

@@ -2,7 +2,17 @@
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
-  {%- if not opensds.let.container.enabled %}
+  {%- if opensds.let.container.enabled %}
+
+opensds let {{ opensds.controller.release }} container service running:
+  docker_container.running:
+    - name: {{ opensds.let.service }}
+    - image: {{ opensds.let.container.image }}
+    - restart_policy: always
+    - network_mode: host
+    - unless: {{ opensds.let.container.compose }}
+
+  {% else %}
 
     {%- for i in 1..5 %}
 opensds let start daemon service attempt {{ loop.index }}:

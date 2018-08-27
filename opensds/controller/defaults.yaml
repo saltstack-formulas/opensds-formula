@@ -1,0 +1,23 @@
+# vim: sts=2 ts=2 sw=2 et ai
+#
+opensds:
+  dir:
+    work: /opt/opensds-linux-amd64
+    config: /etc/opensds
+    devstack: /opt/opensds-linux-amd64-devstack
+    driver: /etc/opensds/driver
+    log: /var/log/opensds
+    tmp: /tmp/opensds
+    mode: '0700'
+    user: root
+
+  controller:
+    endpoint: http://127.0.0.1:50040
+    release: v0.2.0
+    install_from: release    #release or repo
+    repo:
+      url: https://github.com/opensds/opensds.git
+      branch: development
+    container:
+      enabled: False
+      composed: False

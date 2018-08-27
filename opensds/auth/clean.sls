@@ -2,12 +2,16 @@
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
-  {%- if "auth" in docker.compose and docker.compose.auth.container_name is defined %}
+  {%- if opensds.auth.container.enabled %}
 
 opensds auth container service stopped:
   docker_container.stopped:
     - names:
-       - docker.compose.auth.container_name
+       - {{ opensds.auth.service }}
+      {%- if opensds.auth.container.compose and "osdsauth" in docker.compose %}
+       - {{ docker.compose.osdsauth.container_name }}
+      {%- endif %}
+    - error_on_absent:False
 
   {%- else %}
 

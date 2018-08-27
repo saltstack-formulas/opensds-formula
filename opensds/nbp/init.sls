@@ -2,9 +2,20 @@
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
-  {%- if not opensds.nbp.container.enabled %}
+  {%- if opensds.nbp.container.enabled %}
+
+opensds nbp {{ opensds.nbp.release }} container service running:
+  docker_container.running:
+    - name: {{ opensds.nbp.service }}
+    - image: {{ opensds.nbp.container.image }}
+    - restart_policy: always
+    - network_mode: host
+    - unless: {{ opensds.nbp.container.compose }}
+
+  {%- else %}
 
 include:
+  - opensds.env
   - opensds.nbp.install.{{ opensds.nbp.install_from }}
 
   {%- endif %}

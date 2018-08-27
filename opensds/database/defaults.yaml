@@ -1,0 +1,11 @@
+# vim: sts=2 ts=2 sw=2 et ai
+#
+opensds:
+  database:
+    service: osdsdb
+    provider: etcd
+    container:
+      enabled: True
+      composed: False
+      custom: True
+      image: None

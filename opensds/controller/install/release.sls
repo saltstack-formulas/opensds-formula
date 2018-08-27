@@ -4,10 +4,12 @@
 
 include:
   - packages.archives
+  - opensds.env
 
-opensds controller copy {{ opensds.controller.release }} archive content to work directory:
+opensds controller {{ opensds.controller.release }} copy archive content to work directory:
   file.copy:
     name: {{ opensds.dir.work }}
-    source: {{ opensds.dir.tmp }}/opt/opensds-linux-amd64 
+    source: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     makedirs: True
     force: True
+    onlyif: test -d {{ opensds.dir.tmp }}/{{ opensds.dir.work }}

@@ -26,3 +26,4 @@ opensds auth install keystone service:
       - STACK_USER_NAME: {{ opensds.devstack.username }}
       - STACK_PASSWORD: {{ opensds.devstack.password }}
       - TOP_DIR: {{ opensds.dir.tmp }}/script                     {# ?? #}
+

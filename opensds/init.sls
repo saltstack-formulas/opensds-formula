@@ -1,8 +1,9 @@
 
 include:
-  - .salt
+  - opensds.salt
   - packages.archives
   - docker.compose-ng
+  - .env
   - .controller
   - .nbp
   - .auth

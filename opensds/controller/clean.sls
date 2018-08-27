@@ -3,19 +3,29 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
   {%- if opensds.controller.container.enabled %}
-    {%- if "controller" in docker.compose and docker.compose.controller.container_name is defined %}
 
 opensds controller container service stopped:
   docker_container.stopped:
     - names:
-       - docker.compose.controller.container_name
+       - {{ opensds.controller.service }}
+      {%- if opensds.controller.container.compose and "osdsctlr" in docker.compose %}
+       - {{ docker.compose.osdsctlr.container_name }}
+      {%- endif %}
+    - error_on_absent: False
 
-    {% endif %}
-  {% else %}
-
-  # update PATH
-opensds controller {{ opensds.controller.release }} ensure system profile file absent:
+opensds controller {{ opensds.controller.release }} clean release files:
   file.absent:
-    - name: /etc/profile.d/opensds.sh
+    - names:
+      - {{ opensds.dir.work }}
+      - {{ opensds.dir.driver }}
+      - {{ opensds.dir.config }}
+      - {{ opensds.dir.log }}
+      - {{ opensds.dir.tmp }}
+      - {{ opensds.dir.devstack }}
 
-    {% endif %}
+  {%- else %}
+
+include:
+  - opensds.controller.{{ opensds.controller.provider|trim|lower }}.clean
+
+  {% endif %}

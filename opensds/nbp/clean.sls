@@ -2,27 +2,32 @@
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
-  {%- if opensds.nbp.container.enabled and "nbp" in docker.compose and docker.compose.nbp.container_name is defined %}
+  {%- if opensds.nbp.container.enabled %}
 
-opensds nbp container service stopped:
-  docker_container.stopped:
+opensds nbp {{ opensds.nbp.release }} container service stopped:
+  nbper_container.stopped:
     - names:
-       - docker.compose.nbp.container_name
+       - {{ opensds.nbp.service }}
+      {%- if opensds.nbp.container.compose and "osdsnbp" in docker.compose %}
+       - {{ docker.compose.osdsnbp.container_name }}
+      {%- endif %}
+    - error_on_absent: False
 
-  {%- else %}
+  {% else %}
 
-opensds nbp stop daemon service:
+opensds nbp {{ opensds.nbp.release }} stop daemon service:
   service.dead:
     - name: {{ opensds.nbp.service }}
     - sig: {{ opensds.nbp.service }}
-    - require_in:
-      - file: opensds nbp clean {{ opensds.nbp.dir.work }} release files
 
-opensds nbp clean {{ opensds.nbp.dir.work }} release files:
+    {%- for type in ('csi', 'flexvolume', 'provisioner',) %}
+
+opensds nbp {{ opensds.nbp.release}} clean {{ type }} release files:
   file.absent:
-    - names:
-      - {{ opensds.nbp.dir/work }}/csi
-      - {{ opensds.nbp.dir/work }}/flexvolume
-      - {{ opensds.nbp.dir/work }}/provisioner
+    - name: {{ opensds.nbp.dir.work }}/{{ type }}
+    - require:
+      - service: opensds nbp {{ opensds.nbp.release }} stop daemon service
+
+    {% endfor %}
 
   {% endif %}

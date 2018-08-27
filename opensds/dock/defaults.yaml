@@ -1,0 +1,28 @@
+# vim: sts=2 ts=2 sw=2 et ai
+#
+opensds:
+  dock:
+    provider: osdsdock
+    service: osdsdock
+    container:
+      enabled: True
+      composed: True
+    block:
+      provider: lvm
+      service: osdsblock
+      container:
+        enabled: True
+        composed: False
+        image: debian-cinder
+        platform: debian:stretch
+        volume_group: cinder-volumes
+        datadir: /opt/opensds/driver/container/data_dir
+    osdsdock:
+      log_file: /var/log/opensds/osdsdock.log
+      endpoint: localhost:50050
+      type: provisioner            #provisioner or attacher
+      driver: lvm                  #lvm; or ceph or cinder
+      pools:
+        - opensds-volumes          #lvm
+        # rbd                      #ceph
+        # cinder-lvm@lvm#lvm       #cinder

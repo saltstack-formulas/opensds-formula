@@ -1,7 +1,8 @@
 
 opensds:
-  gohome: /usr/local/go
-  gosrc: /usr/local/go/bin/src/github.com/opensds
+  #lang:
+  #  home: /usr/local/go
+  #  src: /usr/local/go/bin/src/github.com/opensds
   cinder:
     authOptions:
       noAuth: true
@@ -93,7 +94,6 @@ docker:
           delay: 5s
           max_attempts: 3
           window: 120s
-
 etcd:
   version: 3.2.0
   service:
@@ -101,3 +101,17 @@ etcd:
     etcd_endpoints: 'https://127.0.0.1:2379,https://127.0.0.1:2380'
   docker:
     enabled: True
+
+lvm:
+  pv:
+    remove:
+      /dev/sdb:
+    create:
+      /dev/sdb:
+  vg:
+    remove:
+      opensds_vg:
+    create:
+      opensds_vg:
+        devices:
+          - /dev/sdb

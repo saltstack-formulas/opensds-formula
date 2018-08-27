@@ -2,7 +2,7 @@
 #
 opensds:
   let:
-    provider: osdslet
+    service: osdslet
     osdslet:
       api_endpoint: '0.0.0.0:50040'
       graceful: True
@@ -11,3 +11,5 @@ opensds:
       auth_strategy: keystone
     container:
       enabled: False
+      composed: False
+      image: None
