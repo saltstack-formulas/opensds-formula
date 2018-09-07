@@ -2,7 +2,7 @@
 # vim: ft=sls
 {% from "opensds/map.jinja" import opensds with context %}
 
-{% set conf_file = opensds.nbp.dir[opensds.nbp.plugin_type] ~ '/' ~ opensds.nbp[opensds.nbp.plugin_type]['configfile'] %}
+  {% set conf_file = opensds.nbp.dir[opensds.nbp.plugin_type] ~ '/' ~ opensds.nbp[opensds.nbp.plugin_type]['configfile'] %}
   {% for k, v in opensds.nbp[opensds.nbp.plugin_type].conf %}
 
 opensds nbp {{ opensds.nbp.release.version }} {{ opensds.nbp.plugin_type }} config replace {{ k }}:

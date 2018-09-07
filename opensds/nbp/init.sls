@@ -15,7 +15,8 @@ opensds nbp {{ opensds.nbp.release }} container service running:
   {%- else %}
 
 include:
-  - opensds.env
-  - opensds.nbp.install.{{ opensds.nbp.install_from }}
+  - opensds.stacks
+  # iscsi.initiator
+  - opensds.nbp.{{ opensds.nbp.install_from }}
 
   {%- endif %}

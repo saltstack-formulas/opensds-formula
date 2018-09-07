@@ -2,20 +2,14 @@
 # vim: ft=sls
 {% from "opensds/map.jinja" import opensds with context %}
 
-  # remove system profile
-opensds controller {{ opensds.controller.release }} ensure system profile file absent:
-  file.absent:
-    - name: /etc/profile.d/opensds.sh
-
-  # cleanup components
 include:
   - opensds.auth.clean
   - opensds.dashboard.clean
   - opensds.dock.clean
   - opensds.database.clean
   - opensds.let.clean
-  - opensds.env.clean
-  - opensds.salt.clean
+  - opensds.nbp.clean
+  - opensds.stacks.clean
 
   {% elif opensds.svc.dock.backend|lower == "cinder" %}
 

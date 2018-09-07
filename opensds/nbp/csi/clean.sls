@@ -3,7 +3,7 @@
 {% from "opensds/map.jinja" import opensds with context %}
 
 include:
-  - .config
+  - opensds.nbp.csi.config
 
 opensds nbp {{ opensds.nbp.release.version }} {{ opensds.nbp.plugin_type }} kubernetes stop:
   cmd.run:

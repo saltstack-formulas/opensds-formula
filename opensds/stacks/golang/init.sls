@@ -5,13 +5,13 @@
 include:
   - packages.archives
 
-opensds lang copy {{ opensds.controller.release }} archive content to {{ opensds.lang.home }} directory:
+opensds lang copy {{ opensds.controller.release }} archive content to {{ opensds.stacks.lang.home }} directory:
   file.copy:
-    - name: {{ opensds.lang.home }}
-    - source: {{ opensds.dir.tmp }}/{{ opensds.lang.home }}
+    - name: {{ opensds.stacks.lang.home }}
+    - source: {{ opensds.dir.tmp }}/{{ opensds.stacks.lang.home }}
     - makedirs: True
     - force: True
-    - onlyif: test -d {{ opensds.dir.tmp }}/{{ opensds.lang.home }}
+    - onlyif: test -d {{ opensds.dir.tmp }}/{{ opensds.stacks.lang.home }}
     - require_in:
       - environ: opensds lang {{ opensds.controller.release }} set langpath env
       - file: opensds lang {{ opensds.controller.release }} set system profile path
@@ -19,7 +19,7 @@ opensds lang copy {{ opensds.controller.release }} archive content to {{ opensds
 opensds lang {{ opensds.controller.release }} set langpath env:
   environ.setenv:
     - name: GOPATH
-    - value: {{ opensds.lang.home }}/bin
+    - value: {{ opensds.stacks.lang.home }}/bin
     - update_minion: True
     - unless: test $GOPATH
-    - onlyif: test -f {{ opensds.lang.home }}/bin/go
+    - onlyif: test -f {{ opensds.stacks.lang.home }}/bin/go

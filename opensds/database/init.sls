@@ -3,13 +3,12 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
   {%- if opensds.database.container.enabled %}
-    {%- if opensds.database.container.custom %}
 
+     {%- if opensds.database.container.custom %}
 include:
-  - {{ opensds.database.provider|trim|lower }}.docker.running
+  - {{ opensds.database.provider|trim|lower }}.docker.running    #i.e. 'etcd.docker.running'
 
-    {%- else %}
-
+     {%- else %}
 opensds database container service running:
   docker_container.running:
     - name: {{ opensds.database.service }}
@@ -17,11 +16,10 @@ opensds database container service running:
     - restart_policy: always
     - network_mode: host
     - unless: {{ opensds.database.container.compose }}
-
     {%- endif %}
-  {%- else %}
 
+  {%- else %}
 include:
-  - {{ opensds.database.provider|trim|lower }}.service.running
+  - {{ opensds.database.provider|trim|lower }}.service.running    #ie. 'etcd.service.running'
 
   {% endif %}

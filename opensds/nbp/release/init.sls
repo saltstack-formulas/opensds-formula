@@ -4,7 +4,6 @@
 
 include:
   - packages.archives
-  - opensds.env
 
 opensds nbp copy {{ opensds.nbp.release }} archive file content to work directory:
   file.copy:

@@ -3,25 +3,24 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
   {%- if opensds.database.container.enabled %}
-    {%- if opensds.database.container.custom %}
 
+    {%- if opensds.database.container.custom %}
 include:
-  - {{ opensds.database.provider|trim|lower }}.docker.stopped
+  - {{ opensds.database.provider|trim|lower }}.docker.stopped    #i.e. etcd.docker.stopped
 
     {%- else %}
 opensds database container service stopped:
   docker_container.stopped:
     - names:
        - {{ opensds.database.service }}
-      {%- if opensds.database.container.compose and "osdsdb" in docker.compose %}
+               {%- if opensds.database.container.compose and "osdsdb" in docker.compose %}
        - {{ docker.compose.osdsdb.container_name }}
-      {%- endif %}
+               {%- endif %}
     - error_on_absent:False
-
     {%- endif %}
-  {%- else %}
 
+  {%- else %}
 include:
-  - {{ opensds.database.provider|trim|lower }}.service.stopped
+  - {{ opensds.database.provider|trim|lower }}.service.stopped    #.ie. etcd.service.stopped
 
   {% endif %}

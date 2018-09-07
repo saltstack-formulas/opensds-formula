@@ -3,9 +3,9 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
 include:
-  - opensds.env
+  - opensds.stacks
 
-opensds nbp {{ opensds.nbp.release.version}} repo get source if missing:
+opensds nbp {{ opensds.nbp.release.version }} repo get source if missing:
   git.latest:
     - name: {{ opensds.repo.url }}
     - target: {{ opensds.lang.home }}/{{ opensds.lang.src }}/nbp
@@ -15,7 +15,7 @@ opensds nbp {{ opensds.nbp.release.version}} repo get source if missing:
     - force_fetch: True
     - force_reset: True
     - require_in:
-      - cmd: opensds nbp {{ opensds.nbp.release.version}} repo get source if missing
+      - cmd: opensds nbp {{ opensds.nbp.release.version }} repo get source if missing
   cmd.run:
     - name: make
     - cwd: {{ opensds.langsrc }}/nbp
@@ -23,20 +23,21 @@ opensds nbp {{ opensds.nbp.release.version}} repo get source if missing:
 
   {% for type in ('csi', 'flexvolume', 'provisioner',) %}
 
-opensds nbp {{ opensds.nbp.release.version}} repo ensure {{ type }} workdir exists:
+opensds nbp {{ opensds.nbp.release.version }} repo ensure {{ type }} workdir exists:
   file.directory:
     - name: {{ opensds.nbp.dir.work }}/{{ type }}{{ '/opensds' if type == 'flexvolume' else '' }}
     - dir_mode: '0755'
     - recurse:
       - mode
     - require:
-      - cmd: opensds nbp {{ opensds.nbp.release.version}} repo get source if missing
+      - cmd: opensds nbp {{ opensds.nbp.release.version }} repo get source if missing
     - require_in:
-      - cmd: opensds nbp {{ opensds.nbp.release.version}} repo copy driver deploy scripts to workdir:
+      - cmd: opensds nbp {{ opensds.nbp.release.version }} repo copy driver deploy scripts to workdir:
 
   {% endfor }}
 
-opensds nbp {{ opensds.nbp.release.version}} repo copy driver deploy scripts to workdir:
+
+opensds nbp {{ opensds.nbp.release.version }} repo copy driver deploy scripts to workdir:
   cmd.run:
     - names:
        - cp -R {{ opensds.lang.src }}/nbp/csi/deploy/ {{ opensds.nbp.dir.work }}/csi/
@@ -44,3 +45,4 @@ opensds nbp {{ opensds.nbp.release.version}} repo copy driver deploy scripts to 
        - cp -R {{ opensds.lang.src }}/nbp/provisioner/deploy/ {{ opensds.nbp.dir.work }}/provisioner/
        - cp -R {{ opensds.lang.src }}/nbp/provisioner/examples/ {{ opensds.nbp.dir.work }}/provisioner/
        - cp -R {{ opensds.lang.src }}/nbp/.output/flexvolume.server.opensds/ {{ opensds.nbp.dir.work }}/flexvolume/opensds/
+

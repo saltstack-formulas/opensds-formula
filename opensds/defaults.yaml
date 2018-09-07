@@ -10,6 +10,7 @@ opensds:
     tmp: /tmp/opensds
     mode: '0700'
     user: root
+  conf: /etc/opensds/opensds.conf
   endpoint: http://127.0.0.1:50040
 
   controller:
@@ -31,21 +32,7 @@ opensds:
 
   auth:
     service: osdsauth
-    provider: keystone
-    url: http://127.0.0.1/identity
-    uninstall: True
-    cleanup: True
-    osdsauth:
-      keystone_authtoken:
-        memcached_servers: {{ grains.fqdn_ip4 or grains.fqdn_ip6 }}:11211
-        signing_dir: /var/cache/opensds
-        cafile: /opt/stack/data/ca-bundle.pem
-        auth_uri: http://{{ grains.fqdn_ip4 or grains.fqdn_ip6 }}/identity
-        project_domain_name: Default
-        project_name: service
-        user_domain_name: Default
-        auth_url: http://{{ grains.fqdn_ip4 or grains.fqdn_ip6 }}/identity
-        auth_type: password
+    provider: devstack
     container:
       enabled: False
       compose: False
@@ -87,21 +74,13 @@ opensds:
         # rbd                      #ceph
         # cinder-lvm@lvm#lvm       #cinder
 
+  stacks:
+    devstack:
+      local:
+        password: opensds@123
     blockaas:
       enabled: True
       platform: debian:stretch
       image: debian-cinder
       volume_group: cinder-volumes
       datadir: "/opt/opensds/driver/container/data_dir"
-
-
-  devstack:
-    from: repo
-    username: stack
-    password: opensds@123
-    base: /opt/stack
-    home: /opt/stack/devstack
-    repository:
-      branch: stable/queens
-      url: https://git.openstack.org/openstack-dev/devstack 
-

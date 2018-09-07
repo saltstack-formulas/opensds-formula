@@ -1,19 +1,56 @@
+## DATA COLLECTION ###
+
+  ### Release Specific Data
+
+  {% set sds_version = 'v0.2.0' %}
+  {% set golang_version = '1.9.2' %}
+  {% set nbp_version = 'v0.3.0' %}
+  {% set dl_uri = 'https://github.com/opensd' %}
+  {% set sds_hashsum = 'md5=2dbb88521062d65b6e1c4c262f2e8282' %}
+  {% set nbp_hashsum = 'md5=c733837e4c7da1456fe71d81a4a9ff77' %}
+  {% set sds_k8s_hashsum = 'md5=110fee79c335e56a519bd50084825ebd' %}
+  {% set golang_hashsum = 'md5=9889923de1bc996b74bd4929ac0b6c8e' %} 
+
+  ### Site Specific Data
+
+  {% set password = 'devstack' %}
+  {% set host_ip = '12.0.0.1' %}
+  {% set keystone_endport = '50040' %}
+  {% set cinder_endport = '8776/v2' %}
+  {% set servicename = 'opensds' %}
+  {% set servicetype = 'opensds' %}
+  {% set endpointname = servicename ~ sds_version %}
+  {% set project_domain_name = 'Default' %}
+  {% set project_name = 'service' %}
+  {% set user_domain_name = 'Default' %}
+
+  ### Component specific Data
+  
+  {% set etcd_version = '3.2.0' %}
+  {% set etcd_endport1 = '2379' %} 
+  {% set etcd_endport2 = '2380' %} 
+
+
+### SALT PILLAR DATA
 
 opensds:
   #lang:
   #  home: /usr/local/go
   #  src: /usr/local/go/bin/src/github.com/opensds
+  conf:
+    keystone_authtoken:
+      memcached_servers '{{ grains.fqdn_ip4 or grains.fqdn_ip6 }}:11211'
   cinder:
     authOptions:
       noAuth: true
-      endpoint: "http://127.0.0.1/identity"
-      cinderEndpoint: "http://127.0.0.1:8776/v2"
-      domainId: "Default"
-      domainName: "Default"
-      username: ""
-      password: ""
-      tenantId: "myproject"
-      tenantName: "myproject"
+      endpoint: 'http://{{ host_ip }}/identity'
+      cinderEndpoint: 'http://{{ host_ip }}:{{ cinder_endpoint }}'
+      domainId: 'Default'
+      domainName: 'Default'
+      username: ''
+      password: ''
+      tenantId: 'myproject'
+      tenantName: 'myproject'
 
 packages:
   archives:
@@ -27,27 +64,27 @@ packages:
         dest: /tmp/opensds/usr/local/go
         options: '--strip-components=1'
         dl:
-          source: https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz
-          hashsum: md5=9889923de1bc996b74bd4929ac0b6c8e
+          source: https://storage.googleapis.com/golang/go{{ golang_version }}.linux-amd64.tar.gz
+          hashsum: '{{ golang_hashsum }}'
       opensds-nbp-src:
         dest: /tmp/opensds/usr/local/go/bin/src/github.com/opensds/nbp
         options: '--strip-components=1'
         dl:
-          source: https://github.com/opensds/nbp/archive/v0.3.0.tar.gz
-          hashsum: md5=c733837e4c7da1456fe71d81a4a9ff77
+          source {{ dl_uri }}/nbp/archive/{{ nbp_version }}.tar.gz
+          hashsum: '{{ nbp_hashsum }}'
       opensds-nbp-k8s:
         dest: /tmp/opensds/opt/opensds-k8s-linux-amd64
         options: '--strip-components=1'
         mode: '0755'
         dl:
-          source: https://github.com/opensds/nbp/releases/download/v0.2.0/opensds-k8s-v0.2.0-linux-amd64.tar.gz
-          hashsum: md5=110fee79c335e56a519bd50084825ebd
+          source {{ dl_uri }}/nbp/releases/download/{{ sdsversion }}/opensds-k8s-{{ sdsversion }}-linux-amd64.tar.gz
+          hashsum: '{{ sds_k8s_hashsum }}'
       opensds:
         dest: /tmp/opensds/opt/opensds-linux-amd64
         options: '--strip-components=1'
         dl:
-          source: https://github.com/opensds/opensds/releases/download/v0.2.0/opensds-v0.2.0-linux-amd64.tar.gz
-          hashsum: md5=2dbb88521062d65b6e1c4c262f2e8282
+          source {{ dl_uri }}/opensds/releases/download/{{ sdsversion }}/opensds-{{ sdsversion }}-linux-amd64.tar.gz
+          hashsum: '{{ sds_hashsum }}'
 
 docker:
   compose:
@@ -56,10 +93,10 @@ docker:
       container_name: opensds-controller
       network_mode: host
       ports:
-        - '127.0.0.1:50040:50040'
+        - '{{ host_ip }}:{{ keystone_endport }}:{{ keystone_endport }}'
       volumes:
-        - "/etc/opensds/:/etc/opensds"
-        # /usr/share/ca-certificates/:/etc/ssl/certs
+        - '/etc/opensds/:/etc/opensds'
+        # '/usr/share/ca-certificates/:/etc/ssl/certs'
       deploy:
         restart_policy:
           condition: on-failure
@@ -73,8 +110,8 @@ docker:
       network_mode: host
       ports: []
       volumes:
-        - "/etc/opensds/:/etc/opensds"
-        - "/etc/ceph/:/etc/ceph"
+        - '/etc/opensds/:/etc/opensds'
+        - '/etc/ceph/:/etc/ceph'
       deploy:
         restart_policy:
           condition: on-failure
@@ -95,10 +132,10 @@ docker:
           max_attempts: 3
           window: 120s
 etcd:
-  version: 3.2.0
+  version '{{ etcd_version }}'
   service:
     name: osdsdb
-    etcd_endpoints: 'https://127.0.0.1:2379,https://127.0.0.1:2380'
+    etcd_endpoints: 'https://{{ host_ip }}:{{ etcd_endport1 }},https://{{ host_ip }}:{{ etcd_endport2 }}'
   docker:
     enabled: True
 
@@ -115,3 +152,87 @@ lvm:
       opensds_vg:
         devices:
           - /dev/sdb
+
+devstack:
+  local:
+    username: stack
+    password: '{{ password }}'
+    enabled_services: 'mysql,key'     #needs quotes
+    os_password: '{{ password }}'
+    host_ip: '{{ host_ip }}'
+    host_ipv6: '{{ grains.ipv6 }}'
+    service_host: '{{ host_ip }}'
+  cli:
+    user:
+      create:
+        {{ servicename }}:
+          options:
+            domain: '{{ user_domain_name }}'
+            password: '{{ password }}'
+            project: '{{ project_name }}'
+            enable: True
+      delete:
+        demo:
+          options:
+            domain: '{{ user_domain_name }}'
+        alt_demo:
+          options:
+            domain: '{{ user_domain_name }}'
+    group:
+      create:
+        service:
+          options:
+            domain: '{{ user_domain_name }}'
+      add user:
+        service:
+          target:
+            - '{{ servicename }}'
+        admins:
+          options:
+            domain: '{{ user_domain_name }}'
+          target:
+            - admin
+    role:
+      add:
+        admin:
+          options:
+            project: '{{ project_name }}'
+            target:
+              - '{{ servicename }}'
+        service:
+          options:
+            project: '{{ project_name }}'
+            group: service
+    service:
+      create:
+        {{ servicetype }}:
+          options:
+            name: '{{ servicename }}'
+            type: identity
+            description: OpenSDS Block Storage
+            enable: True
+    endpoint:
+      create:
+        '{{ endpointname }} public https://{{ host_ip }}/{{ keystone_endport }}/{{ sds_version }}/%\(tenant_id\)s':
+          options:
+            region: RegionOne
+            enable: True
+        '{{ endpointname }} internal https://{{ host_ip }}/{{ keystone_endport }}/{{ sds_version }}/%\(tenant_id\)s':
+          options:
+            region: RegionOne
+            enable: True
+        '{{ endpointname }} admin https://{{ host_ip }}/{{ keystone_endport }}/{{ sds_version }}/%\(tenant_id\)s':
+          options:
+            region: RegionOne
+            enable: True
+    project:
+      delete:
+        demo:
+          options:
+            domain: '{{ project_domain_name }}'
+        alt_demo:
+          options:
+            domain: '{{ project_domain_name }}'
+        invisible_to_admin:
+          options:
+            domain: '{{ project_domain_name }}'

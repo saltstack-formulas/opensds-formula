@@ -1,4 +1,5 @@
 #Component Defaults
+{% import_yaml "opensds/stacks/defaults.yaml" as stacks %}
 {% import_yaml "opensds/auth/defaults.yaml" as auth %}
 {% import_yaml "opensds/controller/defaults.yaml" as controller %}
 {% import_yaml "opensds/dashboard/defaults.yaml" as dashboard %}
@@ -8,28 +9,21 @@
 {% import_yaml "opensds/env/defaults.yaml" as environ %}
 {% import_yaml "opensds/let/defaults.yaml" as let %}
 {% import_yaml "opensds/nbp/defaults.yaml" as nbp %}
-{% import_yaml "opensds/salt/defaults.yaml" as salt %}
 #OS family maps
 {# import_yaml "opensds/osfamilymap.yaml" as osfamilymap #}
 
 # Build a deployment dictionary
 {% set opensds = salt['grains.filter_by'](
-   auth, merge=salt['grains.filter_by'](
+   stacks, merge=salt['grains.filter_by'](
       controller, merge=salt['grains.filter_by'](
          dashboard, merge=salt['grains.filter_by'](
             database, merge=salt['grains.filter_by'](
-               devstack, merge=salt['grains.filter_by'](
+               auth, merge=salt['grains.filter_by'](
                   dock, merge=salt['grains.filter_by'](
                      environ, merge=salt['grains.filter_by'](
                         let, merge=salt['grains.filter_by'](
                            nbp, merge=salt['grains.filter_by'](
-                              salt, merge=salt['grains.filter_by'](
-                                 osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
-                                    oscodenames, grain='oscodename',
-
-                                    merge=salt['pillar.get']('opensds', {}),),
-
-                              base='opensds',),
+                              osfamilymap, grain='os_family', merge=salt['grains.filter_by'](oscodenames, grain='oscodename', merge=salt['pillar.get']('opensds', {}),),
                            base='opensds',),
                         base='opensds',),
                      base='opensds',),
@@ -41,4 +35,4 @@
    base='opensds',),
 ) %}
 
-{%- do opensds.salt.solutions.update( opensds.salt.formulas ) %}
+{%- do opensds.stacks.solutions.update( opensds.stacks.formulas ) %}
