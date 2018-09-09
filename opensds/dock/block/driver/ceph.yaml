@@ -12,31 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-authOptions:
-  noAuth: true
-  endpoint: "http://127.0.0.1/identity"
-  cinderEndpoint: "http://127.0.0.1:8776/v2"
-  domainId: "Default"
-  domainName: "Default"
-  username: ""
-  password: ""
-  tenantId: "myproject"
-  tenantName: "myproject"
+configFile: /etc/ceph/ceph.conf
 pool:
-  {{ poolname }}:
+  rdb:
     storageType: block
     availabilityZone: default
     extras:
+      #DataStorageLineOfService 1.1.0, possibly extended by OpenSDS
       dataStorage:
-        #Swordfish DataStorageLineOfService 1.1.0, possibly extended by OpenSDS
         provisioningPolicy: Thin
-        isSpaceEfficient: false
+        isSpaceEfficient: true
       ioConnectivity:
-        #Swordfish IOConnectivityLineOfService 1.1.0, possibly extended by openSDS
-        accessProtocol: iscsi
-        maxIOPS: 7000000
-        maxBWS: 600
+        #IOConnectivityLineOfService 1.1.0, possibly extended by openSDS
+        accessProtocol: rbd
+        maxIOPS: 6000000
+        maxBWS: 500
       advanced:
-        #OpenSDS storage profile custom parameters, probably recommended by Vendor, and controlled by Admin
+        #storage profile custom parameters, probably recommended by Vendor, and controlled by Admin
         diskType: SSD
-        latency: 3ms
+        latency: 5ms

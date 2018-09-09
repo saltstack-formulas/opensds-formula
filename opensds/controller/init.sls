@@ -15,7 +15,7 @@ opensds controller container service running:
   {%- else %}
 
 include:
-  - opensds.controller.install.{{ opensds.controller.install_from|trim|lower }}
-  - opensds.env
+  - opensds.stacks
+  - opensds.controller.{{ opensds.controller.install_from|trim|lower }}
 
   {% endif %}

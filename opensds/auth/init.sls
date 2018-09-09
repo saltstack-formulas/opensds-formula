@@ -16,31 +16,6 @@ opensds auth container service running:
 
 include:
   - opensds.stacks.devstack
+  - opensds.auth.config
 
   {% endif %}
-
-
-##Update opensds.conf file
-  {% for section, configuration in opensds.auth.conf.items() %}
-
-opensds config ensure osdsauth {{ section }} section exists:
-  ini.sections_present:
-    - name: {{ opensds.conf }}
-    - sections:
-      - osdsauth
-
-     {%- for k, v in configuration.items() %}
-
-opensds config ensure osdsauth {{ section }} {{ k }} exists:
-  ini.options_present:
-    - name: {{ opensds.conf }}
-    - separator: '='
-    - strict: True
-    - sections:
-        osdsauth:
-          {{ k }}: {{ v }}
-    - require:
-      - opensds config ensure osdsauth {{ section }} section exists
-
-     {%- endfor %}
-  {% endfor %}

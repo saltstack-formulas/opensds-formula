@@ -3,7 +3,7 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
 include:
-  - opensds.env
+  - opensds.stacks
 
 opensds dashboard {{ opensds.dashboard.release.version}} repo build from source:
   git.latest:

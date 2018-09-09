@@ -2,36 +2,23 @@
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
-  {%- if opensds.dock.container.enabled %}
-    {%- if opensds.dock.block.provider|trim|lower == ('lvm', 'ceph',) %}
+  {%- set provider = opensds.dock.block.provider|trim|lower %}
+  {%- if opensds.dock.block.container.enabled %}
+    {%- if provider in ('lvm', 'ceph',) %}
 
 opensds dock {{ opensds.dock.block.provider }} block service container stopped:
   docker_container.stopped:
-    - names:
-       - {{ opensds.dock.block.service }}
-      {%- if opensds.dock.block.container.compose and "osdsblock" in docker.compose %}
-       - {{ docker.compose.osdsblock.container_name }}
-      {%- endif %}
+    - names: {{ opensds.dock.block.service }}
     - error_on_absent: False
 
-    {%- elif opensds.dock.block.provider|trim|lower == 'cinder' %}
-     ## placeholder for Cinder-aaS https://github.com/openstack/cinder/tree/master/contrib/block-box
+    {%- elif provider == 'cinder' %}
+
+       {# Todo: Cinder-aaS https://github.com/openstack/cinder/tree/master/contrib/block-box #}
 
     {%- endif %}
-  {%- elif opensds.dock.block.provider|trim|lower == 'lvm' %}
+  {%- else %}
 
 include:
-  - lvm.vg.remove
-  - lvm.pv.remove
-
-  {%- elif opensds.dock.block.provider|trim|lower == 'cinder' %}
-  #### cinder backend not implemented
-
-  {%- elif opensds.dock.block.provider|trim|lower == 'ceph' %}
-    {%- set ceph.use_upstream_repo == False %}
-
-include:
-  # deepsea.remove
-  - ceph.repo
+  - opensds.dock.block[provider]['clean']
 
   {%- endif %}

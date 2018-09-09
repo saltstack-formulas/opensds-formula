@@ -1,7 +1,6 @@
 
 include:
   - opensds.stacks
-  - opensds.env
   - opensds.controller
   - opensds.nbp
   - opensds.auth

@@ -3,7 +3,7 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
 include:
-  - opensds.env.lang
+  - opensds.stacks.golang
 
 opensds controller {{ opensds.controller.release}} repo download from git:
   git.latest:

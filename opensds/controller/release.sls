@@ -4,7 +4,7 @@
 
 include:
   - packages.archives
-  - opensds.env
+  - opensds.stacks
 
 opensds controller {{ opensds.controller.release }} copy archive content to work directory:
   file.copy:

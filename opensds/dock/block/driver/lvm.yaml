@@ -15,21 +15,20 @@
 tgtBindIp: 127.0.0.1 # change tgtBindIp to your real host ip, run 'ifconfig' to check
 tgtConfDir: /etc/tgt/conf.d
 pool:
-  {{ poolname }}:
+  opensds-volumes:
     storageType: block
     availabilityZone: default
     extras:
       dataStorage:
-        #Swordfish DataStorageLineOfService 1.1.0, possibly extended by OpenSDS
+        #DataStorageLineOfService 1.1.0, possibly extended by OpenSDS
         provisioningPolicy: Thin
         isSpaceEfficient: false
       ioConnectivity:
-        #Swordfish IOConnectivityLineOfService 1.1.0, possibly extended by openSDS
+        #IOConnectivityLineOfService 1.1.0, possibly extended by openSDS
         accessProtocol: iscsi
         maxIOPS: 7000000
         maxBWS: 600
       advanced:
-        #OpenSDS storage profile custom parameters, probably recommended by Vendor, and controlled by Admin
+        #storage profile custom parameters, probably recommended by Vendor, and controlled by Admin
         diskType: SSD
         latency: 5ms
-

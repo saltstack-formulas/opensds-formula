@@ -1,16 +1,17 @@
 # vim: sts=2 ts=2 sw=2 et ai
 #
 opensds:
+  conf: /etc/opensds/opensds.conf
   dir:
     work: /opt/opensds-linux-amd64
     config: /etc/opensds
+    driver: /etc/opensds/driver
     devstack: /opt/opensds-linux-amd64-devstack
     driver: /etc/opensds/driver
     log: /var/log/opensds
     tmp: /tmp/opensds
     mode: '0700'
     user: root
-  conf: /etc/opensds/opensds.conf
 
   controller:
     release: v0.2.0
