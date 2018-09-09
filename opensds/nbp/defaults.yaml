@@ -1,13 +1,16 @@
 # vim: sts=2 ts=2 sw=2 et ai
 #
 opensds:
+  k8s_start: source /etc/profile && kubectl create -f deploy/kubernetes
+  k8s_stop: source /etc/profile && kubectl delete -f deploy/kubernetes
   nbp:
     release: v0.2.0
     service: osdsnbp
-    install_from: release    #release or repo
-    plugin_type: hotpot_only
+    install_from: release         ### release or repo
+    plugin_type: hotpot_only      ### 'hotpot_only', or 'csi', or 'flexvolume'.
     dir:
       work: /opt/opensds-k8s-linux-amd64
+      deploy: /opt/opensds-k8s-linux-amb64/provisioner/deploy
       flexvolume: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
       csi: /opt/opensds-k8s-linux-amd64/csi/deploy/kubernetes
     repo:
@@ -16,8 +19,7 @@ opensds:
     container:
       enabled: false
       version: latest
-    csi:
-      startcmd: source /etc/profile && kubectl create -f deploy/kubernetes
-      stopcmd: source /etc/profile && kubectl delete -f deploy/kubernetes
-      configfile: csi-config-opensdsplugin.yaml
-      conf: {}
+    plugin:
+      types: ['csi', 'flexvolume', 'provisioner',)
+      csi: csi-k8s_configmap-opensdsplugin.yaml
+      flexvolume: configmap.yaml

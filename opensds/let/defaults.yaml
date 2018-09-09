@@ -4,7 +4,7 @@ opensds:
   let:
     service: osdslet
     osdslet:
-      api_endpoint: '0.0.0.0:50040'
+      api_endpoint: '{{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50040'
       graceful: True
       log_file: /var/log/opensds/osdslet.log
       socket_order: inc

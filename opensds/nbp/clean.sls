@@ -15,19 +15,8 @@ opensds nbp {{ opensds.nbp.release }} container service stopped:
 
   {% else %}
 
-opensds nbp {{ opensds.nbp.release }} stop daemon service:
-  service.dead:
-    - name: {{ opensds.nbp.service }}
-    - sig: {{ opensds.nbp.service }}
-
-    {%- for type in ('csi', 'flexvolume', 'provisioner',) %}
-
-opensds nbp {{ opensds.nbp.release}} clean {{ type }} release files:
-  file.absent:
-    - name: {{ opensds.nbp.dir.work }}/{{ type }}
-    - require:
-      - service: opensds nbp {{ opensds.nbp.release }} stop daemon service
-
-    {% endfor %}
+include:
+  - opensds.nbp.provider.clean
+  - opensds.nbp.{{ opensds.nbp.install_from }}.clean
 
   {% endif %}

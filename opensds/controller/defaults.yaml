@@ -12,7 +12,7 @@ opensds:
     user: root
 
   controller:
-    endpoint: http://127.0.0.1:50040
+    endpoint: http://{{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50040
     release: v0.2.0
     install_from: release    #release or repo
     repo:

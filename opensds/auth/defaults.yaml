@@ -4,17 +4,18 @@ opensds:
   auth:
     service: osdsauth
     provider: devstack
+    endpoint: http://{{ host_ipv4[-1] or host_ipv6[-1] }}:50040
     container:
       enabled: False
       composed: False
       image: None
     conf:
       keystone_authtoken:
-        memcached_servers: {{ host_ip or host_ipv6 }}:11211
+        memcached_servers: {{ host_ipv4[-1] or host_ipv6[-1] }}:11211
         signing_dir: /var/cache/opensds
         cafile: /opt/stack/data/ca-bundle.pem
         project_domain_name: Default
         project_name: service
         user_domain_name: Default
-        auth_url: http://{{ host_ip or host_ipv6 }}/identity
+        auth_url: http://{{ host_ipv4[-1] or host_ipv6[-1] }}/identity
         auth_type: password

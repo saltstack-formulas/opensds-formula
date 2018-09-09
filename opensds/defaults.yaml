@@ -11,7 +11,6 @@ opensds:
     mode: '0700'
     user: root
   conf: /etc/opensds/opensds.conf
-  endpoint: http://127.0.0.1:50040
 
   controller:
     release: v0.2.0
@@ -46,7 +45,7 @@ opensds:
       gopath: ~/gopath
       subpath: /src/github.com/opensds/opensds
     conf:
-      api_endpoint: 0.0.0.0:50050
+      endpoint: {{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50050
       log_file: /var/log/opensds/osdsdashboard.log
       #choose the type of dashboard resource, only support 'provisioner' and 'attacher'.
       dashboard_type: provisioner
@@ -74,10 +73,6 @@ opensds:
         # rbd                      #ceph
         # cinder-lvm@lvm#lvm       #cinder
 
-  stacks:
-    devstack:
-      local:
-        password: opensds@123
     blockaas:
       enabled: True
       platform: debian:stretch

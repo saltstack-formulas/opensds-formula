@@ -17,9 +17,9 @@ opensds:
         platform: debian:stretch
         volume_group: cinder-volumes
         datadir: /opt/opensds/driver/container/data_dir
-    osdsdock:
+    conf:
       log_file: /var/log/opensds/osdsdock.log
-      endpoint: localhost:50050
+      endpoint: {{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50050
       type: provisioner            #provisioner or attacher
       driver: lvm                  #lvm; or ceph or cinder
       pools:

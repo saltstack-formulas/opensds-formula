@@ -16,7 +16,7 @@ opensds nbp {{ opensds.nbp.release }} container service running:
 
 include:
   - opensds.stacks
-  # iscsi.initiator
   - opensds.nbp.{{ opensds.nbp.install_from }}
+  - opensds.nbp.provider
 
   {%- endif %}
