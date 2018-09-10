@@ -1,3 +1,4 @@
+###  stacks/salt/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from  tpldir ~ "/map.jinja" import opensds with context %}

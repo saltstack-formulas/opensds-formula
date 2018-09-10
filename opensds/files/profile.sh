@@ -1,3 +1,4 @@
+### opensds/files/profile.sh
 BINHOME={{ sdshome }}
 LANGHOME={{ langhome }}
 export GOPATH=${PATH}:${LANGHOME}/bin
