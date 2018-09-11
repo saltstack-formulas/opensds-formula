@@ -1,4 +1,4 @@
-### controller/clean.sls
+### opensds/controller/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -7,12 +7,17 @@
 
 opensds controller container service stopped:
   docker_container.stopped:
-    - names:
-       - {{ opensds.controller.service }}
-      {%- if opensds.controller.container.compose and "osdsctlr" in docker.compose %}
-       - {{ docker.compose.osdsctlr.container_name }}
-      {%- endif %}
+    - name: {{ opensds.controller.service }}
     - error_on_absent: False
+
+
+  {%- elif opensds.controller.container.composed %}
+
+include:
+  - opensds.stacks.dockercompose.clean
+
+
+  {%- elif opensds.controller.provider|lower|trim in ('release', 'repo',) %}
 
 opensds controller {{ opensds.controller.release }} clean release files:
   file.absent:
@@ -22,11 +27,5 @@ opensds controller {{ opensds.controller.release }} clean release files:
       - {{ opensds.dir.config }}
       - {{ opensds.dir.log }}
       - {{ opensds.dir.tmp }}
-      - {{ opensds.dir.devstack }}
-
-  {%- else %}
-
-include:
-  - opensds.controller.{{ opensds.controller.provider|trim|lower }}.clean
 
   {% endif %}

@@ -1,0 +1,25 @@
+### opensds/dock/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
+
+opensds:
+  dock:
+    block:
+      enabled: True
+      provider: lvm
+      service: osdsblock
+      container:
+        enabled: False
+        composed: True
+        volume_group: cinder-volumes
+      conf:
+        opensds:
+          log_file: /var/log/opensds/osdsdock.log
+          endpoint: {{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50050
+          type: provisioner            #provisioner or attacher
+          driver: lvm                  #lvm; or ceph or cinder
+
+  packages:
+    cinder-blockbox:
+      dest: /tmp/opt/opensds-k8s-linux-amd64/cinder
+      dl:
+        src: https://raw.githubusercontent.com/openstack/cinder/master/contrib/block-box/docker-compose.yml

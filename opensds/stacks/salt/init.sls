@@ -1,9 +1,10 @@
-### stacks/salt/init.sls
+### opensds/stacks/salt/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from  tpldir ~ "/map.jinja" import opensds with context %}
 
   {%- for dir in [opensds.stacks.salt.basedir,] %}
+
 opensds stacks salt {{ dir }} directory created:
   file.directory:
     - name: {{ dir }}
@@ -16,6 +17,7 @@ opensds stacks salt {{ dir }} directory created:
   {%- endfor %}
 
   {%- for name, url in opensds.stacks.salt.solutions.items() %}
+
 opensds stacks salt {{ name }} repo cloned:
   git.latest:
     - name: {{ url }}

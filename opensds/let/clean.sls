@@ -1,4 +1,4 @@
-###  let/clean.sls
+###  opensds/let/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -14,11 +14,16 @@ opensds let {{ opensds.controller.release }} container service stopped:
       {%- endif %}
     - error_on_absent:False
 
-  {%- else %}
+ {%- elif opensds.let.container.composed %}
+
+include:
+  - opensds.stacks.dockercompose
+
+ {%- else %}
 
 opensds let {{ opensds.controller.release }} kill daemon service:
   process.absent:
     - name: {{ opensds.let.service }}
 
-  {% endif %}
+ {% endif %}
 

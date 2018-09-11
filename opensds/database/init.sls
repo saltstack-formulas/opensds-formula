@@ -5,22 +5,22 @@
 
   {%- if opensds.database.container.enabled %}
 
-     {%- if opensds.database.container.custom %}
-include:
-  - {{ opensds.database.provider|trim|lower }}.docker.running    #i.e. 'etcd.docker.running'
-
-     {%- else %}
 opensds database container service running:
   docker_container.running:
     - name: {{ opensds.database.service }}
     - image: {{ opensds.database.container.image }}
     - restart_policy: always
     - network_mode: host
-    - unless: {{ opensds.database.container.compose }}
-    {%- endif %}
+    - unless: {{ opensds.database.container.composed }}
 
-  {%- else %}
+  {%- elif opensds.database.container.composed %}
+
 include:
-  - {{ opensds.database.provider|trim|lower }}.service.running    #ie. 'etcd.service.running'
+  - opensds.stacks.dockercompose
+
+  {%- elif opensds.database.provider|trim|lower == 'etcd' %}
+
+include:
+  - etcd.service.running
 
   {% endif %}

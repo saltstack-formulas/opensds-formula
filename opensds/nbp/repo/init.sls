@@ -1,4 +1,4 @@
-###  nbp/repo/init.sls
+###  opensds/nbp/repo/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -22,7 +22,7 @@ opensds nbp {{ opensds.nbp.release.version }} repo get source if missing:
     - cwd: {{ opensds.langsrc }}/nbp
 
 
-  {% for type in ('csi', 'flexvolume', 'provisioner',) %}
+  {% for type in opensds.nbp.plugin.types %}
 
 opensds nbp {{ opensds.nbp.release.version }} repo ensure {{ type }} workdir exists:
   file.directory:

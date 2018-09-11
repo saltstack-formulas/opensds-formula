@@ -1,0 +1,27 @@
+### opensds/dock/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
+
+lvm:
+  files:
+    trucate:
+      /tmp/bigfile.img
+        options:
+          size: 10M
+      /tmp/cinder-volumes.img
+        options:
+          size: 1G
+    losetup:
+      /tmp/bigfile.img:
+      /tmp/cinder-volumes.img:
+  pv:
+    create:
+      /dev/loop0:
+      /dev/loop1:
+  vg:
+    create:
+      small_vg:
+        devices:
+          - /dev/loop0
+      cinder_vg:
+        devices:
+          - /dev/loop1

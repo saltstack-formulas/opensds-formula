@@ -1,4 +1,4 @@
-###  dock/block/init.sls
+###  opensds/dock/block/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -16,10 +16,16 @@ opensds dock block {{ opensds.dock.block.provider }} container running:
     - unless: {{ opensds.dock.block.container.compose }}
 
     {%- elif opensds.dock.block.provider|trim|lower == 'cinder' %}
-
-       {# Todo: Cinder-aaS https://github.com/openstack/cinder/tree/master/contrib/block-box #}
-
+       {# Cinder-aaS https://github.com/openstack/cinder/tree/master/contrib/block-box #}
     {%- endif %}
+
+
+  {%- elif opensds.dock.block.container.composed %}
+
+include:
+  - opensds.stacks.dockercompose
+
+
   {%- else %}
 
 include:

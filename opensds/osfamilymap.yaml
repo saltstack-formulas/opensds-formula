@@ -2,4 +2,49 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
-Default: {}
+Default:
+  k8s:
+    start: source /etc/profile && kubectl create -f deploy/kubernetes
+    stop: source /etc/profile && kubectl delete -f deploy/kubernetes
+  let:
+    conf:
+      log_file: /var/log/opensds/osdslet.log
+  auth:
+    conf:
+      keystone_authtoken:
+        signing_dir: /var/cache/opensds
+        cafile: /opt/stack/data/ca-bundle.pem
+  dock:
+    block:
+      container:
+        image: debian-cinder
+        platform: debian:stretch
+        datadir: /opt/opensds/driver/container/data_dir
+  nbp:
+    dir:
+      work: /opt/opensds-k8s-linux-amd64
+      deploy: /opt/opensds-k8s-linux-amb64/provisioner/deploy
+      flexvolume: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
+      csi: /opt/opensds-k8s-linux-amd64/csi/deploy/kubernetes
+
+FreeBSD:
+  stacks:
+    salt:
+      basedir:
+        states: /usr/local/salt/base
+        pillars: /usr/local/salt/pillar
+        formula: /usr/local/salt/formula
+
+RedHat:
+  loci:
+    pkgs:
+       - python-cinderclient 
+       - python-brick-cinderclient-ext
+       - docker-compose
+       - device-mapper-persistent-data
+    cmd: docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
+
+Debian:
+  loci:
+    cmd: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
+

@@ -1,24 +1,39 @@
-###  controller/defaults.yaml
+###  opensds/controller/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
 #
 opensds:
-  dir:
-    work: /opt/opensds-linux-amd64
-    config: /etc/opensds
-    devstack: /opt/opensds-linux-amd64-devstack
-    driver: /etc/opensds/driver
-    log: /var/log/opensds
-    tmp: /tmp/opensds
-    mode: '0700'
-    user: root
-
   controller:
     endpoint: http://{{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50040
-    release: v0.2.0
-    install_from: release    #release or repo
+    provider: release    #release or repo
     repo:
       url: https://github.com/opensds/opensds.git
       branch: development
     container:
       enabled: False
       composed: False
+
+  stacks:
+    packages:
+      opensds:
+        dest: /tmp/opt/opensds-linux-amd64
+        options: '--strip-components=1'
+        dl:
+          src: {{ site.uri.opensds }}/{{ aruba.release.opensds }}/opensds-{{ aruba.release.opensds }}-linux-amd64.tar.gz
+          hashsum: '{{ release.hashsum.opensds }}'
+  docker:
+    compose:
+      controller:
+        image: {{ site.uri.img_controller }}
+        container_name: opensds-controller
+        network_mode: host
+        ports:
+          - '{{ site.host_ipv4 }}:{{ site.devstack.keyport }}:{{ site.devstack.keyport }}'
+        volumes:
+          - '/etc/opensds/:/etc/opensds'
+          # '/usr/share/ca-certificates/:/etc/ssl/certs'
+        deploy:
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 3
+            window: 120s

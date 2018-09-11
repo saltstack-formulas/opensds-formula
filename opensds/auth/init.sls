@@ -1,7 +1,10 @@
-### auth/init.sls
+### opensds/auth/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+
+include:
+  - opensds.auth.config
 
   {%- if opensds.auth.container.enabled %}
 
@@ -13,10 +16,10 @@ opensds auth container service running:
     - network_mode: host
     - unless: {{ opensds.auth.container.compose }}
 
-  {% else %}
+  {% elif opensds.auth.container.composed %}
+  - opensds.stacks
 
-include:
+  {%- else %}
   - opensds.stacks.devstack
-  - opensds.auth.config
 
   {% endif %}

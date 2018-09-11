@@ -1,0 +1,14 @@
+### opensds/dock/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
+
+opensds:
+  dock:
+    block:
+      container:
+        volume_group: cinder-volumes
+
+  packages:
+    cinder-blockbox:
+      dest: /tmp/opt/opensds-k8s-linux-amd64/cinder
+      dl:
+        src: https://raw.githubusercontent.com/openstack/cinder/master/contrib/block-box/docker-compose.yml

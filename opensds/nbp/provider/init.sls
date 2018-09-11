@@ -6,9 +6,9 @@
 include:
   - opensds.nbp.config
 
-opensds nbp {{ opensds.nbp.plugin_type }} {{ opensds.nbp.release.version }} k8s start:
+opensds nbp {{ opensds.nbp.provider }} {{ opensds.nbp.release.version }} k8s start:
   cmd.run:
     - name: {{ opensds.k8s_start }}
     - onlyif: {{ test -f opensds.k8s_start }}
-    - cwd:  {{ opensds.nbp.dir[opensds.nbp.plugin_type] }}
+    - cwd:  {{ opensds.nbp.dir[opensds.nbp.provider] }}
     - output_loglevel: quiet 

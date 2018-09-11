@@ -1,4 +1,4 @@
-###  nbp/clean.sls
+###  opensds/nbp/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -7,12 +7,13 @@
 
 opensds nbp {{ opensds.nbp.release }} container service stopped:
   nbper_container.stopped:
-    - names:
-       - {{ opensds.nbp.service }}
-      {%- if opensds.nbp.container.compose and "osdsnbp" in docker.compose %}
-       - {{ docker.compose.osdsnbp.container_name }}
-      {%- endif %}
+    - name: {{ opensds.nbp.service }}
     - error_on_absent: False
+
+  {%- elif opensds.nbp.container.composed %}
+
+include:
+  - opensds.stacks.dockercompose.clean
 
   {% else %}
 

@@ -1,4 +1,4 @@
-###  dock/block/clean.sls
+###  opensds/dock/block/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -13,10 +13,15 @@ opensds dock {{ opensds.dock.block.provider }} block service container stopped:
     - error_on_absent: False
 
     {%- elif provider == 'cinder' %}
-
-       {# Todo: Cinder-aaS https://github.com/openstack/cinder/tree/master/contrib/block-box #}
-
+       {# Cinder-aaS https://github.com/openstack/cinder/tree/master/contrib/block-box #}
     {%- endif %}
+
+  {%- elif opensds.dock.block.container.composed %}
+
+include:
+  - opensds.stacks.dockercompose.clean
+
+
   {%- else %}
 
 include:

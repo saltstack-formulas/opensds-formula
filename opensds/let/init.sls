@@ -1,4 +1,4 @@
-### let/init.sls
+### opensds/let/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -11,7 +11,12 @@ opensds let {{ opensds.controller.release }} container service running:
     - image: {{ opensds.let.container.image }}
     - restart_policy: always
     - network_mode: host
-    - unless: {{ opensds.let.container.compose }}
+    - unless: {{ opensds.let.container.composed }}
+
+  {% elif opensds.let.container.composed %}
+
+include:
+  - opensds.stacks.dockercompose
 
   {% else %}
 

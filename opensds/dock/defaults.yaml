@@ -1,43 +1,33 @@
-### dock/defaults.yaml
+### opensds/dock/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
+
 opensds:
   dock:
     provider: osdsdock
     service: osdsdock
     container:
-      enabled: True
+      enabled: False
       composed: True
-    block:
-      provider: lvm
-      service: osdsblock
-      container:
-        enabled: True
-        composed: False
-        image: debian-cinder
-        platform: debian:stretch
-        volume_group: cinder-volumes
-        datadir: /opt/opensds/driver/container/data_dir
-      iscsi:
-        bind_ip: {{ host_ip[-1] }}
-        target_conf_dir: /etc/tgt/conf.d
-      conf:
-        opensds:
-          log_file: /var/log/opensds/osdsdock.log
-          endpoint: {{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50050
-          type: provisioner            #provisioner or attacher
-          driver: lvm                  #lvm; or ceph or cinder
-  swordfish:
-    opensds-volumes:
-      storageType: block
-      availabilityZone: default
-      extras:
-        dataStorage:
-          provisioningPolicy: Thin
-            isSpaceEfficient: false
-        ioConnectivity:
-          accessProtocol: iscsi
-          maxIOPS: 7000000
-          maxBWS: 600
-        advanced:
-          diskType: SSD
-          latency: 5ms
+    conf:
+      opensds:
+        type: provisioner            #provisioner or attacher
+        driver: lvm                  #lvm; or ceph or cinder
+        log_file: /var/log/opensds/osdsdock.log
+        endpoint: {{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50050
+  docker:
+    compose:
+      dock:
+        image: {{ site.uri.img_dock }}
+        container_name: osdsdock
+        privileged: True
+        network_mode: host
+        ports: []
+        volumes:
+          - '/etc/opensds/:/etc/opensds'
+          - '/etc/ceph/:/etc/ceph'
+        deploy:
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 3
+            window: 120s

@@ -1,0 +1,54 @@
+##### RELEASE + SITE DATA = WANTED DEPLOYMENT ########
+
+opensds:
+  release:
+    opensds: 'v0.2.0'
+    nbp: 'v0.3.0'
+    golang: '1.9.2'
+    cinder: '13.0.0'
+    hashsum:
+      opensds: 'md5=2dbb88521062d65b6e1c4c262f2e8282' #v0.2.0
+      nbp: 'md5=c733837e4c7da1456fe71d81a4a9ff77'     #v0.3.0
+      sds_k8s: 'md5=110fee79c335e56a519bd50084825ebd' #v0.2.0
+      golang: 'md5=9889923de1bc996b74bd4929ac0b6c8e'  #1.9.2
+      cinder: 'md5=44705173e7dd03ceeaf5601a25684c94'  #13.0.0
+
+  site:
+    choices:
+      nbp_plugin_type: hotpot_only     #or csi or flexvolume
+      enabled_backend: lvm             #or ceph or cinder
+      cinder_container_enabled: True   #or false (only if enabled_backend: cinder)
+      endpoint: ''                     #defaults to http://'host_ip:50040' anyway
+  stacks:
+    etcd:
+      version: '3.2.0'
+      portA: '2379'
+      portB: '2380'
+      servicename: osdsdb
+    memcached:
+      port: 11211
+    devstack:
+      enabled_services: 'mysql,key'          #quotes are important!
+      username: stack 
+      password: 'opensds@123'
+      host_ipv4: '12.0.0.1'                  #Blank value causes ipv4 address auto-detection
+      host_ipv6: ''                          #Blank value causes ipv6 address auto-detection
+      keyport: '50040'                       #i.e. keystone
+      cinder_endpoint: '8776/v2' 
+      servicename: 'opensds'
+      servicetype: 'opensds'
+      endpointname1: ''                      #Blank value causes auto-name (i.e. 'opensdsv0.2.0')
+      project_domain_name: Default
+      project_name: 'service'
+      user_domain_name: 'Default'
+  uri:
+    opensds: https://github.com/opensds/opensds/releases/download
+    nbp: https://github.com/opensds/nbp/releases/download
+    cinder: https://github.com/openstack/cinder/archive
+    etcd: https://github.com/coreos/etcd/releases/download
+    salts: https://github.com/saltstack-formulas
+    img_controller: opensdsio/opensds-controller:latest
+    img_dock: opensdsio/opensds-dock:latest
+    img_dashboard: opensdsio/dashboard:latest
+    img_etcd: quay.io/coreos/etcd:latest
+

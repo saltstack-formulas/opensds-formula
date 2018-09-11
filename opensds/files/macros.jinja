@@ -1,0 +1,23 @@
+{%- macro getopts(outdict, sls=False) -%}
+  {%- if outdict and 'options' in outdict %}
+     {%- for k, v in outdict.options.items() %}
+       {%- if sls %}
+    - {{ k }}: {{ v }}
+       {%- else %}
+         {{- ' --' ~ k if v == True else '' if v == False else ' --' ~ k ~ ' ' ~ v  -}}
+       {%- endif %}
+      {%- endfor %}
+   {%- endif %}
+{%- endmacro %}
+
+{%- macro getlist(outlist, sls=False) -%}
+  {%- if outlist and outlist is iterable and outdict is not string %}
+     {%- for v in outlist %}
+       {%- if sls %}
+    - {{ v }}
+       {%- else %}
+         {{- v -}}
+       {%- endif %}
+      {%- endfor %}
+   {%- endif %}
+{%- endmacro %}

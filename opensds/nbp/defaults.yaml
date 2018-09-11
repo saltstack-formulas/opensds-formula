@@ -1,26 +1,41 @@
-###  nbp/defaults.sls
+###  opensds/nbp/defaults.sls
 # vim: sts=2 ts=2 sw=2 et ai
 #
 opensds:
-  k8s_start: source /etc/profile && kubectl create -f deploy/kubernetes
-  k8s_stop: source /etc/profile && kubectl delete -f deploy/kubernetes
   nbp:
     release: v0.2.0
     service: osdsnbp
-    install_from: release         ### release or repo
-    plugin_type: hotpot_only      ### 'hotpot_only', or 'csi', or 'flexvolume'.
-    dir:
-      work: /opt/opensds-k8s-linux-amd64
-      deploy: /opt/opensds-k8s-linux-amb64/provisioner/deploy
-      flexvolume: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
-      csi: /opt/opensds-k8s-linux-amd64/csi/deploy/kubernetes
+    install_from: release      ### release or repo
+    provider: hotpot_only      ### 'hotpot_only', or 'csi', or 'flexvolume'.
     repo:
       branch: master
       url: https://github.com/opensds/nbp.git
     container:
-      enabled: false
+      enabled: False
+      composed: False
       version: latest
     plugin:
-      types: ['csi', 'flexvolume', 'provisioner',)
+      types: ['csi', 'flexvolume', 'provisioner',]
       csi: csi-k8s_configmap-opensdsplugin.yaml
       flexvolume: configmap.yaml
+
+  stacks:
+    packages:
+      archives:
+        unwanted:
+          - /tmp/opt/opensds-k8s-linux-amd64
+        wanted:
+          opensds-nbp-src:
+            dest: /tmp/usr/local/go/bin/src/github.com/opensds/nbp
+            options: '--strip-components=1'
+            dl:
+              src: {{ site.uri.opensds }}/nbp/archive/{{ release.nbp }}.tar.gz
+              hashsum: '{{ release.hashsum.nbp }}'
+          opensds-nbp-k8s:
+            dest: /tmp/opt/opensds-k8s-linux-amd64
+            options: '--strip-components=1'
+            mode: '0755'
+            dl:
+              src: {{ site.uri.nbp }}/{{ aruba.release.opensds }}/opensds-k8s-{{ aruba.release.opensds }}-linux-amd64.tar.gz
+              hashsum: '{{ release.hashsum.sds_k8s }}'
+

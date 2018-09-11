@@ -1,4 +1,4 @@
-### nbp/repo/clean.sls
+### opensds/nbp/repo/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -7,7 +7,7 @@ opensds nbp repo {{ opensds.nbp.release.version }} remove directories:
   file.absent:
     - names:
       - {{ opensds.lang.home }}/{{ opensds.lang.src }}/nbp }}
-  {% for type in ('csi', 'flexvolume', 'provisioner',) %}
+  {% for type in opensds.nbp.plugin.types %}
       - {{ opensds.nbp.dir.work }}/{{ type }}{{ '/opensds' if type == 'flexvolume' else '' }}
   {% endfor }}
       - {{ opensds.nbp.dir.work }}/csi/

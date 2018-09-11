@@ -1,4 +1,4 @@
-### dashboard/clean.sls
+### opensds/dashboard/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -7,14 +7,16 @@
 
 opensds dashboard container service stopped:
   docker_container.stopped:
-    - names:
-       - {{ opensds.dashboard.service }}
-      {%- if opensds.dashboard.container.compose and "osdsdash" in docker.compose %}
-       - {{ docker.compose.osdsdash.container_name }}
-      {%- endif %}
+    - name: {{ opensds.dashboard.service }}
     - error_on_absent: False
 
-  {% else %}
+  {%- elif opensds.dashboard.container.composed %}
+
+include:
+  - opensds.stacks.dockercompose.clean
+
+
+  {%- elif opensds.controller.provider|trim|lower in ('release', 'repo',) %}
 
 include:
   - opensds.dashboard.clean

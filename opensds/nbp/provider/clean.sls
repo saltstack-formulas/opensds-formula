@@ -5,11 +5,11 @@
 
   {%- if not opensds.nbp.container.enabled %}
 
-opensds nbp {{ opensds.nbp.plugin_type }} {{ opensds.nbp.release.version }} k8s stop:
+opensds nbp {{ opensds.nbp.provider }} {{ opensds.nbp.release.version }} k8s stop:
   cmd.run:
     - name: {{ opensds.k8s_stop }}
     - onlyif: {{ test -f opensds.k8s_stop }}
-    - cwd:  {{ opensds.nbp.dir[opensds.nbp.plugin_type] }}
+    - cwd:  {{ opensds.nbp.dir[opensds.nbp.provider] }}
     - output_loglevel: quiet 
 
 opensds nbp {{ opensds.nbp.release }} stop daemon service:

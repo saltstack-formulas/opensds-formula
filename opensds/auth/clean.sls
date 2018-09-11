@@ -1,4 +1,4 @@
-### auth/clean.sls
+### opensds/auth/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -7,14 +7,15 @@
 
 opensds auth container service stopped:
   docker_container.stopped:
-    - names:
-       - {{ opensds.auth.service }}
-      {%- if opensds.auth.container.compose and "osdsauth" in docker.compose %}
-       - {{ docker.compose.osdsauth.container_name }}
-      {%- endif %}
+    - name: {{ opensds.auth.service }}
     - error_on_removed:False
 
-  {%- else %}
+  {%- elif opensds.auth.container.composed %}
+
+include:
+  - opensds.stacks.clean
+
+  {%- elif opensds.auth.provider == 'keystone' %}
 
 include:
   - opensds.stacks.devstack.clean
@@ -22,7 +23,7 @@ include:
   {% endif %}
 
 
-## Cleanup opensds.conf file
+  ## Cleanup opensds.conf file
   {% for section, configuration in opensds.auth.conf.items() %}
 
 opensds config ensure osdsauth {{ section }} section removed:

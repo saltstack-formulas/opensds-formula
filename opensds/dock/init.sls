@@ -1,4 +1,4 @@
-###   dock/init.sls
+###  opensd/dock/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -12,6 +12,11 @@ opensds dock container service running:
     - restart_policy: always
     - network_mode: host
     - unless: {{ opensds.dock.container.compose }}
+
+  {%- elif opensds.dock.container.composed %}
+
+include:
+  - docker.compose-ng
 
   {%- endif %}
   {%- if opensds.dock.block.enabled %}

@@ -1,9 +1,9 @@
-### stacks/clean.sls
+### opensds/stacks/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 
 include:
-  - opensds.stacks.profile.clean
-  - devstack.remove
-  - opensds.stacks.salt.clean
-  - iscsi.initiator.clean
+  # docker.compose-ng.down
+  # .golang.remove
+  - .devstack.clean
+  - .salt.clean

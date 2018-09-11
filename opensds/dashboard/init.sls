@@ -1,4 +1,4 @@
-### dashboard/init.sls
+### opensds/dashboard/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
@@ -11,11 +11,17 @@ opensds dashboard container service running:
     - image: {{ opensds.dashboard.container.image }}
     - restart_policy: always
     - network_mode: host
-    - unless: {{ opensds.dashboard.container.compose }}
+    - unless: {{ opensds.dashboard.container.composed }}
 
-  {% else %}
+  {%- elif opensds.dashboard.container.composed %}
 
 include:
-  - opensds.dashboard
+  - opensds.stacks.dockercompose
+
+  {%- elif opensds.dashboard.provider|trim|lower in ('release', 'repo',) %}
+
+include:
+  - opensds.stacks
+  - opensds.dashboard.{{ opensds.dashboard.provider|trim|lower }}   #i.e. release or repo
 
   {% endif %}

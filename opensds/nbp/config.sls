@@ -1,9 +1,10 @@
-###  nbp/config.sls
+###  opensds/nbp/config.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from "opensds/map.jinja" import opensds with context %}
-{% set plugintype = opensds.nbp.dir[opensds.nbp.plugin_type] %}
-{% set conf_file = opensds.nbp.dir[plugintype] ~ '/' ~ opensds.nbp[plugintype]['configfile'] %}
+
+  {% set plugintype = opensds.nbp.dir[opensds.nbp.provider] %}
+  {% set conf_file = opensds.nbp.dir[plugintype] ~ '/' ~ opensds.nbp[plugintype]['configfile'] %}
 
   {% for k, v in opensds.nbp[plugintype].conf %}
 
