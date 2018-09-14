@@ -7,9 +7,10 @@ opensds:
     container:
       enabled: False
       composed: False
+      build: False
       image: None
-    conf:
-      api_endpoint: '{{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50040'
+    opensds_conf:
+      api_endpoint: '{{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040'
       graceful: True
       log_file: /var/log/opensds/osdslet.log
       socket_order: inc

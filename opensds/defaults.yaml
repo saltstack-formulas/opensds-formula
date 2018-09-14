@@ -1,36 +1,28 @@
 ###  opensds/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
 #
+golang:
+  prefix: /usr/local
+  go_root: /usr/local/go
+  go_path: /var/lib/golang
+
 opensds:
+  pkgs: []
   controller:
-    version: v0.2.0 
     conf: /etc/opensds/opensds.conf
   dir:
     work: /opt/opensds-linux-amd64
     config: /etc/opensds
     driver: /etc/opensds/driver
     devstack: /opt/opensds-linux-amd64-devstack
-    driver: /etc/opensds/driver
     log: /var/log/opensds
     tmp: /tmp/opensds
     mode: '0700'
     user: root
   k8s:
-    start: source /etc/profile && kubectl create -f deploy/kubernetes
-    stop: source /etc/profile && kubectl delete -f deploy/kubernetes
-  swordfish:
-    opensds-volumes:
-      storageType: block
-      availabilityZone: default
-      extras:
-        dataStorage:
-          provisioningPolicy: Thin
-            isSpaceEfficient: false
-        ioConnectivity:
-          accessProtocol: iscsi
-          maxIOPS: 7000000
-          maxBWS: 600
-        advanced:
-          diskType: SSD
-          latency: 5ms
+    start: 'source /etc/profile && kubectl create -f deploy/kubernetes'
+    stop: 'source /etc/profile && kubectl delete -f deploy/kubernetes'
+  webservers:
+    restart: 'apache2 restart && nginx restart'
 
+  swordfish: {}

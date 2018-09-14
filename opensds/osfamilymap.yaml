@@ -3,6 +3,12 @@
 # vim: ft=jinja
 
 Default:
+  pkgs:
+    - python-setuptools
+    - salt-api
+    - git
+    - gcc
+    - make
   k8s:
     start: source /etc/profile && kubectl create -f deploy/kubernetes
     stop: source /etc/profile && kubectl delete -f deploy/kubernetes
@@ -28,23 +34,47 @@ Default:
       csi: /opt/opensds-k8s-linux-amd64/csi/deploy/kubernetes
 
 FreeBSD:
-  stacks:
-    salt:
-      basedir:
-        states: /usr/local/salt/base
-        pillars: /usr/local/salt/pillar
-        formula: /usr/local/salt/formula
+  salt:
+    basedir:
+      states: /usr/local/salt/base
+      pillars: /usr/local/salt/pillar
+      formula: /usr/local/salt/formula
+
+Arch:
+  pkgs:
+    - python2-pip
 
 RedHat:
-  loci:
-    pkgs:
-       - python-cinderclient 
-       - python-brick-cinderclient-ext
-       - docker-compose
-       - device-mapper-persistent-data
-    cmd: docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
+  pkgs:
+     - python2-pip
+     - python-click
+     - python-tox
+     - librados-devel
+     - librbd-devel
+     - python-cinderclient 
+     - python-brick-cinderclient-ext
+     - docker-compose
+     - device-mapper-persistent-data
+  dock:
+    block:
+      cinder:
+        container:
+          build: docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
+
+Suse:
+  pkgs:
+    - python-pip
+    - librados-dev
+    - librbd-dev
 
 Debian:
-  loci:
-    cmd: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
+  pkgs:
+    - python-pip
+    - librados-dev
+    - librbd-dev
+  dock:
+    block:
+      cinder:
+        container:
+          build: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
 

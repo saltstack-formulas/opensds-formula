@@ -1,0 +1,269 @@
+{% from "site.j2" import sitedata as site %}
+
+etcd:
+  service:
+    etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
+
+opensds:
+  release:
+    hotpot: {{ site.hotpot_release }}
+    sushi: {{ site.sushi_release }}
+  swordfish:
+    {{ site.poolname }}:
+      extras:
+        advanced:
+          a: b
+  hashsum:
+    hotpot: '{{ site.hotpot_hashsum }}'
+    sushi: '{{ site.sushi_hashsum }}'
+  auth:
+    opensds_conf:
+      keystone_authtoken:
+        memcached_servers: {{ site.host_ipv4 }}:11211
+        auth_url: http://{{ site.host_ipv4 or site.host_ipv6 }}/identity
+  database:
+    container:
+      enabled: True
+      build: True
+    opensds_conf:
+      db_endpoint: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
+  let:
+    opensds_conf:
+      api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50040
+  controller:
+    endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50050
+    container:
+      enabled: False    #or True
+      image: {{ site.img_controller }}
+      ports:
+        - {{ site.host_ipv4 or site.host_ipv6 }}:50040:50040
+  dashboard:
+    provider: repo       #or release
+    container:
+      image: {{ site.img_dashboard }}
+  nbp:
+    provider: release  #or repo
+    plugin_type: {{ site.dock_type }}
+    plugins:
+      csi:
+        dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
+      provisioner:
+        dir: /opt/opensds-sushi-linux-amd64/provisioner/deploy/kubernetes
+      flexvolume:
+        dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
+        binary: /opt/opensds-sushi-linux-amd64/bin/flexvolume.server.opensds
+  dock:
+    container:
+      image: {{ site.img_dock }}
+      volumes:
+        - /etc/opensds/:/etc/opensds
+    opensds_conf:
+      api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50050
+      dock_type: {{ site.dock_type }}
+      enabled_backend: {{ site.enabled_backend }}
+    block:
+      provider: {{ site.enabled_backend }}
+      cinder:
+        container:
+          enabled: True
+
+lvm:
+  files:
+    trucate:
+      /tmp/opensds-volumes.img:
+        options:
+          size: 10G
+      /tmp/cinder-volumes.img:
+        options:
+          size: 10G
+    losetup:
+      /tmp/cinder-volumes.img:
+      /tmp/opensds-volumes.img:
+  pv:
+    create:
+      /dev/loop0:
+      /dev/loop1:
+  vg:
+    create:
+      cinder_volumes:
+        devices:
+          - /dev/loop0
+      opensds_volumes:
+        devices:
+          - /dev/loop1
+
+devstack:
+  local:
+    username: stack
+    password: {{ site.devstack_password }}
+    enabled_services: {{ site.devstack_enabled_services }}
+    os_password: {{ site.devstack_password }}
+    host_ip: {{ site.host_ipv4 }}
+    site.host_ipv6: {{ site.host_ipv6 }}
+    service_host: {{ site.host_ipv4 or site.host_ipv6 }}
+  cli:
+    user:
+      create:
+        'opensds':
+          options:
+            domain: default
+            password: {{ site.devstack_password }}
+            project: service
+            enable: True
+    endpoint:
+      create:
+        'opensds{{site.hotpot_release}} public https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.devstack_port }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+          options:
+            region: RegionOne
+            enable: True
+        'opensds{{site.hotpot_release}} internal https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.devstack_port }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+          options:
+            region: RegionOne
+            enable: True
+        'opensds{{site.hotpot_release}} admin https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.devstack_port }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+          options:
+            region: RegionOne
+            enable: True
+
+docker:
+  compose:
+    controller:
+      image: {{ site.img_controller }}
+      container_name: opensds-controller
+      network_mode: host
+      ports:
+        - '{{ site.host_ipv4 or site.host_ipv6 }}:50050:50050'
+      volumes:
+        - '/etc/opensds/:/etc/opensds'
+        # '/usr/share/ca-certificates/:/etc/ssl/certs'
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    dock:
+      image: {{ site.img_dock }}
+      container_name: osdsdock
+      privileged: True
+      network_mode: host
+      volumes:
+        - '/etc/opensds/:/etc/opensds'
+        - '/etc/ceph/:/etc/ceph'
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    dashboard:
+      image: {{ site.img_dashboard }}
+      container_name: dashboard
+      privileged: True
+      network_mode: host
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    db:
+      image: {{ site.img_etcd }}
+      container_name: osdsdb
+      privileged: True
+      network_mode: host
+      ports:
+        - '{{ site.host_ipv4 or site.host_ipv6 }}:2379:2379'
+        - '{{ site.host_ipv4 or site.host_ipv6 }}:2380:2380'
+      volumes:
+        - /usr/share/ca-certificates/:/etc/ssl/certs
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+
+packages:
+  pips:
+    wanted:
+      - tox
+      - click
+  pkgs:
+    unwanted:
+      - unattended-upgrades
+  archives:
+    wanted:
+      opensds-hotpot:
+        dest: /tmp/opt/opensds-linux-amd64
+        options: '--strip-components=1'
+        dl:
+          src: https://github.com/opensds/opensds/releases/download/{{ site.hotpot_release }}/opensds-hotpot-{{ site.hotpot_release }}-linux-amd64.tar.gz
+          hashsum: {{ site.hotpot_hashsum }}
+      opensds-sushi:
+        dest: /tmp/usr/local/go/bin/src/github.com/opensds/nbp
+        options: '--strip-components=1'
+        dl:
+          src: https://github.com/opensds/nbp/releases/download/{{ site.sushi_release }}/opensds-sushi-{{ site.sushi_release }}-linux-amd64.tar.gz
+          hashsum: {{ site.sushi_hashsum }}
+      cinder:
+        dest: /tmp/opt/opensds-k8s-linux-amd64/cinder
+        dl:
+          src: https://raw.githubusercontent.com/openstack/cinder/master/contrib/block-box/docker-compose.yml
+    unwanted:
+      - /tmp/usr/local/go/bin/src/github.com/opensds/nbp
+      - /tmp/opt/opensds-k8s-linux-amd64
+      - /tmp/opt/opensds-linux-amd64
+
+
+
+salt:
+  install_packages: False
+  master:
+    file_roots:
+      base:
+        - /srv/salt
+    pillar_roots:
+      base:
+        - /srv/pillar
+  minion:
+    file_roots:
+      base:
+        - /srv/salt
+    pillar_roots:
+      base:
+        - /srv/pillar
+  ssh_roster:
+    controller1:
+      host: localhost
+      user: saltssh
+      sudo: True
+      priv: /etc/salt/ssh_keys/sshkey.pem
+salt_formulas:
+  git_opts:
+    default:
+      baseurl: https://github.com/saltstack-formulas
+      basedir: /srv/formulas
+  basedir_opts:
+    makedirs: True
+    user: root
+    group: root
+    mode: 755
+  list:
+    base:
+     - salt-formula
+     - openssh-formula
+     - packages-formula
+     - firewalld-formula
+     - etcd-formula
+     - ceph-formula
+     - deepsea-formula
+     - docker-formula
+     - etcd-formula
+     - firewalld-formula
+     - helm-formula
+     - iscsi-formula
+     - lvm-formula
+     - packages-formula
+     - devstack-formula
+     - golang-formula
+     - memcached-formula

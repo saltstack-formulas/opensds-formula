@@ -6,25 +6,17 @@ opensds:
     service: osdsdb
     provider: etcd
     container:
-      enabled: False
-      composed: True
-      image: None
+      enabled: True
+      composed: False
+      build: True
+    opensds_conf:
+      db_driver: etcd
+      db_endpoint: https://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:2379,https://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:2380
 
+etcd:
+  service:
+    name: osdsdb
+    etcd_endpoints: https://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:2379,https://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:2380
   docker:
-    compose:
-      db:
-        image: {{ site.uri.img_etcd }}
-        container_name: osdsdb
-        privileged: True
-        network_mode: host
-        ports:
-          - '127.0.0.1:2379:2379'
-          - '127.0.0.1:2380:2380'
-        volumes:
-          - /usr/share/ca-certificates/:/etc/ssl/certs
-        deploy:
-          restart_policy:
-            condition: on-failure
-            delay: 5s
-            max_attempts: 3
-            window: 120s
+    enabled: True
+

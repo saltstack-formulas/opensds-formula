@@ -10,22 +10,5 @@ include:
   - opensds.database.clean
   - opensds.let.clean
   - opensds.nbp.clean
-  - opensds.stacks.clean
-
-  {% if opensds.dock.provider|lower == "cinder" %}
-
-opensds nbp {{ opensds.nbp.release }} block stop CinderaaS:
-  cmd.run:
-    - name: docker-compose down
-    - cwd: {{ opensds.backend.cinder.data_dir }}/cinder/contrib/block-box
-
-    {% for vg in opensds.backend.cinder.vg %}
-opensds clean the {{ vg }} volume group of cinder:
-  cmd.script:
-    - source: salt://opensds/files/clean_lvm_vg.sh
-    - context:
-       cinder_volume_group: {{ vg }}
-       cinder_data_dir: {{ opensds.backend.cinder.data_dir }}
-    {% endfor %}
-
-  {% endif %}
+  - opensds.profile.clean
+  - opensds.envs.clean

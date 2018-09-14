@@ -1,9 +1,16 @@
 ### opensds/dashboard/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
-   {%- if opensds.dashboard.container.enabled %}
+    {%- if opensds.dashboard.container.enabled %}
+       {%- if opensds.dashboard.container.composed %}
+
+include:
+  - opensds.envs.docker
+
+       {#- elif opensds.dashboard.container.build #}
+       {%- else %}
 
 opensds dashboard container service running:
   docker_container.running:
@@ -11,17 +18,44 @@ opensds dashboard container service running:
     - image: {{ opensds.dashboard.container.image }}
     - restart_policy: always
     - network_mode: host
-    - unless: {{ opensds.dashboard.container.composed }}
+         {%- if "volumes" in opensds.dashboard.container %}
+    - binds: {{ opensds.dashboard.container.volumes }}
+         {%- endif %}
+         {%- if "ports" in opensds.dashboard.container %}
+    - port_bindings: {{ opensds.dashboard.container.ports }}
+         {%- endif %}
 
-  {%- elif opensds.dashboard.container.composed %}
+       {%- endif %}
+    {%- elif opensds.dashboard.provider|trim|lower in ('release', 'repo',) %}
 
 include:
-  - opensds.stacks.dockercompose
+  - packages.pips
+  - packages.pkgs
+  - packages.archives
+  - opensds.dashboard.{{ opensds.dashboard.provider|trim|lower }}
 
-  {%- elif opensds.dashboard.provider|trim|lower in ('release', 'repo',) %}
+  #### update opensds.conf ####
+        {% for section, configuration in opensds.dashboard.opensds_conf.items() %}
 
-include:
-  - opensds.stacks
-  - opensds.dashboard.{{ opensds.dashboard.provider|trim|lower }}   #i.e. release or repo
+opensds dashboard config ensure dashboard {{ section }} section exists:
+  ini.sections_present:
+    - name: {{ opensds.controller.conf }}
+    - sections:
+      - {{ opensds.dashboard.service }}
 
-  {% endif %}
+            {%- for k, v in configuration.items() %}
+
+opensds dashboard config ensure dashboard {{ section }} {{ k }} exists:
+  ini.options_present:
+    - name: {{ opensds.controller.conf }}
+    - separator: '='
+    - strict: True
+    - sections:
+        {{ opensds.dashboard.service }}:
+          {{ k }}: {{ v }}
+    - require:
+      - opensds dashboard config ensure dashboard {{ section }} section exists
+
+            {%- endfor %}
+        {% endfor %}
+    {% endif %}

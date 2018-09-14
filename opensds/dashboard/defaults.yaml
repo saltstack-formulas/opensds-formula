@@ -3,38 +3,14 @@
 #
 opensds:
   dashboard:
-    from: source
     provider: repo       #.ie. source_code
     service: dashboard
     container:
       enabled: True
-      composed: false
+      composed: False
+      build: False
       image: opensdsio/dashboard:latest
     repo:
       url: https://github.com/opensds/opensds.git
       branch: development
-    conf:
-      api_endpoint: {{ host_ipv4[-1] or host_ipv6[-1] }}:50050
-      log_file: /var/log/opensds/osdsdashboard.log
-        ###choose the type of dashboard resource, only support 'provisioner' and 'attacher'.
-      dashboard_type: provisioner
-        ###specify which backends should be enabled, sample,ceph,cinder,lvm and so on.
-      enabled_backends: lvm
-    webservers:
-      restart: apache2 restart && nginx restart
-
-  docker:
-    compose:
-      dashboard:
-        image: {{ site.uri.img_dashboard }}
-        container_name: dashboard
-        privileged: True
-        network_mode: host
-        ports: []
-        volumes: []
-        deploy:
-          restart_policy:
-            condition: on-failure
-            delay: 5s
-            max_attempts: 3
-            window: 120s
+    opensds_conf: {}

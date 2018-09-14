@@ -4,4 +4,52 @@
 opensds:
   dock:
     block:
-      ceph: {}
+      ceph:
+        container:
+          enabled: False
+          composed: False
+          build: False
+          image: None
+
+ceph:
+  use_upstream_repo: true
+
+firewalld:
+  enabled: True
+  services:
+    saltstack:
+      short: salt
+      description: SaltStack rules
+      ports:
+        tcp:
+          - 4505
+          - 4506
+    ceph:
+      short: ceph
+      description: Ceph firewall rules
+      ports:
+        tcp:
+          - 6789
+          - 6800:6810
+  zones:
+    public:
+      short: Public
+      services:
+        - http
+        - https
+        - ssh
+        - ntp
+        - saltstack
+        - ceph
+
+      {%- if grains.os == 'Fedora' %}
+    FedoraWorkstation:
+      short: FedoraWorkstation
+      services:
+        - http
+        - https
+        - ssh
+        - ntp
+        - saltstack
+        - ceph
+      {%- endif %}

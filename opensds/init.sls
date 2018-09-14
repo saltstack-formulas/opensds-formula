@@ -1,6 +1,7 @@
 ### opensds/init.sls
 include:
-  - opensds.stacks
+  - opensds.salt
+  - opensds.profile
   - opensds.controller
   - opensds.nbp
   - opensds.auth
@@ -8,3 +9,4 @@ include:
   - opensds.let
   - opensds.dock
   - opensds.dashboard
+

@@ -1,23 +1,26 @@
 ### opensds/database/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
-  {%- if opensds.database.container.enabled %}
+    {%- if opensds.database.container.enabled %}
+        {%- if opensds.database.container.composed %}
+
+include:
+  - opensds.envs.docker.clean
+
+        {#- elif opensds.database.container.build #}
+        {%- else %}
 
 opensds database container service stopped:
   docker_container.stopped:
     - name: {{ opensds.database.service }}
     - error_on_absent:False
 
-  {%- elif opensds.database.container.composed %}
-
-include:
-  - opensds.stacks.dockercompose.clean
-
-  {%- elif opensds.database.provider|lower == 'etcd' %}
+        {%- endif %}
+    {%- elif opensds.database.provider|lower == 'etcd' %}
 
 include:
   - etcd.service.stopped
 
-  {% endif %}
+    {% endif %}

@@ -1,16 +1,25 @@
-###  opensds/dock/block/cinder/init.sls
+###  opensds/dock/block/init.sls
 # -*- coding: utf-8 -*-
-# vim: ft=sls
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+# vim: ft=yaml
+{% from "opensds/map.jinja" import opensds with context %}
+
+    {%- if opensds.dock.block.cinder.container.enabled %}
+       {%- if opensds.dock.block.cinder.container.composed %}
+
+include:
+  - opensds.envs.docker
+
+       {%- elif opensds.dock.block.cinder.container.build %}
 
 include:
   - docker.remove
-  - opensds.stacks
+  - packages.archives
+  - opensds.dock.block.lvm
 
 opensds dock block cinder loci packages:
   pkg.installed:
     - pkgs:
-       {{ getlist(opensds.dock.loci.pkgs, true) }}
+       {{ getlist(opensds.pkgs, true) }}
 
 opensds dock block cinder loci ensure docker service running:
   service.running:
@@ -22,7 +31,25 @@ opensds dock block cinder loci build from source:
     - name: /tmp/{{ opensds.dir.work }}/cinder
     - makedirs: True
   cmd.run:
-    - cwd: /tmp/{{ opensds.dir.work }}/cinder
-    - name: {{ opensds.dock.loci.docker_build_cmd }} && curl -o docker-compose.yml https://raw.githubusercontent.com/openstack/cinder/master/contrib/block-box/docker-compose.yml && docker-compose up
+    - cwd: {{ packages.archives.wanted.cinder.dest }}
+    - name: {{ opensds.dock.block.cinder.container.build }}
     - onlyif: echo $DOCKER_PASS | docker login -u$DOCKER_USER --password-stdin $DOCKER_HOST
 
+       {%- else %}
+
+opensds dock block cinder container running:
+  docker_container.running:
+    - name: {{ opensds.dock.block.cinder.service }}
+    - image: {{ opensds.dock.block.cinder.container.image }}
+    - restart_policy: always
+    - network_mode: host
+         {%- if "volumes" in opensds.dock.block.cinder.container %}
+    - binds: {{ opensds.dock.block.cinder.container.volumes }}
+         {%- endif %}
+         {%- if "ports" in opensds.dock.block.cinder.container %}
+    - port_bindings: {{ opensds.dock.block.cinder.container.ports }}
+         {%- endif %}
+
+       {%- endif %}
+    {#- else #}
+    {%- endif %}

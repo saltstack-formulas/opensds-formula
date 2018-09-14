@@ -3,16 +3,11 @@
 # vim: ft=sls
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
-opensds nbp repo {{ opensds.nbp.release.version }} remove directories:
+opensds nbp repo {{ driver }} directory removed:
   file.absent:
     - names:
-      - {{ opensds.lang.home }}/{{ opensds.lang.src }}/nbp }}
-  {% for type in opensds.nbp.plugin.types %}
-      - {{ opensds.nbp.dir.work }}/{{ type }}{{ '/opensds' if type == 'flexvolume' else '' }}
-  {% endfor }}
-      - {{ opensds.nbp.dir.work }}/csi/
-      - {{ opensds.nbp.dir.work }}/csi/
-      - {{ opensds.nbp.dir.work }}/provisioner/
-      - {{ opensds.nbp.dir.work }}/provisioner/
-      - {{ opensds.nbp.dir.work }}/flexvolume/opensds/
-
+      - {{ golang.go_path }}/github.com/opensds/nbp
+    {% for driver in opensds.nbp.plugins %}
+      - {{ opensds.nbp.dir.work }}/{{ driver }}/deploy
+      - {{ opensds.nbp.dir.work }}/{{ driver }}/examples
+    {% endfor %}

@@ -4,9 +4,9 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
 include:
-  - opensds.stacks.golang
+  - golang
 
-opensds controller {{ opensds.controller.release}} repo download from git:
+opensds controller repo download from git:
   git.latest:
     - name: {{ opensds.controller.repo.url }}
     - target: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
@@ -19,13 +19,13 @@ opensds controller {{ opensds.controller.release}} repo download from git:
     - name: make
     - cwd: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     - env:
-       - GOPATH: {{ opensds.lang.home }}/bin
+       - GOPATH: {{ golang.go_path }}/bin
     - require:
       - git: opensds controller {{ opensds.controller.release }} repo download from git
 
 opensds controller {{ opensds.controller.release }} copy repo content to work directory:
   file.copy:
-    name: {{ opensds.dir.work }}
-    source: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
+    name: {{ opensds.dir.work }}/
+    source: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}/*
     makedirs: True
     force: True

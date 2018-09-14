@@ -1,41 +1,45 @@
 ### opensds/map.jinja
-
-{% import_yaml "opensds/stacks/defaults.yaml" as stacks %}
-{% import_yaml "opensds/auth/defaults.yaml" as auth %}
+{% import_yaml "opensds/salt/formulas/defaults.yaml" as formulas %}
+{% import_yaml "opensds/defaults.yaml" as defaults %}
 {% import_yaml "opensds/controller/defaults.yaml" as controller %}
+{% import_yaml "opensds/auth/defaults.yaml" as auth %}
 {% import_yaml "opensds/dashboard/defaults.yaml" as dashboard %}
 {% import_yaml "opensds/database/defaults.yaml" as database %}
-{% import_yaml "opensds/devstack/defaults.yaml" as devstack %}
 {% import_yaml "opensds/dock/defaults.yaml" as dock %}
 {% import_yaml "opensds/let/defaults.yaml" as let %}
 {% import_yaml "opensds/nbp/defaults.yaml" as nbp %}
-{# import_yaml "opensds/osfamilymap.yaml" as osfamilymap #}
+{% import_yaml "opensds/osfamilymap.yaml" as osfamilymap %}
+{% import_yaml "opensds/osmap.yaml" as osmap %}
 
 #Merge dicts
-{% set opensds = salt['grains.filter_by'](
-  stacks, merge=salt['grains.filter_by'](
-    controller, merge=salt['grains.filter_by'](
-      dashboard, merge=salt['grains.filter_by'](
-        database, merge=salt['grains.filter_by'](
-          auth, merge=salt['grains.filter_by'](
-            nbp, merge=salt['grains.filter_by'](
-              let, merge=salt['grains.filter_by'](
-                dock, merge=salt['grains.filter_by'](
-                  osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
-                    osmap, grain='os', merge=salt['pillar.get']('opensds', {}),
-                         base='opensds',),
+{%- set opensds = salt['grains.filter_by'](
+     defaults, merge=salt['grains.filter_by'](
+        formulas, merge=salt['grains.filter_by'](
+           controller, merge=salt['grains.filter_by'](
+              auth, merge=salt['grains.filter_by'](
+                 dashboard, merge=salt['grains.filter_by'](
+                    database, merge=salt['grains.filter_by'](
+                       dock, merge=salt['grains.filter_by'](
+                          let, merge=salt['grains.filter_by'](
+                             nbp, merge=salt['grains.filter_by'](
+                                osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
+                                   osmap, grain='os', merge=salt['pillar.get']('opensds', {})),
+                                base='opensds',),
+                             base='opensds',),
+                          base='opensds',),
                        base='opensds',),
-                     base='opensds',),
-                  base='opensds',),
-               base='opensds',),
-            base='opensds',),
-         base='opensds',),
-      base='opensds',),
-   base='opensds.stacks',),
-) %}
-{%- do opensds.stacks.solutions.update( opensds.stacks.formulas ) %}
+                    base='opensds',),
+                 base='opensds',),
+              base='opensds',),
+           base='opensds',),
+        base='opensds',),
+     base='opensds',)
+%}
+
+#Devstack
+{%- import_yaml "opensds/salt/devstack/defaults.yaml" as devstacky %}
+{%- set devstack = salt['grains.filter_by']( devstacky, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
 
 #Swordfish driver
-{% import_yaml 'opensds/dock/block/driver/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}
-{% do driver.update(salt['pillar.get']('opensds:swordfish', {})) %}
-{% do opensds.swordfish.update(driver) %}
+{%- import_yaml 'opensds/dock/drivers/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}
+{%- do driver.update( salt['pillar.get']('opensds:swordfish', {})) %}

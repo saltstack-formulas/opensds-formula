@@ -1,24 +1,28 @@
 ###  opensds/dock/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
-  {%- if opensds.dock.container.enabled %}
+    {%- if opensds.dock.container.enabled %}
+       {%- if opensds.dock.container.composed %}
+
+include:
+  - opensds.envs.docker.clean
+
+       {#- elif opensds.dock.container.build #}
+       {% else %}
 
 opensds dock container service stopped:
   docker_container.stopped:
     - name: {{ opensds.dock.service }}
     - error_on_absent: False
 
-  {%- elif opensds.dock.container.composed %}
+       {% endif %}
+    {% endif %}
 
-include:
-  - opensds.stacks.dockercompose.clean
-
-  {% endif %}
-  {%- if opensds.dock.block.enabled %}
+    {%- if opensds.dock.block.enabled %}
 
 include:
   - opensds.dock.block.clean
 
-  {% endif %}
+    {% endif %}

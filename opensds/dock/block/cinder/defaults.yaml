@@ -4,11 +4,8 @@
 opensds:
   dock:
     block:
-      container:
-        volume_group: cinder-volumes
-
-  packages:
-    cinder-blockbox:
-      dest: /tmp/opt/opensds-k8s-linux-amd64/cinder
-      dl:
-        src: https://raw.githubusercontent.com/openstack/cinder/master/contrib/block-box/docker-compose.yml
+      cinder:
+        container:
+          enabled: True
+          composed: False
+          build: True

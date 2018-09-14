@@ -1,11 +1,16 @@
 ###  opensds/dock/block/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
-  {%- set provider = opensds.dock.block.provider|trim|lower %}
-  {%- if opensds.dock.block.container.enabled %}
-    {%- if provider in ('lvm', 'ceph',) %}
+   {%- if opensds.dock.block.container.enabled %}
+       {%- if opensds.dock.block.container.composed %}
+
+include:
+  - opensds.envs.docker
+
+       {#- elif opensds.dock.block.container.build #}
+       {%- elif opensds.dock.block.provider in ('lvm', 'ceph',) %}
 
 opensds dock block {{ opensds.dock.block.provider }} container running:
   docker_container.running:
@@ -13,23 +18,24 @@ opensds dock block {{ opensds.dock.block.provider }} container running:
     - image: {{ opensds.dock.block.container.image }}
     - restart_policy: always
     - network_mode: host
-    - unless: {{ opensds.dock.block.container.compose }}
+         {%- if "volumes" in opensds.dock.block.container %}
+    - binds: {{ opensds.dock.block.container.volumes }}
+         {%- endif %}
+         {%- if "ports" in opensds.dock.block.container %}
+    - port_bindings: {{ opensds.dock.block.container.ports }}
+         {%- endif %}
 
-    {%- elif opensds.dock.block.provider|trim|lower == 'cinder' %}
-       {# Cinder-aaS https://github.com/openstack/cinder/tree/master/contrib/block-box #}
-    {%- endif %}
-
-
-  {%- elif opensds.dock.block.container.composed %}
-
-include:
-  - opensds.stacks.dockercompose
-
-
-  {%- else %}
+       {%- elif opensds.dock.block.provider == 'cinder' %}
 
 include:
+  - opensds.dock.block.cinder
   - opensds.dock.block.config
-  - opensds.dock.block[provider]
 
-  {%- endif %}
+       {%- endif %}
+   {%- else %}
+
+include:
+  - opensds.dock.block[ opensds.dock.block.provider ]
+  - opensds.dock.block.config
+
+   {%- endif %}

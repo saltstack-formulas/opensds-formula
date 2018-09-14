@@ -3,8 +3,8 @@
 # vim: ft=sls
 {% from "opensds/map.jinja" import opensds with context %}
 
-  {% set provider = opensds.dock.block.provider %}
-  {% for section, conf in opensds.dock.block.conf.opensds.items() if provider %}
+    {% set provider = opensds.dock.block.provider %}
+    {% for section, conf in opensds.dock.block.conf.opensds.items() %}
 
 opensds dock block ensure opensds config {{ section }} section exists:
   ini.sections_present:
@@ -12,7 +12,7 @@ opensds dock block ensure opensds config {{ section }} section exists:
     - sections:
       - dock
 
-      {%- for k, v in conf.items() %}
+        {%- for k, v in conf.items() %}
 
 opensds dock block ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
@@ -25,8 +25,8 @@ opensds dock block ensure opensds config {{ section }} {{ k }} exists:
     - require:
       - opensds dock block ensure opensds config {{ section }} section exists
 
-      {%- endfor %}
-  {%- endfor %}
+        {%- endfor %}
+    {%- endfor %}
 
 opensds dock block ensure {{ provider }} driver directories exists:
   file.directory:
@@ -50,8 +50,3 @@ opensds dock block generate {{ provider }} driver file:
     - require:
       - opensds dock block ensure {{ provider }} driver directories exists
 
-opensds dock block generate {{ provider }} volume group:
-  script.run:
-    - source: salt://opensds/files/lvm.sh
-    - require:
-      - opensds dock block generate the {{ provider }} driver file

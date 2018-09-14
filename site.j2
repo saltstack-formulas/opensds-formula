@@ -1,0 +1,27 @@
+#************************************
+# SITE & RELEASE DATA COLLECTION
+# Save file as /srv/pillar/site.j2
+#************************************
+{%- set sitedata = {} %}
+{%- do sitedata.update( {
+      'hotpot_release': 'v0.3.0',
+      'hotpot_hashsum': 'md5=2dbb88521062d65b6e1c4c262f2e8282',
+      'sushi_release': 'v0.3.0',
+      'sushi_hashsum': 'md5=c733837e4c7da1456fe71d81a4a9ff77',
+      'hotpot_url': 'https://github.com/opensds/opensds/releases/download',
+      'sushi_url': 'https://github.com/opensds/nbp/releases/download',
+      'img_controller': 'opensdsio/opensds-controller:latest',
+      'img_dock': 'opensdsio/opensds-dock:latest',
+      'img_dashboard': 'opensdsio/dashboard:latest',
+      'img_etcd': 'quay.io/coreos/etcd:latest',
+      'host_ipv4': grains.ipv4[-1],
+      'host_ipv6': grains.ipv6[-1],
+      'devstack_enabled_services': 'mysql,key',
+      'devstack_password': 'opensds@123',
+      'devstack_port': '50040',
+
+      'dock_type': 'provisioner',
+      'nbp_plugin_type': 'hotpot_only',
+      'enabled_backend': 'lvm',
+      'poolname': 'opensds-volumes',
+}) %}

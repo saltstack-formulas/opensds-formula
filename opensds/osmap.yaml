@@ -2,17 +2,22 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
-Centos:
+Default:
   dock:
-    loci:
-      pkgs:
-         - python-cinderclient 
-         - python-brick-cinderclient-ext
-         - docker-compose
-         - device-mapper-persistent-data
-      docker_build_cmd: docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag debian-cinder
+    block:
+      cinder:
+        container:
+          build: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag debian-cinder
 
-Ubuntu:
+Centos:
+  pkgs:
+    - python-cinderclient 
+    - python-brick-cinderclient-ext
+    - docker-compose
+    - device-mapper-persistent-data
   dock:
-    loci:
-      docker_build_cmd: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag debian-cinder
+    block:
+      cinder:
+        container:
+          build: docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag debian-cinder
+

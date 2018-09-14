@@ -1,29 +1,27 @@
 ###  opensds/let/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
- {%- if opensds.let.container.enabled %}
+    {%- if opensds.let.container.enabled %}
+       {%- if opensds.let.container.composed %}
+
+include:
+  - opensds.envs.docker.clean
+
+       {#- elif opensds.let.container.build #}
+       {%- else %}
 
 opensds let {{ opensds.controller.release }} container service stopped:
   docker_container.stopped:
-    - names:
-       - {{ opensds.let.service }}
-      {%- if opensds.let.container.compose and "osdslet" in docker.compose %}
-       - {{ docker.compose.osdslet.container_name }}
-      {%- endif %}
+    - names: {{ opensds.let.service }}
     - error_on_absent:False
 
- {%- elif opensds.let.container.composed %}
-
-include:
-  - opensds.stacks.dockercompose
-
- {%- else %}
+       {%- endif %}
+   {%- else %}
 
 opensds let {{ opensds.controller.release }} kill daemon service:
   process.absent:
     - name: {{ opensds.let.service }}
 
- {% endif %}
-
+   {% endif %}

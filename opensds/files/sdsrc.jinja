@@ -15,26 +15,25 @@
 # limitations under the License.
 
 # Global
-HOST_IP=${HOST_IP:-}
-HOST_IP=$(get_default_host_ip "$HOST_IP" "inet")
+HOST_IP={{ site.host_ipv4 or site.host_ipv6 or '${HOST_IP:-}' }}
 if [ "$HOST_IP" == "" ]; then
     die $LINENO "Could not determine host ip address. See local.conf for suggestions on setting HOST_IP."
 fi
 
 # OpenSDS configuration.
-OPENSDS_VERSION=${OPENSDS_VERSION:-v1beta}
+OPENSDS_VERSION={{ site.hotpot_release or '${OPENSDS_VERSION:-v1beta}' }}
 
 # OpenSDS service name in keystone.
 OPENSDS_SERVER_NAME=${OPENSDS_SERVER_NAME:-opensds}
 
 # devstack keystone configuration
 STACK_GIT_BASE=${STACK_GIT_BASE:-https://git.openstack.org}
-STACK_USER_NAME=${STACK_USER_NAME:-stack}
-STACK_PASSWORD=${STACK_PASSWORD:-opensds@123}
+STACK_USER_NAME={{ devstack.local.username or '${STACK_USER_NAME:-stack}' }}
+STACK_PASSWORD={{ site.password or '${STACK_PASSWORD:-opensds@123}' }}
 STACK_HOME=${STACK_HOME:-/opt/stack}
-STACK_BRANCH=${STACK_BRANCH:-stable/queens}
+STACK_BRANCH=${STACK_BRANCH:-stable/rocky}
 DEV_STACK_DIR=$STACK_HOME/devstack
 
-GOPATH=${GOPATH:-$HOME/gopath}
+GOPATH={{ go_path or '${GOPATH:-$HOME/gopath}' }}
 OPENSDS_DIR=${GOPATH}/src/github.com/opensds/opensds
 

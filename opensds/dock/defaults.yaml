@@ -1,33 +1,21 @@
 ### opensds/dock/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
-
+#
 opensds:
   dock:
-    provider: osdsdock
     service: osdsdock
+    provider: osdsdock
     container:
-      enabled: False
-      composed: True
-    conf:
-      opensds:
-        type: provisioner            #provisioner or attacher
-        driver: lvm                  #lvm; or ceph or cinder
-        log_file: /var/log/opensds/osdsdock.log
-        endpoint: {{ grains.host_ipv4[-1] or grains.host_ipv6[-1] }}:50050
-  docker:
-    compose:
-      dock:
-        image: {{ site.uri.img_dock }}
-        container_name: osdsdock
-        privileged: True
-        network_mode: host
-        ports: []
-        volumes:
-          - '/etc/opensds/:/etc/opensds'
-          - '/etc/ceph/:/etc/ceph'
-        deploy:
-          restart_policy:
-            condition: on-failure
-            delay: 5s
-            max_attempts: 3
-            window: 120s
+      enabled: True
+      composed: False
+      build: False
+      image: opensdsio/opensds-dock:latest
+      volumes:
+        - /etc/opensds/:/etc/opensds
+        - /etc/ceph/:/etc/ceph
+    opensds_conf:
+      api_endpoint: {{ grains.ipv4[-1] or grains.ipv6[-1] }}:50050
+      log_file: /var/log/opensds/osdsdock.log
+      dock_type: provisioner
+      enabled_backends: lvm           ## lvm, ceph, and/or cinder
+

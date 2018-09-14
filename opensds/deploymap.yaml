@@ -1,7 +1,0 @@
-
-opensds:
-  auth:
-    container:
-      enabled: False
-      composed: False
-      image: None

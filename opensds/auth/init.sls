@@ -1,12 +1,16 @@
 ### opensds/auth/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
+
+    {%- if opensds.auth.container.enabled %}
+        {%- if opensds.auth.container.composed %}
 
 include:
-  - opensds.auth.config
+  - opensds.envs.docker
 
-  {%- if opensds.auth.container.enabled %}
+        {#- elif opensds.auth.container.build #}
+        {%- else %}
 
 opensds auth container service running:
   docker_container.running:
@@ -14,12 +18,44 @@ opensds auth container service running:
     - image: {{ opensds.auth.container.image }}
     - restart_policy: always
     - network_mode: host
-    - unless: {{ opensds.auth.container.compose }}
+         {%- if "volumes" in opensds.auth.container %}
+    - binds: {{ opensds.auth.container.volumes }}
+         {%- endif %}
+         {%- if "ports" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.ports }}
+         {%- endif %}
 
-  {% elif opensds.auth.container.composed %}
-  - opensds.stacks
+       {%- endif %}
+    {% else %}
 
-  {%- else %}
-  - opensds.stacks.devstack
+include:
+  - devstack.user          #https://github.com/saltstack-formulas/devstack-formula
+  - devstack.install
+  - devstack.cli
 
-  {% endif %}
+    {% endif %}
+
+    #### update opensds.conf ####
+    {% for section, configuration in opensds.auth.opensds_conf.items() %}
+
+opensds auth config ensure osdsauth {{ section }} section exists:
+  ini.sections_present:
+    - name: {{ opensds.controller.conf }}
+    - sections:
+      - {{ opensds.auth.service }}
+
+        {%- for k, v in configuration.items() %}
+
+opensds auth config ensure osdsauth {{ section }} {{ k }} exists:
+  ini.options_present:
+    - name: {{ opensds.controller.conf }}
+    - separator: '='
+    - strict: True
+    - sections:
+        {{ opensds.auth.service }}:
+          {{ k }}: {{ v }}
+    - require:
+      - opensds auth config ensure osdsauth {{ section }} section exists
+
+        {%- endfor %}
+    {% endfor %}

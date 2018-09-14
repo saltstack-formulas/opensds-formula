@@ -4,46 +4,49 @@
 {% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
 
 include:
-  - opensds.stacks
+  - packages.pips
+  - packages.pkgs
+  - packages.archives
 
-opensds nbp {{ opensds.nbp.release.version }} repo get source if missing:
+opensds nbp repo get source if missing:
   git.latest:
-    - name: {{ opensds.repo.url }}
-    - target: {{ opensds.lang.home }}/{{ opensds.lang.src }}/nbp
-    - rev: {{ opensds.repo.get('branch', 'master') }}
+    - name: {{ opensds.nbp.repo.url }}
+    - target: {{ golang.go_path }}/src/github.com/opensds/nbp
+    - rev: {{ opensds.nbp.repo.get('branch', 'master') }}
     - force_checkout: True
     - force_clone: True
     - force_fetch: True
     - force_reset: True
-    - require_in:
-      - cmd: opensds nbp {{ opensds.nbp.release.version }} repo get source if missing
   cmd.run:
     - name: make
-    - cwd: {{ opensds.langsrc }}/nbp
+    - cwd: {{ {{ golang.go_path }}/src/github.com/opensds/nbp
 
+    {%- for driver in ('csi', 'provisioner',) %}
 
-  {% for type in opensds.nbp.plugin.types %}
+opensds nbp repo copy {{ driver }} deploy scripts to workdir:
+   file.copy:
+    - name: {{ opensds.nbp.dir.work }}/{{ driver }}/
+    - source: {{ golang.go_path }}/github.com/opensds/nbp/deploy/
+    - force: True
+    - makedirs: True
+    - mode: 0755
 
-opensds nbp {{ opensds.nbp.release.version }} repo ensure {{ type }} workdir exists:
-  file.directory:
-    - name: {{ opensds.nbp.dir.work }}/{{ type }}{{ '/opensds' if type == 'flexvolume' else '' }}
-    - dir_mode: '0755'
-    - recurse:
-      - mode
-    - require:
-      - cmd: opensds nbp {{ opensds.nbp.release.version }} repo get source if missing
-    - require_in:
-      - cmd: opensds nbp {{ opensds.nbp.release.version }} repo copy driver deploy scripts to workdir:
+opensds nbp repo copy {{ driver }} deploy scripts to workdir:
+   file.copy:
+    - name: {{ opensds.nbp.dir.work }}/{{ driver }}/
+    - source: {{ golang.go_path }}/github.com/opensds/nbp/examples/
+    - force: True
+    - makedirs: True
+    - mode: 0755
 
-  {% endfor }}
+    {%- endfor %}
 
-
-opensds nbp {{ opensds.nbp.release.version }} repo copy driver deploy scripts to workdir:
-  cmd.run:
-    - names:
-       - cp -R {{ opensds.lang.src }}/nbp/csi/deploy/ {{ opensds.nbp.dir.work }}/csi/
-       - cp -R {{ opensds.lang.src }}/nbp/csi/examples/ {{ opensds.nbp.dir.work }}/csi/
-       - cp -R {{ opensds.lang.src }}/nbp/provisioner/deploy/ {{ opensds.nbp.dir.work }}/provisioner/
-       - cp -R {{ opensds.lang.src }}/nbp/provisioner/examples/ {{ opensds.nbp.dir.work }}/provisioner/
-       - cp -R {{ opensds.lang.src }}/nbp/.output/flexvolume.server.opensds/ {{ opensds.nbp.dir.work }}/flexvolume/opensds/
+opensds nbp copy flexvolume plugin binary into flexvolume plugin dir:
+  file.copy:
+    - name: {{ opensds.nbp.plugins[opensds.nbp.plugin_type]['dir'] }}/opensds
+    - source: {{ opensds.nbp.plugins[opensds.nbp.plugin_type]['binary'] }}
+    - force: True
+    - makedirs: True
+    - mode: 0755
+    - onlyif: test {{ plugin }} == 'flexvolume'
 

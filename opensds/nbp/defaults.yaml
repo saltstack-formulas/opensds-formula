@@ -1,41 +1,30 @@
 ###  opensds/nbp/defaults.sls
-# vim: sts=2 ts=2 sw=2 et ai
 #
+{% import_yaml "opensds/nbp/plugins/defaults.yaml" as plugins %}
+
 opensds:
   nbp:
-    release: v0.2.0
+    provider: release             ## release or repo
     service: osdsnbp
-    install_from: release      ### release or repo
-    provider: hotpot_only      ### 'hotpot_only', or 'csi', or 'flexvolume'.
+    plugin_type: hotpot_only
+    dir:
+      work: /opt/opensds-sushi-linux-amd64
     repo:
       branch: master
       url: https://github.com/opensds/nbp.git
     container:
       enabled: False
       composed: False
-      version: latest
-    plugin:
-      types: ['csi', 'flexvolume', 'provisioner',]
-      csi: csi-k8s_configmap-opensdsplugin.yaml
-      flexvolume: configmap.yaml
-
-  stacks:
-    packages:
-      archives:
-        unwanted:
-          - /tmp/opt/opensds-k8s-linux-amd64
-        wanted:
-          opensds-nbp-src:
-            dest: /tmp/usr/local/go/bin/src/github.com/opensds/nbp
-            options: '--strip-components=1'
-            dl:
-              src: {{ site.uri.opensds }}/nbp/archive/{{ release.nbp }}.tar.gz
-              hashsum: '{{ release.hashsum.nbp }}'
-          opensds-nbp-k8s:
-            dest: /tmp/opt/opensds-k8s-linux-amd64
-            options: '--strip-components=1'
-            mode: '0755'
-            dl:
-              src: {{ site.uri.nbp }}/{{ aruba.release.opensds }}/opensds-k8s-{{ aruba.release.opensds }}-linux-amd64.tar.gz
-              hashsum: '{{ release.hashsum.sds_k8s }}'
+      build: False
+      image: None
+    plugins:
+      csi:
+        dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
+        conf: csi-k8s_configmap-opensdsplugin.yaml
+      provisioner:
+        dir: /opt/opensds-sushi-linux-amd64/provisioner/deploy/kubernetes
+        conf: configmap.yaml
+      flexvolume:
+        dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
+        binary: /opt/opensds-sushi-linux-amd64/bin/flexvolume.server.opensds
 

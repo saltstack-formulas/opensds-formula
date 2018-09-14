@@ -1,7 +1,7 @@
 ### opensds/profile/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
 opensds profile set system profile path:
   file.managed:
@@ -11,7 +11,7 @@ opensds profile set system profile path:
     - mode: 644
     - user: root
     - group: root
-    # onlyif: test -f {{ opensds.stacks.lang.home }}/bin/go
+    - onlyif: test -f {{ golang.go_path }}/bin/go
     - context:
-      langhome: {{ opensds.stacks.lang.home }}
+      golanghome: {{ golang.go_path }}
       sdshome: {{ opensds.dir.work }}
