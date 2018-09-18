@@ -21,7 +21,7 @@ if [ "$HOST_IP" == "" ]; then
 fi
 
 # OpenSDS configuration.
-OPENSDS_VERSION={{ opensds.release.hotpot or '${OPENSDS_VERSION:-v1beta}' }}
+OPENSDS_VERSION={{ opensds_hotpot_release or '${OPENSDS_VERSION:-v1beta}' }}
 
 # OpenSDS service name in keystone.
 OPENSDS_SERVER_NAME=${OPENSDS_SERVER_NAME:-opensds}

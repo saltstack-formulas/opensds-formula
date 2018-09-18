@@ -45,4 +45,5 @@ opensds sdrc file generated:
     - context:
       go_path: {{ golang.go_path }}
       devstack: {{ devstack }}
+      opensds_hotpot_release: {{ opensds.release.hotpot }}
     {% endif %}
