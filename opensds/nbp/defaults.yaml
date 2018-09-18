@@ -18,6 +18,11 @@ opensds:
       build: False
       image: None
     plugins:
+      container:
+        enabled: False
+        composed: False
+        build: False
+        image: None
       csi:
         dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
         conf: csi-k8s_configmap-opensdsplugin.yaml
@@ -26,5 +31,6 @@ opensds:
         conf: configmap.yaml
       flexvolume:
         dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
+        conf:
         binary: /opt/opensds-sushi-linux-amd64/bin/flexvolume.server.opensds
 

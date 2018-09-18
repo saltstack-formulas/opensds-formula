@@ -25,7 +25,7 @@ opensds dock block lvm container running:
          {%- endif %}
 
        {%- endif %}
-    {%- elif opensds.dock.block.lvm.build %}
+    {%- elif opensds.dock.block.lvm.container.build %}
 
     {%- else %}
 

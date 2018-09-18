@@ -9,9 +9,10 @@ opensds:
       composed: False
       build: False
       image: None
-    opensds_conf:
-      api_endpoint: '{{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040'
-      graceful: True
-      log_file: /var/log/opensds/osdslet.log
-      socket_order: inc
-      auth_strategy: keystone
+    opensdsconf:
+      osdslet:
+        api_endpoint: '{{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040'
+        graceful: True
+        log_file: /var/log/opensds/osdslet.log
+        socket_order: inc
+        auth_strategy: keystone

@@ -1,29 +1,37 @@
-### opensds/map.jinja
-{% import_yaml "opensds/salt/formulas/defaults.yaml" as formulas %}
+### opensds/map.jinja ###
+### exported dicts: opensds, driver, docker, firewalld, golang, ceph, salt_formulas, & devstack ###
+
+#OpenSDS: import formula default dicts
+{% import_yaml "opensds/envs/defaults.yaml" as envs %}
+{% import_yaml "opensds/envs/devstack/defaults.yaml" as devstack %}
 {% import_yaml "opensds/defaults.yaml" as defaults %}
 {% import_yaml "opensds/controller/defaults.yaml" as controller %}
 {% import_yaml "opensds/auth/defaults.yaml" as auth %}
 {% import_yaml "opensds/dashboard/defaults.yaml" as dashboard %}
 {% import_yaml "opensds/database/defaults.yaml" as database %}
 {% import_yaml "opensds/dock/defaults.yaml" as dock %}
+{% import_yaml "opensds/dock/block/defaults.yaml" as block %}
 {% import_yaml "opensds/let/defaults.yaml" as let %}
 {% import_yaml "opensds/nbp/defaults.yaml" as nbp %}
 {% import_yaml "opensds/osfamilymap.yaml" as osfamilymap %}
 {% import_yaml "opensds/osmap.yaml" as osmap %}
 
-#Merge dicts
+#OpenSDS: merge any pillar data with defaults
 {%- set opensds = salt['grains.filter_by'](
      defaults, merge=salt['grains.filter_by'](
-        formulas, merge=salt['grains.filter_by'](
-           controller, merge=salt['grains.filter_by'](
-              auth, merge=salt['grains.filter_by'](
-                 dashboard, merge=salt['grains.filter_by'](
-                    database, merge=salt['grains.filter_by'](
-                       dock, merge=salt['grains.filter_by'](
+        controller, merge=salt['grains.filter_by'](
+           auth, merge=salt['grains.filter_by'](
+              dashboard, merge=salt['grains.filter_by'](
+                 database, merge=salt['grains.filter_by'](
+                    dock, merge=salt['grains.filter_by'](
+                       block, merge=salt['grains.filter_by'](
                           let, merge=salt['grains.filter_by'](
                              nbp, merge=salt['grains.filter_by'](
-                                osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
-                                   osmap, grain='os', merge=salt['pillar.get']('opensds', {})),
+                                envs, merge=salt['grains.filter_by'](
+                                   osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
+                                      osmap, grain='os', merge=salt['pillar.get']('opensds', {}),
+                                      base='opensds',),
+                                   base='opensds',),
                                 base='opensds',),
                              base='opensds',),
                           base='opensds',),
@@ -36,10 +44,15 @@
      base='opensds',)
 %}
 
-#Devstack
-{%- import_yaml "opensds/salt/devstack/defaults.yaml" as devstacky %}
-{%- set devstack = salt['grains.filter_by']( devstacky, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
+# Third-party: merge any pillar data with defaults
+{%- set firewalld = salt['grains.filter_by']( envs.firewalld, merge=salt['pillar.get']('firewalld', {}), base='firewalld') %}
+{%- set golang = salt['grains.filter_by']( envs.golang, merge=salt['pillar.get']('golang', {}), base='golang') %}
+{%- set ceph = salt['grains.filter_by']( envs.ceph, merge=salt['pillar.get']('ceph', {}), base='ceph') %}
+{%- set docker = salt['grains.filter_by']( envs.docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
+{%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
+{%- set salt_formulas = salt['grains.filter_by']( envs.salt_formulas, merge=salt['pillar.get']('salt_formulas', {}), base='salt_formulas') %}
 
-#Swordfish driver
+# Swordfish: merge any pillar data with defaults
 {%- import_yaml 'opensds/dock/drivers/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}
 {%- do driver.update( salt['pillar.get']('opensds:swordfish', {})) %}
+

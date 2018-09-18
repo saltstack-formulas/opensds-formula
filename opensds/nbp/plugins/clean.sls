@@ -23,8 +23,8 @@ opensds nbp plugins container service stopped:
 
 opensds nbp plugins {{ plugin }} k8s stop:
   cmd.run:
-    - name: {{ opensds.k8s_stop }}
-    - onlyif: test -f {{ opensds.k8s_stop.split(' ') }}
+    - name: {{ opensds.k8s.stop }}
+    - onlyif: test -f {{ opensds.k8s.stop.split(' ') }}
     - cwd:  {{ opensds.nbp.dir[plugin] }}
     - output_loglevel: quiet 
 

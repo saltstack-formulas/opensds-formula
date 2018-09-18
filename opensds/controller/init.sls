@@ -1,7 +1,7 @@
 ### opensds/controller/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from "opensds/map.jinja" import opensds, site, devstack with context %}
+{% from "opensds/map.jinja" import opensds, golang, devstack with context %}
 
     {%- if opensds.controller.container.enabled %}
        {%- if opensds.controller.container.composed %}
@@ -43,6 +43,5 @@ opensds sdrc file generated:
     - template: jinja
     - context:
       go_path: {{ golang.go_path }}
-      site: {{ site }}
       devstack: {{ devstack }}
     {% endif %}

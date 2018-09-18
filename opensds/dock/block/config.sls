@@ -3,24 +3,29 @@
 # vim: ft=sls
 {% from "opensds/map.jinja" import opensds with context %}
 
+opensds dock block ensure opensds config file exists:
+  file.managed:
+   - name: {{ opensds.controller.conf }}
+   - mode: '0755'
+
     {% set provider = opensds.dock.block.provider %}
-    {% for section, conf in opensds.dock.block.conf.opensds.items() %}
+    {% for section, data in opensds.dock.block[provider].opensdsconf.items() %}
 
 opensds dock block ensure opensds config {{ section }} section exists:
   ini.sections_present:
-    - name: {{ opensds.conf }}
+    - name: {{ opensds.controller.conf }}
     - sections:
-      - dock
+      - {{ section }}
 
-        {%- for k, v in conf.items() %}
+        {%- for k, v in data.items() %}
 
 opensds dock block ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
-    - name: {{ opensds.conf }}
+    - name: {{ opensds.controller.conf }}
     - separator: '='
     - strict: True
     - sections:
-        dock:
+        {{ section }}:
           {{ k }}: {{ v }}
     - require:
       - opensds dock block ensure opensds config {{ section }} section exists

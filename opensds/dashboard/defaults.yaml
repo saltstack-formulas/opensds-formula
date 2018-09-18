@@ -13,4 +13,4 @@ opensds:
     repo:
       url: https://github.com/opensds/opensds.git
       branch: development
-    opensds_conf: {}
+    opensdsconf: {}

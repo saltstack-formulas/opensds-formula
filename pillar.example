@@ -1,5 +1,10 @@
 {% from "site.j2" import sitedata as site %}
 
+golang:
+  prefix: /usr/local
+  go_root: /usr/local/golang
+  go_path: /usr/local/go    #its symlinked to /usr/local/golang/<ver>/go/
+
 etcd:
   service:
     etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
@@ -8,16 +13,16 @@ opensds:
   release:
     hotpot: {{ site.hotpot_release }}
     sushi: {{ site.sushi_release }}
+  hashsum:
+    hotpot: '{{ site.hotpot_hashsum }}'
+    sushi: '{{ site.sushi_hashsum }}'
   swordfish:
     {{ site.poolname }}:
       extras:
         advanced:
-          a: b
-  hashsum:
-    hotpot: '{{ site.hotpot_hashsum }}'
-    sushi: '{{ site.sushi_hashsum }}'
+          a: 'b'
   auth:
-    opensds_conf:
+    opensdsconf:
       keystone_authtoken:
         memcached_servers: {{ site.host_ipv4 }}:11211
         auth_url: http://{{ site.host_ipv4 or site.host_ipv6 }}/identity
@@ -25,11 +30,13 @@ opensds:
     container:
       enabled: True
       build: True
-    opensds_conf:
-      db_endpoint: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
+    opensdsconf:
+      database:
+        db_endpoint: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
   let:
-    opensds_conf:
-      api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50040
+    opensdsconf:
+      osdslet:
+        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50040
   controller:
     endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50050
     container:
@@ -47,8 +54,10 @@ opensds:
     plugins:
       csi:
         dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
+        conf: csi-k8s_configmap-opensdsplugin.yaml
       provisioner:
         dir: /opt/opensds-sushi-linux-amd64/provisioner/deploy/kubernetes
+        conf: configmap.yaml
       flexvolume:
         dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
         binary: /opt/opensds-sushi-linux-amd64/bin/flexvolume.server.opensds
@@ -57,18 +66,28 @@ opensds:
       image: {{ site.img_dock }}
       volumes:
         - /etc/opensds/:/etc/opensds
-    opensds_conf:
-      api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50050
-      dock_type: {{ site.dock_type }}
-      enabled_backend: {{ site.enabled_backend }}
+    opensdsconf:
+      osdsdock:
+        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50050
+        dock_type: {{ site.dock_type }}
+        enabled_backend: {{ site.enabled_backend }}
     block:
       provider: {{ site.enabled_backend }}
+      opensdsconf:
+        {{ site.enabled_backend }}:
+          {{ site.enabled_backend }}_name: {{ site.enabled_backend }} backend
+          {{ site.enabled_backend }}_description: This is a {{ site.enabled_backend }} backend service.
+          {{ site.enabled_backend }}_driver_name: {{ site.enabled_backend }}
+          {{ site.enabled_backend }}_config_path: /etc/opensds/driver/{{ site.enabled_backend }}.yaml
       cinder:
         container:
           enabled: True
 
 lvm:
   files:
+    remove:
+      - /tmp/cinder-volumes.img
+      - /tmp/opensds-volumes.img
     trucate:
       /tmp/opensds-volumes.img:
         options:
@@ -80,10 +99,16 @@ lvm:
       /tmp/cinder-volumes.img:
       /tmp/opensds-volumes.img:
   pv:
+    remove:
+      /dev/loop0:
+      /dev/loop1:
     create:
       /dev/loop0:
       /dev/loop1:
   vg:
+    remove:
+      cinder_volumes:
+      opepnsds_volumes:
     create:
       cinder_volumes:
         devices:
@@ -99,7 +124,7 @@ devstack:
     enabled_services: {{ site.devstack_enabled_services }}
     os_password: {{ site.devstack_password }}
     host_ip: {{ site.host_ipv4 }}
-    site.host_ipv6: {{ site.host_ipv6 }}
+    host_ipv6: {{ site.host_ipv6 }}
     service_host: {{ site.host_ipv4 or site.host_ipv6 }}
   cli:
     user:
@@ -218,8 +243,6 @@ packages:
       - /tmp/opt/opensds-k8s-linux-amd64
       - /tmp/opt/opensds-linux-amd64
 
-
-
 salt:
   install_packages: False
   master:
@@ -242,32 +265,3 @@ salt:
       user: saltssh
       sudo: True
       priv: /etc/salt/ssh_keys/sshkey.pem
-salt_formulas:
-  git_opts:
-    default:
-      baseurl: https://github.com/saltstack-formulas
-      basedir: /srv/formulas
-  basedir_opts:
-    makedirs: True
-    user: root
-    group: root
-    mode: 755
-  list:
-    base:
-     - salt-formula
-     - openssh-formula
-     - packages-formula
-     - firewalld-formula
-     - etcd-formula
-     - ceph-formula
-     - deepsea-formula
-     - docker-formula
-     - etcd-formula
-     - firewalld-formula
-     - helm-formula
-     - iscsi-formula
-     - lvm-formula
-     - packages-formula
-     - devstack-formula
-     - golang-formula
-     - memcached-formula

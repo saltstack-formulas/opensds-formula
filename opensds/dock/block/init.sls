@@ -35,7 +35,7 @@ include:
    {%- else %}
 
 include:
-  - opensds.dock.block[ opensds.dock.block.provider ]
+  - {{ 'opensds.dock.block.' ~ opensds.dock.block.provider  }}
   - opensds.dock.block.config
 
    {%- endif %}

@@ -1,7 +1,6 @@
 ### opensds/init.sls
 include:
-  - opensds.salt
-  - opensds.profile
+  - opensds.envs
   - opensds.controller
   - opensds.nbp
   - opensds.auth

@@ -1,0 +1,87 @@
+###  opensds/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
+#
+docker:
+  # Global functions for docker_container states
+  containers:
+    skip_translate: ports
+    force_present: False
+    force_running: True
+
+golang:
+  prefix: /usr/local
+  go_root: /usr/local/golang
+  go_path: /usr/local/go    #its symlinked to /usr/local/golang/<ver>/go/
+
+ceph:
+  use_upstream_repo: true
+
+salt_formulas:
+  git_opts:
+    default:
+      baseurl: https://github.com/saltstack-formulas
+      basedir: /srv/formulas
+  basedir_opts:
+    makedirs: True
+    user: root
+    group: root
+    mode: 755
+  list:
+    base:
+     - salt-formula
+     - openssh-formula
+     - packages-formula
+     - firewalld-formula
+     - etcd-formula
+     - ceph-formula
+     - deepsea-formula
+     - docker-formula
+     - etcd-formula
+     - firewalld-formula
+     - helm-formula
+     - iscsi-formula
+     - lvm-formula
+     - packages-formula
+     - devstack-formula
+     - golang-formula
+     - memcached-formula
+
+firewalld:
+  enabled: True
+  services:
+    saltstack:
+      short: salt
+      description: SaltStack rules
+      ports:
+        tcp:
+          - 4505
+          - 4506
+    ceph:
+      short: ceph
+      description: Ceph firewall rules
+      ports:
+        tcp:
+          - 6789
+          - 6800:6810
+  zones:
+    public:
+      short: Public
+      services:
+        - http
+        - https
+        - ssh
+        - ntp
+        - saltstack
+        - ceph
+
+      {%- if grains.os == 'Fedora' %}
+    FedoraWorkstation:
+      short: FedoraWorkstation
+      services:
+        - http
+        - https
+        - ssh
+        - ntp
+        - saltstack
+        - ceph
+      {%- endif %}

@@ -33,22 +33,27 @@ include:
   - opensds.dock.block
 
        #### update opensds.conf ####
-       {% for section, conf in opensds.dock.opensds_conf.items() %}
+opensds dock ensure opensds config file exists:
+  file.managed:
+   - name: {{ opensds.controller.conf }}
+   - mode: '0755'
+
+       {% for section, data in opensds.dock.opensdsconf.items() %}
 
 opensds dock ensure opensds config {{ section }} section exists:
   ini.sections_present:
-    - name: {{ opensds.contorller.conf }}
+    - name: {{ opensds.controller.conf }}
     - sections:
-      - {{ opensds.dock.service }}
+      - {{ section }}
 
-            {%- for k, v in conf.items() %}
+            {%- for k, v in data.items() %}
 opensds dock ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
     - name: {{ opensds.controller.conf }}
     - separator: '='
     - strict: True
     - sections:
-        {{ opensds.dock.service }}:
+        {{ section }}:
           {{ k }}: {{ v }}
     - require:
       - opensds dock ensure opensds config {{ section }} section exists

@@ -13,9 +13,12 @@ opensds:
       volumes:
         - /etc/opensds/:/etc/opensds
         - /etc/ceph/:/etc/ceph
-    opensds_conf:
-      api_endpoint: {{ grains.ipv4[-1] or grains.ipv6[-1] }}:50050
-      log_file: /var/log/opensds/osdsdock.log
-      dock_type: provisioner
-      enabled_backends: lvm           ## lvm, ceph, and/or cinder
+    opensdsconf:
+      osdsdock:
+        api_endpoint: {{ grains.ipv4[-1] or grains.ipv6[-1] }}:50050
+        log_file: /var/log/opensds/osdsdock.log
+        dock_type: provisioner
+        enabled_backends: lvm           ## lvm, ceph, and/or cinder
+    block:
+      opensdsconf: {}        #Dynamically defined in pillar data (not here)
 

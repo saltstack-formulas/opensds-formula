@@ -1,7 +1,7 @@
 ### opensds/nbp/repo/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
 opensds nbp repo {{ driver }} directory removed:
   file.absent:

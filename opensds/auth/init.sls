@@ -36,15 +36,20 @@ include:
     {% endif %}
 
     #### update opensds.conf ####
-    {% for section, configuration in opensds.auth.opensds_conf.items() %}
+opensds auth ensure opensds config file exists:
+  file.managed:
+   - name: {{ opensds.controller.conf }}
+   - mode: '0755'
+
+    {% for section, data in opensds.auth.opensdsconf.items() %}
 
 opensds auth config ensure osdsauth {{ section }} section exists:
   ini.sections_present:
     - name: {{ opensds.controller.conf }}
     - sections:
-      - {{ opensds.auth.service }}
+      - {{ section }}
 
-        {%- for k, v in configuration.items() %}
+        {%- for k, v in data.items() %}
 
 opensds auth config ensure osdsauth {{ section }} {{ k }} exists:
   ini.options_present:
@@ -52,7 +57,7 @@ opensds auth config ensure osdsauth {{ section }} {{ k }} exists:
     - separator: '='
     - strict: True
     - sections:
-        {{ opensds.auth.service }}:
+        {{ section }}:
           {{ k }}: {{ v }}
     - require:
       - opensds auth config ensure osdsauth {{ section }} section exists

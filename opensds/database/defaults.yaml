@@ -9,9 +9,10 @@ opensds:
       enabled: True
       composed: False
       build: True
-    opensds_conf:
-      db_driver: etcd
-      db_endpoint: https://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:2379,https://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:2380
+    opensdsconf:
+      database:
+        db_driver: etcd
+        db_endpoint: https://{{grains.ipv4[-1] or grains.ipv6[-1]}}:2379,https://{{grains.ipv4[-1] or grains.ipv6[-1]}}:2380
 
 etcd:
   service:

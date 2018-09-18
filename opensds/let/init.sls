@@ -29,15 +29,20 @@ opensds let {{ opensds.controller.release }} container service running:
   {% else %}
 
     #### Update opensds.conf ####
-    {% for section, conf in opensds.let.opensds_conf.items() %}
+opensds let ensure opensds config file exists:
+  file.managed:
+   - name: {{ opensds.controller.conf }}
+   - mode: '0755'
+
+    {% for section, data in opensds.let.opensdsconf.items() %}
 
 opensds let ensure opensds config {{ section }} section exists:
   ini.sections_present:
     - name: {{ opensds.controller.conf }}
     - sections:
-      - {{ opensds.let.service }}
+      - {{ section }}
 
-         {%- for k, v in conf.items() %}
+         {%- for k, v in data.items() %}
 
 opensds let ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
@@ -45,7 +50,7 @@ opensds let ensure opensds config {{ section }} {{ k }} exists:
     - separator: '='
     - strict: True
     - sections:
-        {{ opensds.let.service }}:
+        {{ section }}:
           {{ k }}: {{ v }}
     - require:
       - opensds let ensure opensds config {{ section }} section exists

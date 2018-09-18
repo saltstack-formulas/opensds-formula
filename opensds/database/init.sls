@@ -36,15 +36,20 @@ include:
   - etcd.service.running
 
         #### update opensds.conf ####
-        {% for section, conf in opensds.database.opensds_conf.items() %}
+opensds database ensure opensds config file exists:
+  file.managed:
+   - name: {{ opensds.controller.conf }}
+   - mode: '0755'
+
+        {% for section, data in opensds.database.opensdsconf.items() %}
 
 opensds database ensure opensds config {{ section }} section exists:
   ini.sections_present:
     - name: {{ opensds.controller.conf }}
     - sections:
-      - {{ opensds.database.service }}
+      - {{ section }}
 
-           {%- for k, v in conf.items() %}
+           {%- for k, v in data.items() %}
 
 opensds database ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
@@ -52,7 +57,7 @@ opensds database ensure opensds config {{ section }} {{ k }} exists:
     - separator: '='
     - strict: True
     - sections:
-        {{ opensds.database.service }}:
+        {{ section }}:
           {{ k }}: {{ v }}
     - require:
       - opensds database ensure opensds config {{ section }} section exists

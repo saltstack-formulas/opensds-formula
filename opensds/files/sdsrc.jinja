@@ -15,13 +15,13 @@
 # limitations under the License.
 
 # Global
-HOST_IP={{ site.host_ipv4 or site.host_ipv6 or '${HOST_IP:-}' }}
+HOST_IP={{ devstack.local.host_ip or devstack.local.host_ipv6 or '${HOST_IP:-}' }}
 if [ "$HOST_IP" == "" ]; then
     die $LINENO "Could not determine host ip address. See local.conf for suggestions on setting HOST_IP."
 fi
 
 # OpenSDS configuration.
-OPENSDS_VERSION={{ site.hotpot_release or '${OPENSDS_VERSION:-v1beta}' }}
+OPENSDS_VERSION={{ opensds.release.hotpot or '${OPENSDS_VERSION:-v1beta}' }}
 
 # OpenSDS service name in keystone.
 OPENSDS_SERVER_NAME=${OPENSDS_SERVER_NAME:-opensds}
@@ -29,7 +29,7 @@ OPENSDS_SERVER_NAME=${OPENSDS_SERVER_NAME:-opensds}
 # devstack keystone configuration
 STACK_GIT_BASE=${STACK_GIT_BASE:-https://git.openstack.org}
 STACK_USER_NAME={{ devstack.local.username or '${STACK_USER_NAME:-stack}' }}
-STACK_PASSWORD={{ site.password or '${STACK_PASSWORD:-opensds@123}' }}
+STACK_PASSWORD={{ devstack.local.password or '${STACK_PASSWORD:-devstack}' }}
 STACK_HOME=${STACK_HOME:-/opt/stack}
 STACK_BRANCH=${STACK_BRANCH:-stable/rocky}
 DEV_STACK_DIR=$STACK_HOME/devstack

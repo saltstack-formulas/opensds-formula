@@ -35,15 +35,20 @@ include:
   - opensds.dashboard.{{ opensds.dashboard.provider|trim|lower }}
 
   #### update opensds.conf ####
-        {% for section, configuration in opensds.dashboard.opensds_conf.items() %}
+opensds dashboard ensure opensds config file exists:
+  file.managed:
+   - name: {{ opensds.controller.conf }}
+   - mode: '0755'
+
+        {% for section, data in opensds.dashboard.opensdsconf.items() %}
 
 opensds dashboard config ensure dashboard {{ section }} section exists:
   ini.sections_present:
     - name: {{ opensds.controller.conf }}
     - sections:
-      - {{ opensds.dashboard.service }}
+      - {{ section }}
 
-            {%- for k, v in configuration.items() %}
+            {%- for k, v in data.items() %}
 
 opensds dashboard config ensure dashboard {{ section }} {{ k }} exists:
   ini.options_present:
@@ -51,7 +56,7 @@ opensds dashboard config ensure dashboard {{ section }} {{ k }} exists:
     - separator: '='
     - strict: True
     - sections:
-        {{ opensds.dashboard.service }}:
+        {{ section }}:
           {{ k }}: {{ v }}
     - require:
       - opensds dashboard config ensure dashboard {{ section }} section exists

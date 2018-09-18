@@ -12,3 +12,22 @@ opensds:
         composed: True
         build: False
         image: None
+      cinder:
+        opensdsconf: {}
+        container:
+          enabled: True
+          composed: False
+          build: True
+      ceph:
+        opensdsconf: {}
+        container:
+          enabled: False
+          composed: False
+          build: False
+          image: None
+      lvm:
+        opensdsconf: {}
+        container:
+          enabled: False
+          composed: False
+          build: False

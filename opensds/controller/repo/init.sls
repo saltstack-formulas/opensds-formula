@@ -1,7 +1,7 @@
 ### opensds/controller/repo.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from salt.file.dirname(tpldir) ~ "/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
 include:
   - golang
