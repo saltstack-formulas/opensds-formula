@@ -127,21 +127,45 @@ devstack:
     host_ipv6: {{ site.host_ipv6 }}
     service_host: {{ site.host_ipv4 or site.host_ipv6 }}
   cli:
-    service:
-      create:
-        'opensds{{ site.hotpot_release }}':
-          options:
-            name: 'opensds'
-            type: identity
-            description: opensds Service
-            enable: True
     user:
       create:
-        'opensds':
+        'opensds{{ site.hotpot_release }}':
           options:
             domain: default
             password: {{ site.devstack_password }}
             project: service
+            enable: True
+    group:
+      create:
+        service:
+          options:
+            domain: default
+      add user:
+        service:
+          target:
+            - 'opensds{{ site.hotpot_release }}
+        admins:
+          options:
+            domain: default
+          target:
+            - admin
+    role:
+      add:
+        admin:
+          options:
+            project: service
+            user: 'opensds{{ site.hotpot_release }}
+        service:
+          options:
+            project: service
+            group: service
+    service:
+      create:
+        'opensds{{ site.hotpot_release }}':
+          options:
+            name: 'opensds{{ site.hotpot_release }}'
+            type: identity
+            description: "opensds Service"
             enable: True
     endpoint:
       create:
