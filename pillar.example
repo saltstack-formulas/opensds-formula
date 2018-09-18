@@ -127,6 +127,14 @@ devstack:
     host_ipv6: {{ site.host_ipv6 }}
     service_host: {{ site.host_ipv4 or site.host_ipv6 }}
   cli:
+    service:
+      create:
+        'opensds{{ site.hotpot_release }}':
+          options:
+            name: 'opensds'
+            type: identity
+            description: opensds Service
+            enable: True
     user:
       create:
         'opensds':

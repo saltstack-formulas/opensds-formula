@@ -53,7 +53,7 @@ devstack:
             group: service
     service:
       create:
-        'opensds':
+        'opensdsv0.3.0':
           options:
             name: 'opensds'
             type: identity
