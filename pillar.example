@@ -194,21 +194,25 @@ packages:
   archives:
     wanted:
       opensds-hotpot:
-        dest: /tmp/opt/opensds-linux-amd64
+        dest: /tmp/opt/opensds-linux-amd64/
         options: '--strip-components=1'
         dl:
-          src: https://github.com/opensds/opensds/releases/download/{{ site.hotpot_release }}/opensds-hotpot-{{ site.hotpot_release }}-linux-amd64.tar.gz
+          format: tar
+          source: {{ site.hotpot_uri }}/{{ site.hotpot_release }}/opensds-hotpot-{{ site.hotpot_release }}-linux-amd64.tar.gz
           hashsum: {{ site.hotpot_hashsum }}
       opensds-sushi:
-        dest: /tmp/usr/local/go/bin/src/github.com/opensds/nbp
+        dest: /tmp/usr/local/go/bin/src/github.com/opensds/nbp/
         options: '--strip-components=1'
         dl:
-          src: https://github.com/opensds/nbp/releases/download/{{ site.sushi_release }}/opensds-sushi-{{ site.sushi_release }}-linux-amd64.tar.gz
+          format: tar
+          source: {{ site.sushi_uri }}/{{ site.sushi_release }}/opensds-sushi-{{ site.sushi_release }}-linux-amd64.tar.gz
           hashsum: {{ site.sushi_hashsum }}
       cinder:
-        dest: /tmp/opt/opensds-k8s-linux-amd64/cinder
+        dest: /tmp/opt/opensds-k8s-linux-amd64/cinder/
         dl:
-          src: https://raw.githubusercontent.com/openstack/cinder/master/contrib/block-box/docker-compose.yml
+          format: yml
+          source: {{ site.cinder_url }}
+          hashsum: {{ site.cinder_hashsum }}
     unwanted:
       - /tmp/usr/local/go/bin/src/github.com/opensds/nbp
       - /tmp/opt/opensds-k8s-linux-amd64
