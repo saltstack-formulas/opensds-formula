@@ -4,6 +4,7 @@
 {% from "opensds/map.jinja" import opensds with context %}
 
 include:
+  {{ '- epel' if grains.os_family in ('Redhat',) else '' }}
   - packages.pips
   - packages.pkgs
   - packages.archives

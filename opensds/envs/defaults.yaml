@@ -45,6 +45,7 @@ salt_formulas:
      - devstack-formula
      - golang-formula
      - memcached-formula
+     {{ '- epel-formula' if grains.os_family in ('Redhat',) else '' }}
 
 firewalld:
   enabled: True

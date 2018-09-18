@@ -29,6 +29,7 @@ opensds dashboard container service running:
     {%- elif opensds.dashboard.provider|trim|lower in ('release', 'repo',) %}
 
 include:
+  {{ '- epel' if grains.os_family in ('Redhat',) else '' }}
   - packages.pips
   - packages.pkgs
   - packages.archives

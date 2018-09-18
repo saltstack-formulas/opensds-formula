@@ -29,6 +29,7 @@ opensds dock block ceph container running:
     {%- else %}
 
 include:
+  {{ '- epel' if grains.os_family in ('Redhat',) else '' }}
   - packages.pips
   - packages.pkgs
   - firewalld
