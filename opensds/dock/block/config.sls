@@ -6,6 +6,7 @@
 opensds dock block ensure opensds config file exists:
   file.managed:
    - name: {{ opensds.controller.conf }}
+   - makedirs: True
    - mode: '0755'
 
     {% set provider = opensds.dock.block.provider %}

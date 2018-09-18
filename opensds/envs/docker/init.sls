@@ -3,6 +3,6 @@
 # vim: ft=yaml
 
 include:
-  - docker.remove     #https://github.com/saltstack-formulas/docker-formula
+  # docker.remove     #https://github.com/saltstack-formulas/docker-formula
   - docker
   - docker.compose-ng

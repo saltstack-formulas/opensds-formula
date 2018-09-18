@@ -32,6 +32,7 @@ opensds let {{ opensds.controller.release }} container service running:
 opensds let ensure opensds config file exists:
   file.managed:
    - name: {{ opensds.controller.conf }}
+   - makedirs: True
    - mode: '0755'
 
     {% for section, data in opensds.let.opensdsconf.items() %}

@@ -39,6 +39,7 @@ include:
 opensds dashboard ensure opensds config file exists:
   file.managed:
    - name: {{ opensds.controller.conf }}
+   - makedirs: True
    - mode: '0755'
 
         {% for section, data in opensds.dashboard.opensdsconf.items() %}

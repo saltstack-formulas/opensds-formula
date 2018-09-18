@@ -12,7 +12,6 @@ include:
        {%- elif opensds.dock.block.cinder.container.build %}
 
 include:
-  - docker.remove
   - packages.archives
   - opensds.dock.block.lvm
 

@@ -9,6 +9,20 @@ include:
   - packages.pkgs
   - packages.archives
 
+opensds nbp ensure opensds dirs exist:
+  file.directory:
+    - names:
+      {%- for k, v in opensds.dir.items() %}
+      - {{ v }}
+      {%- endfor %}
+      {%- for k, v in opensds.nbp.dir.items() %}
+      - {{ v }}
+      {%- endfor %}
+      - {{ golang.go_path }}/src/github.com/opensds/nbp
+    - makedirs: True
+    - force: True
+    - dir_mode: '0755'
+
 opensds nbp repo get source if missing:
   git.latest:
     - name: {{ opensds.nbp.repo.url }}
@@ -18,6 +32,8 @@ opensds nbp repo get source if missing:
     - force_clone: True
     - force_fetch: True
     - force_reset: True
+    - require:
+      - opensds nbp ensure opensds dirs exist
   cmd.run:
     - name: make
     - cwd: {{ {{ golang.go_path }}/src/github.com/opensds/nbp

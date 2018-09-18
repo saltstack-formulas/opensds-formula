@@ -41,6 +41,7 @@ opensds sdrc file generated:
   file.managed:
     - name: {{ opensds.dir.work }}/sdsrc
     - source: salt://opensds/files/sdsrc.jinja
+    - makedirs: True
     - template: jinja
     - context:
       go_path: {{ golang.go_path }}

@@ -51,6 +51,12 @@ opensds nbp copy flexvolume plugin binary into flexvolume plugin dir:
 
        {%- else %}
 
+opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists:
+  file.managed:
+    - name: {{ opensds.nbp.plugins[plugin]['dir'] }}/{{ opensds.nbp.plugins[plugin]['conf'] }}
+    - makedirs: True
+    - mode: '0755'
+
 opensds nbp ensure correct endpoint in opensds k8s {{ plugin }} plugin:
   file.line:
     - name: {{ opensds.nbp.plugins[plugin]['dir'] }}/{{ opensds.nbp.plugins[plugin]['conf'] }}
@@ -58,6 +64,8 @@ opensds nbp ensure correct endpoint in opensds k8s {{ plugin }} plugin:
     - content: '  opensdsendpoint: {{ opensds.auth.endpoint }}'
     - mode: ensure
     - backup: True
+    - require:
+      - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
     - onlyif: {{ plugin != 'flexvolume' }}
 
 opensds nbp ensure correct auth strategy in opensds k8s {{ plugin }} plugin:
@@ -67,6 +75,8 @@ opensds nbp ensure correct auth strategy in opensds k8s {{ plugin }} plugin:
     - content: '  opensdsauthstrategy: {{ opensds.auth.provider }}'
     - mode: ensure
     - backup: True
+    - require:
+      - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
     - onlyif: {{ plugin != 'flexvolume' }}
 
 opensds nbp ensure correct os auth url in opensds k8s {{ plugin }} plugin:
@@ -76,6 +86,8 @@ opensds nbp ensure correct os auth url in opensds k8s {{ plugin }} plugin:
     - content: '  osauthurl: {{ opensds.auth.opensdsconf.keystone_authtoken.auth_url }}'
     - mode: ensure
     - backup: True
+    - require:
+      - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
     - onlyif: {{ plugin != 'flexvolume' }}
 
        {%- endif %} 
@@ -86,5 +98,7 @@ opensds nbp plugins k8s start:
     - cwd: {{opensds.nbp.dir.work }}/{{ plugin }}
     - onlyif: test -f {{ opensds.k8s.start.split(' ') }}
     - output_loglevel: quiet
+    - require:
+      - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
 
     {%- endif %}
