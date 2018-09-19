@@ -130,7 +130,7 @@ devstack:
   cli:
     user:
       create:
-        'opensds{{ site.hotpot_release }}':
+        opensds{{ site.hotpot_release }}:
           options:
             domain: default
             password: {{ site.devstack_password }}
@@ -144,7 +144,7 @@ devstack:
       add user:
         service:
           target:
-            - 'opensds{{ site.hotpot_release }}
+            - opensds{{ site.hotpot_release }}
         admins:
           options:
             domain: default
@@ -155,16 +155,16 @@ devstack:
         admin:
           options:
             project: service
-            user: 'opensds{{ site.hotpot_release }}
+            user: opensds{{ site.hotpot_release }}
         service:
           options:
             project: service
             group: service
     service:
       create:
-        'opensds{{ site.hotpot_release }}':
+        opensds{{ site.hotpot_release }}:
           options:
-            name: 'opensds{{ site.hotpot_release }}'
+            name: opensds{{ site.hotpot_release }}
             type: identity
             description: "opensds Service"
             enable: True
