@@ -36,6 +36,16 @@ include:
   - golang
   - opensds.controller.{{ opensds.controller.provider|trim|lower }}
 
+opensds controller ensure opensds dirs exist:
+  file.directory:
+    - names:
+      {%- for k, v in opensds.dir.items() %}
+      - {{ v }}
+      {%- endfor %}
+    - makedirs: True
+    - force: True
+    - dir_mode: '0755'
+
 ### sdsrc
 opensds sdrc file generated:
   file.managed:

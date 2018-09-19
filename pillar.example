@@ -251,6 +251,12 @@ packages:
       - unattended-upgrades
   archives:
     wanted:
+      kubectl:
+        dest: /usr/local/bin/
+        dl:
+          format: bin
+          source: {{ site.kubectl_url }}
+          hashsum: {{ site.kubectl_hashsum }}
       opensds-hotpot:
         dest: /tmp/opt/opensds-linux-amd64/
         options: '--strip-components=1'
