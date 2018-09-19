@@ -88,16 +88,17 @@ lvm:
     remove:
       - /tmp/cinder-volumes.img
       - /tmp/opensds-volumes.img
-    trucate:
-      /tmp/opensds-volumes.img:
-        options:
-          size: 10G
-      /tmp/cinder-volumes.img:
-        options:
-          size: 10G
-    losetup:
-      /tmp/cinder-volumes.img:
-      /tmp/opensds-volumes.img:
+    create:
+      trucate:
+        /tmp/opensds-volumes.img:
+          options:
+            size: 10G
+        /tmp/cinder-volumes.img:
+          options:
+            size: 10G
+      losetup:
+        /tmp/cinder-volumes.img:
+        /tmp/opensds-volumes.img:
   pv:
     remove:
       /dev/loop0:
