@@ -4,7 +4,7 @@
   {%- endfor %}
 {%- endmacro -%}
 
-%- macro block(key, value, spaces=0) -%}
+{%- macro block(key, value, spaces=0) -%}
   {%- set shift = spaces * ' ' -%}
 {%- if value is mapping %}
 {{shift}}{{ '"' }}{{ key }}{{ '":' -}}
