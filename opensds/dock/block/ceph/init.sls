@@ -1,7 +1,7 @@
 ###  opensds/dock/block/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from "opensds/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds, docker with context %}
 
    {%- if opensds.dock.block.ceph.container.enabled %}
        {%- if opensds.dock.block.ceph.container.composed %}
@@ -24,6 +24,15 @@ opensds dock block ceph container running:
          {%- if "ports" in opensds.dock.block.ceph.container %}
     - port_bindings: {{ opensds.dock.block.ceph.container.ports }}
          {%- endif %}
+           {%- if docker.containers.skip_translate %}
+    - skip_translate: {{ docker.containers.skip_translate or '' }}
+           {%- endif %}
+           {%- if docker.containers.force_present %}
+    - force_present: {{ docker.containers.force_present }}
+           {%- endif %}
+           {%- if docker.containers.force_running %}
+    - force_running: {{ docker.containers.force_running }}
+           {%- endif %}
 
        {%- endif %}
     {%- else %}

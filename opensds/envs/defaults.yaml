@@ -2,7 +2,7 @@
 # vim: sts=2 ts=2 sw=2 et ai
 #
 docker:
-  # Global functions for docker_container states
+  # Global functions for all docker_container states
   containers:
     skip_translate: ports
     force_present: False

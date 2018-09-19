@@ -3,6 +3,6 @@
 # vim: ft=yaml
 
 include:
-  # docker.remove     #https://github.com/saltstack-formulas/docker-formula
+  {{ '- epel' if grains.os_family in ('RedHat',) else '' }} 
   - docker
   - docker.compose-ng

@@ -85,31 +85,38 @@ opensds:
 
 lvm:
   files:
+    loopbackdir: /tmp         #Where to create backing files? Default is /tmp anyway.
     remove:
       - /tmp/cinder-volumes.img
       - /tmp/opensds-volumes.img
     create:
-      trucate:
+      truncate:                #Shrink or extend the size of each FILE to the specified size
+        /tmp/cinder-volumes.img:
+          options:
+            size: 100M
+      dd:                      #copy a file, converting and formatting according to the operands
         /tmp/opensds-volumes.img:
           options:
-            size: 10G
+            if: /dev/urandom
+            bs: 1024
+            count: 20480
+      losetup:                 #set up and control loop devices
         /tmp/cinder-volumes.img:
           options:
-            size: 10G
-      losetup:
-        /tmp/cinder-volumes.img:
+            show: True
+            find: True
         /tmp/opensds-volumes.img:
   pv:
-    remove:
+    create:
       /dev/loop0:
       /dev/loop1:
-    create:
+    remove:
       /dev/loop0:
       /dev/loop1:
   vg:
     remove:
       cinder_volumes:
-      opepnsds_volumes:
+      opensds_volumes:
     create:
       cinder_volumes:
         devices:
@@ -128,6 +135,13 @@ devstack:
     host_ipv6: {{ site.host_ipv6 }}
     service_host: {{ site.host_ipv4 or site.host_ipv6 }}
   cli:
+    service:
+      create:
+        opensds{{ site.hotpot_release }}:
+          options:
+            name: opensds{{ site.hotpot_release }}
+            description: "opensds Service"
+            enable: True
     user:
       create:
         opensds{{ site.hotpot_release }}:
@@ -160,13 +174,6 @@ devstack:
           options:
             project: service
             group: service
-    service:
-      create:
-        opensds{{ site.hotpot_release }}:
-          options:
-            name: opensds{{ site.hotpot_release }}
-            description: "opensds Service"
-            enable: True
     endpoint:
       create:
         'opensds{{site.hotpot_release}} public https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.devstack_port }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
@@ -183,6 +190,11 @@ devstack:
             enable: True
 
 docker:
+  # Global functions for all docker_container states
+  containers:
+    skip_translate: ports
+    force_present: False
+    force_running: False   #maybe unsupported by python-py
   compose:
     controller:
       image: {{ site.img_controller }}
@@ -251,7 +263,7 @@ packages:
   archives:
     wanted:
       kubectl:
-        dest: /usr/local/bin/
+        dest: /usr/local/bin
         dl:
           format: bin
           source: {{ site.kubectl_url }}

@@ -1,7 +1,7 @@
 ### opensds/auth/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from "opensds/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds, docker with context %}
 
     {%- if opensds.auth.container.enabled %}
         {%- if opensds.auth.container.composed %}
@@ -23,6 +23,15 @@ opensds auth container service running:
          {%- endif %}
          {%- if "ports" in opensds.auth.container %}
     - port_bindings: {{ opensds.auth.container.ports }}
+         {%- endif %}
+         {%- if docker.containers.skip_translate %}
+    - skip_translate: {{ docker.containers.skip_translate }}
+         {%- endif %}
+         {%- if docker.containers.force_present %}
+    - force_present: {{ docker.containers.force_present }}
+         {%- endif %}
+         {%- if docker.containers.force_running %}
+    - force_running: {{ docker.containers.force_running }}
          {%- endif %}
 
        {%- endif %}
