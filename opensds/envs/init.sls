@@ -14,6 +14,7 @@ include:
   - devstack.install
   - devstack.cli
 
+## workaround salt/issues/49712
 opensds envs ensure opensds dirs exist:
   file.directory:
     - names:

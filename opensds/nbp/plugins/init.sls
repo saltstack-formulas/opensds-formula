@@ -29,10 +29,11 @@ opensds nbp plugins container service running:
         {% endif %}
     {%- else %}
 
+## workaround salt/issues/49712
 opensds nbp ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() %}
+      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True
@@ -68,36 +69,36 @@ opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists:
     - mode: '0755'
 
 opensds nbp ensure correct endpoint in opensds k8s {{ plugin }} plugin:
-  file.line:
+  file.replace:
     - name: {{ opensds.nbp.plugins[plugin]['dir'] }}/{{ opensds.nbp.plugins[plugin]['conf'] }}
-    - match: '^  opensdsendpoint'
-    - content: '  opensdsendpoint: {{ opensds.auth.endpoint }}'
-    - location: start
-    - mode: ensure
+    - pattern: '^  opensdsendpoint.*$'
+    - repl: '  opensdsendpoint: {{ opensds.auth.endpoint }}'
+    - not_found_content: '  opensdsendpoint: {{ opensds.auth.endpoint }}'
+    - append_if_not_found: True
     - backup: True
     - require:
       - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
     - onlyif: {{ plugin != 'flexvolume' }}
 
 opensds nbp ensure correct auth strategy in opensds k8s {{ plugin }} plugin:
-  file.line:
+  file.replace:
     - name: {{ opensds.nbp.plugins[plugin]['dir'] }}/{{ opensds.nbp.plugins[plugin]['conf'] }}
-    - match: '^  opensdsauthstrategy'
-    - content: '  opensdsauthstrategy: {{ opensds.auth.provider }}'
-    - mode: ensure
-    - location: start
+    - pattern: '^  opensdsauthstrategy.*$'
+    - repl: '  opensdsauthstrategy: {{ opensds.auth.provider }}'
+    - not_found_content: '  opensdsauthstrategy: {{ opensds.auth.provider }}'
+    - append_if_not_found: True
     - backup: True
     - require:
       - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
     - onlyif: {{ plugin != 'flexvolume' }}
 
 opensds nbp ensure correct os auth url in opensds k8s {{ plugin }} plugin:
-  file.line:
+  file.replace:
     - name: {{ opensds.nbp.plugins[plugin]['dir'] }}/{{ opensds.nbp.plugins[plugin]['conf'] }}
-    - match: '^  osauthurl'
-    - content: '  osauthurl: {{ opensds.auth.opensdsconf.keystone_authtoken.auth_url }}'
-    - mode: ensure
-    - location: start
+    - pattern: '^  osauthurl.*$'
+    - repl: '  osauthurl: {{ opensds.auth.opensdsconf.keystone_authtoken.auth_url }}'
+    - not_found_content: '  osauthurl: {{ opensds.auth.opensdsconf.keystone_authtoken.auth_url }}'
+    - append_if_not_found: True
     - backup: True
     - require:
       - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists

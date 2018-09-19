@@ -35,6 +35,17 @@ include:
   - packages.archives
   - opensds.dashboard.{{ opensds.dashboard.provider|trim|lower }}
 
+## workaround salt/issues/49712
+opensds dashboard ensure opensds dirs exist:
+  file.directory:
+    - names:
+      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
+      - {{ v }}
+      {%- endfor %}
+    - makedirs: True
+    - force: True
+    - dir_mode: '0755'
+
   #### update opensds.conf ####
 opensds dashboard ensure opensds config file exists:
   file.managed:
