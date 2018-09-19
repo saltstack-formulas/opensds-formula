@@ -35,6 +35,16 @@ opensds database container service running:
 include:
   - etcd.service.running
 
+opensds database ensure opensds dirs exist:
+  file.directory:
+    - names:
+      {%- for k, v in opensds.dir.items() %}
+      - {{ v }}
+      {%- endfor %}
+    - makedirs: True
+    - force: True
+    - dir_mode: '0755'
+
         #### update opensds.conf ####
 opensds database ensure opensds config file exists:
   file.managed:

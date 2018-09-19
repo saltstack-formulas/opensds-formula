@@ -32,6 +32,16 @@ opensds dock container service running:
 include:
   - opensds.dock.block
 
+opensds dock ensure opensds dirs exist:
+  file.directory:
+    - names:
+      {%- for k, v in opensds.dir.items() %}
+      - {{ v }}
+      {%- endfor %}
+    - makedirs: True
+    - force: True
+    - dir_mode: '0755'
+
        #### update opensds.conf ####
 opensds dock ensure opensds config file exists:
   file.managed:

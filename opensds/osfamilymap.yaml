@@ -9,9 +9,6 @@ Default:
     - git
     - gcc
     - make
-  k8s:
-    start: 'source /etc/profile && kubectl create -f deploy/kubernetes'
-    stop: 'source /etc/profile && kubectl delete -f deploy/kubernetes'
   let:
     conf:
       log_file: /var/log/opensds/osdslet.log

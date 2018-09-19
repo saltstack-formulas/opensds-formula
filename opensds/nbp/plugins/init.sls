@@ -29,6 +29,16 @@ opensds nbp plugins container service running:
         {% endif %}
     {%- else %}
 
+opensds nbp ensure opensds dirs exist:
+  file.directory:
+    - names:
+      {%- for k, v in opensds.dir.items() %}
+      - {{ v }}
+      {%- endfor %}
+    - makedirs: True
+    - force: True
+    - dir_mode: '0755'
+
        {%- if plugin == 'flexvolume' %}
 
 opensds nbp copy flexvolume plugin binary into flexvolume plugin dir:
@@ -62,6 +72,7 @@ opensds nbp ensure correct endpoint in opensds k8s {{ plugin }} plugin:
     - name: {{ opensds.nbp.plugins[plugin]['dir'] }}/{{ opensds.nbp.plugins[plugin]['conf'] }}
     - match: '^  opensdsendpoint'
     - content: '  opensdsendpoint: {{ opensds.auth.endpoint }}'
+    - location: start
     - mode: ensure
     - backup: True
     - require:
@@ -74,6 +85,7 @@ opensds nbp ensure correct auth strategy in opensds k8s {{ plugin }} plugin:
     - match: '^  opensdsauthstrategy'
     - content: '  opensdsauthstrategy: {{ opensds.auth.provider }}'
     - mode: ensure
+    - location: start
     - backup: True
     - require:
       - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
@@ -85,6 +97,7 @@ opensds nbp ensure correct os auth url in opensds k8s {{ plugin }} plugin:
     - match: '^  osauthurl'
     - content: '  osauthurl: {{ opensds.auth.opensdsconf.keystone_authtoken.auth_url }}'
     - mode: ensure
+    - location: start
     - backup: True
     - require:
       - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists

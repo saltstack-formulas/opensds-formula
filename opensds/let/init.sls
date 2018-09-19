@@ -28,6 +28,16 @@ opensds let {{ opensds.controller.release }} container service running:
        {%- endif %}
   {% else %}
 
+opensds let ensure opensds dirs exist:
+  file.directory:
+    - names:
+      {%- for k, v in opensds.dir.items() %}
+      - {{ v }}
+      {%- endfor %}
+    - makedirs: True
+    - force: True
+    - dir_mode: '0755'
+
     #### Update opensds.conf ####
 opensds let ensure opensds config file exists:
   file.managed:
