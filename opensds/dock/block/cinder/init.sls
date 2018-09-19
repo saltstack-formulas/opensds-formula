@@ -17,8 +17,7 @@ include:
 
 opensds dock block cinder loci packages:
   pkg.installed:
-    - pkgs:
-       {{ getlist(opensds.pkgs, true) }}
+    - pkgs: {{ getlist(opensds.pkgs, true) }}
 
 opensds dock block cinder loci ensure docker service running:
   service.running:
