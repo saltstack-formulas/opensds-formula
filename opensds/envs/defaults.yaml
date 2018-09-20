@@ -2,7 +2,7 @@
 # vim: sts=2 ts=2 sw=2 et ai
 #
 docker:
-  # Global functions for docker_container states
+  # Global functions for all docker_container states
   containers:
     skip_translate: ports
     force_present: False
@@ -16,6 +16,28 @@ golang:
 ceph:
   use_upstream_repo: true
 
+salt:
+  install_packages: False
+  master:
+    file_roots:
+      base:
+        - /srv/salt
+    pillar_roots:
+      base:
+        - /srv/pillar
+  minion:
+    file_roots:
+      base:
+        - /srv/salt
+    pillar_roots:
+      base:
+        - /srv/pillar
+  ssh_roster:
+    controller1:
+      host: {{ grains.ipv4 or grains.ipv6 }}
+      user: stack
+      sudo: True
+      priv: /etc/salt/ssh_keys/sshkey.pem
 salt_formulas:
   git_opts:
     default:
@@ -26,8 +48,11 @@ salt_formulas:
     user: root
     group: root
     mode: 755
+  minion_conf:
+    create_from_list: True
   list:
     base:
+     {{ '- epel-formula' if grains.os_family in ('RedHat',) else '' }}
      - salt-formula
      - openssh-formula
      - packages-formula
@@ -45,7 +70,7 @@ salt_formulas:
      - devstack-formula
      - golang-formula
      - memcached-formula
-     {{ '- epel-formula' if grains.os_family in ('Redhat',) else '' }}
+     - opensds-formula
 
 firewalld:
   enabled: True

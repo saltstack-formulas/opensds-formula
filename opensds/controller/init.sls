@@ -1,7 +1,7 @@
 ### opensds/controller/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from "opensds/map.jinja" import opensds, golang, devstack with context %}
+{% from "opensds/map.jinja" import opensds, golang, docker, devstack with context %}
 
     {%- if opensds.controller.container.enabled %}
        {%- if opensds.controller.container.composed %}
@@ -18,12 +18,21 @@ opensds controller container service running:
     - image: {{ opensds.controller.container.image }}
     - restart_policy: always
     - network_mode: host
-           {%- if "volumes" in opensds.controller.container %}
+          {%- if "volumes" in opensds.controller.container %}
     - binds: {{ opensds.controller.container.volumes }}
-           {%- endif %}
-           {%- if "ports" in opensds.controller.container %}
+          {%- endif %}
+          {%- if "ports" in opensds.controller.container %}
     - port_bindings: {{ opensds.controller.container.ports }}
-           {%- endif %}
+          {%- endif %}
+         {%- if docker.containers.skip_translate %}
+    - skip_translate: {{ docker.containers.skip_translate or '' }}
+         {%- endif %}
+         {%- if docker.containers.force_present %}
+    - force_present: {{ docker.containers.force_present }}
+         {%- endif %}
+         {%- if docker.containers.force_running %}
+    - force_running: {{ docker.containers.force_running }}
+         {%- endif %}
 
        {%- endif %}
     {%- elif opensds.controller.provider|trim|lower in ('release', 'repo',) %}
@@ -36,10 +45,11 @@ include:
   - golang
   - opensds.controller.{{ opensds.controller.provider|trim|lower }}
 
+## workaround salt/issues/49712
 opensds controller ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() %}
+      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True

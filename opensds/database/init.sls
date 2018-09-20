@@ -35,10 +35,11 @@ opensds database container service running:
 include:
   - etcd.service.running
 
+## workaround salt/issues/49712
 opensds database ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() %}
+      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True

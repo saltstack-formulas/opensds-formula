@@ -1,7 +1,7 @@
 ### opensds/let/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds, docker with context %}
 
     {%- if opensds.let.container.enabled %}
        {% if opensds.let.container.composed %}
@@ -24,14 +24,24 @@ opensds let {{ opensds.controller.release }} container service running:
          {%- if "ports" in opensds.let.container %}
     - port_bindings: {{ opensds.let.container.ports }}
          {%- endif %}
+         {%- if docker.containers.skip_translate %}
+    - skip_translate: {{ docker.containers.skip_translate or '' }}
+         {%- endif %}
+         {%- if docker.containers.force_present %}
+    - force_present: {{ docker.containers.force_present }}
+         {%- endif %}
+         {%- if docker.containers.force_running %}
+    - force_running: {{ docker.containers.force_running }}
+         {%- endif %}
 
        {%- endif %}
   {% else %}
 
+## workaround salt/issues/49712
 opensds let ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() %}
+      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True
