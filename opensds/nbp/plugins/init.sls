@@ -38,16 +38,19 @@ opensds nbp plugins container service running:
         {% endif %}
     {%- else %}
 
-## workaround salt/issues/49712
 opensds nbp ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
+      {%- for k, v in opensds.dir.items() %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode
 
        {%- if plugin == 'flexvolume' %}
 
@@ -57,7 +60,8 @@ opensds nbp copy flexvolume plugin binary into flexvolume plugin dir:
     - source: {{ opensds.nbp.plugins[plugin]['binary'] }}
     - force: True
     - makedirs: True
-    - mode: 0755
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
     - onlyif: {{ plugin == 'flexvolume' }}
 
 opensds nbp copy flexvolume plugin binary into flexvolume plugin dir:
@@ -66,7 +70,8 @@ opensds nbp copy flexvolume plugin binary into flexvolume plugin dir:
     - source: {{ opensds.nbp.plugins[plugin]['binary'] }}
     - force: True
     - makedirs: True
-    - mode: 0755
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
     - onlyif: {{ plugin == 'flexvolume' }}
 
        {%- else %}
@@ -75,7 +80,8 @@ opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists:
   file.managed:
     - name: {{ opensds.nbp.plugins[plugin]['dir'] }}/{{ opensds.nbp.plugins[plugin]['conf'] }}
     - makedirs: True
-    - mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
 
 opensds nbp ensure correct endpoint in opensds k8s {{ plugin }} plugin:
   file.replace:

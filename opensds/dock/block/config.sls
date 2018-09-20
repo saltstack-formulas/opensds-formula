@@ -7,7 +7,7 @@ opensds dock block ensure opensds config file exists:
   file.managed:
    - name: {{ opensds.controller.conf }}
    - makedirs: True
-   - mode: '0755'
+   - mode: {{ opensds.dir_mode }}
 
     {% set provider = opensds.dock.block.provider %}
     {% for section, data in opensds.dock.block[provider].opensdsconf.items() %}
@@ -24,7 +24,6 @@ opensds dock block ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
     - name: {{ opensds.controller.conf }}
     - separator: '='
-    - strict: True
     - sections:
         {{ section }}:
           {{ k }}: {{ v }}
@@ -40,8 +39,8 @@ opensds dock block ensure {{ provider }} driver directories exists:
       - {{ opensds.dir.config }}
       - {{ opensds.dir.work }}/volumegroups
     - force: True
-    - user: {{ opensds.dir.user }}
-    - dir_mode: {{ opensds.dir.mode }}
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
     - recurse:
       - user
       - mode

@@ -15,7 +15,11 @@ opensds controller ensure opensds dirs exist:
       - {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode
 
 opensds controller repo download from git:
   git.latest:
@@ -38,7 +42,11 @@ opensds controller repo download from git:
   file.managed:
     - name: {{ opensds.dir.work }}/
     - makedirs: True
-    - mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode
 
 opensds controller {{ opensds.controller.release }} copy repo content to work directory:
   file.copy:
@@ -46,6 +54,8 @@ opensds controller {{ opensds.controller.release }} copy repo content to work di
     - source: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}/*
     - makedirs: True
     - force: True
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
     - require:
       - file: opensds controller repo download from git
      

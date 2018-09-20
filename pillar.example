@@ -3,7 +3,7 @@
 golang:
   prefix: /usr/local
   go_root: /usr/local/golang
-  go_path: /usr/local/go    #its symlinked to /usr/local/golang/<ver>/go/
+  go_path: /usr/local/go
 
 etcd:
   service:

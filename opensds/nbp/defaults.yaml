@@ -1,6 +1,5 @@
 ###  opensds/nbp/defaults.sls
 #
-{% import_yaml "opensds/nbp/plugins/defaults.yaml" as plugins %}
 
 opensds:
   nbp:

@@ -18,7 +18,11 @@ opensds dashboard ensure opensds dirs exist:
       - {{ golang.go_path }}/src/github.com/opensds/dashboard
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode
 
 opensds dashboard repo build from source:
   git.latest:
@@ -44,9 +48,8 @@ opensds dashboard repo reconfigure nginx:
     - name: {{ opensds.dir.tmp }}/script/set_nginx_config.sh
     - source: salt://opensds/files/script/set_nginx_config.sh
     - template: jinja
-    - mode: 644
-    - user: root
-    - group: root
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
     - unless: test -f {{ opensds.dir.tmp }}/script/set_nginx_config.sh
   cmd.run:
     - names:
