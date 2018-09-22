@@ -5,6 +5,11 @@ golang:
   go_root: /usr/local/golang
   go_path: /usr/local/go
 
+mysql:
+  # mysql password needs to match devstack 'DATABASE_PASSWORD' !!!!!!!!! Important !!!!
+  server:
+    root_password: {{ site.devstack_password }}
+
 etcd:
   service:
     etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
@@ -260,6 +265,31 @@ packages:
   pkgs:
     unwanted:
       - unattended-upgrades
+     {%- if grains.os_family in ('RedHat',) %}
+       #because of https://github.com/saltstack-formulas/mysql-formula/issues/195
+      - mariadb
+      - mariadb-tokudb-engine
+      - mariadb-config
+      - mariadb-libs
+      - mariadb-rocksdb-engine
+      - mariadb-common
+      - mariadb-cracklib-password-check
+      - mariadb-gssapi-server
+      - mariadb-devel
+      - mariadb-server-utils
+      - mariadb-server
+      - mariadb-backup
+      - mariadb-errmsg
+     {%- elif grains.os == "Ubuntu" %}
+      - libmysqlclient-dev
+      - libmysqlclient20
+      - mysql-client-5.7
+      - mysql-client-core-5.7
+      - mysql-common
+      - mysql-server
+      - mysql-server-5.7
+      - mysql-server-core-5.7
+     {%- endif %}
   archives:
     wanted:
       kubectl:
@@ -292,6 +322,7 @@ packages:
       - /tmp/usr/local/go/bin/src/github.com/opensds/nbp
       - /tmp/opt/opensds-k8s-linux-amd64
       - /tmp/opt/opensds-linux-amd64
+      # /var/lib/mysql/
 
 salt:
   install_packages: False
@@ -348,3 +379,4 @@ salt_formulas:
      - golang-formula
      - memcached-formula
      - opensds-formula
+     - mysql-formula
