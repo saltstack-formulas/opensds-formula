@@ -14,13 +14,16 @@ include:
   - devstack.install
   - devstack.cli
 
-## workaround salt/issues/49712
 opensds envs ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
+      {%- for k, v in opensds.dir.items() %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode

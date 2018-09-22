@@ -37,23 +37,27 @@ opensds let {{ opensds.controller.release }} container service running:
        {%- endif %}
   {% else %}
 
-## workaround salt/issues/49712
 opensds let ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
+      {%- for k, v in opensds.dir.items() %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode
 
     #### Update opensds.conf ####
 opensds let ensure opensds config file exists:
   file.managed:
-   - name: {{ opensds.controller.conf }}
-   - makedirs: True
-   - mode: '0755'
+    - name: {{ opensds.controller.conf }}
+    - makedirs: True
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
 
     {% for section, data in opensds.let.opensdsconf.items() %}
 
@@ -69,7 +73,6 @@ opensds let ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
     - name: {{ opensds.controller.conf }}
     - separator: '='
-    - strict: True
     - sections:
         {{ section }}:
           {{ k }}: {{ v }}
@@ -83,8 +86,7 @@ opensds let ensure opensds config {{ section }} {{ k }} exists:
 opensds let start daemon service attempt {{ loop.index }}:
   cmd.run:
     - name: nohup {{opensds.dir.work}}/bin/osdslet >{{opensds.dir.log}}/osdslet.out 2> {{opensds.dir.log}}/osdslet.err &
-    - unless: ps aux | grep osdslet | grep -v grep
-    - onlyif: sleep 5
+    - unless: sleep 5 && ps aux | grep osdslet | grep -v grep
 
      {% endfor %}
   {%- endif %}

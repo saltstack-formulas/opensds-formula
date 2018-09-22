@@ -1,5 +1,5 @@
 ### opensds/map.jinja ###
-### exported dicts: opensds, driver, docker, firewalld, golang, ceph, salt_formulas, & devstack ###
+### exported dicts: opensds, driver, docker, firewalld, golang, ceph, devstack ###
 
 #OpenSDS: import formula default dicts
 {% import_yaml "opensds/envs/defaults.yaml" as envs %}
@@ -50,7 +50,6 @@
 {%- set ceph = salt['grains.filter_by']( envs.ceph, merge=salt['pillar.get']('ceph', {}), base='ceph') %}
 {%- set docker = salt['grains.filter_by']( envs.docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
 {%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
-{%- set salt_formulas = salt['grains.filter_by']( envs.salt_formulas, merge=salt['pillar.get']('salt_formulas', {}), base='salt_formulas') %}
 
 # Swordfish: merge any pillar data with defaults
 {%- import_yaml 'opensds/dock/drivers/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}

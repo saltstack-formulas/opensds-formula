@@ -45,16 +45,19 @@ include:
   - golang
   - opensds.controller.{{ opensds.controller.provider|trim|lower }}
 
-## workaround salt/issues/49712
 opensds controller ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
+      {%- for k, v in opensds.dir.items() %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode
 
 ### sdsrc
 opensds sdrc file generated:
@@ -63,6 +66,8 @@ opensds sdrc file generated:
     - source: salt://opensds/files/sdsrc.jinja
     - makedirs: True
     - template: jinja
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
     - context:
       go_path: {{ golang.go_path }}
       devstack: {{ devstack }}

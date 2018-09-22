@@ -8,6 +8,9 @@ golang:
 
 opensds:
   pkgs: []
+  dir_mode: '0755'
+  file_mode: '0644'
+  user: root
   controller:
     conf: /etc/opensds/opensds.conf
   dir:
@@ -17,8 +20,6 @@ opensds:
     devstack: /opt/opensds-linux-amd64-devstack
     log: /var/log/opensds
     tmp: /tmp/opensds
-    mode: '0700'
-    user: root
   k8s:
     start: 'source /etc/profile && kubectl create -f deploy/kubernetes'
     stop: 'source /etc/profile && kubectl delete -f deploy/kubernetes'

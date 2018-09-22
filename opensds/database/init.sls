@@ -35,23 +35,27 @@ opensds database container service running:
 include:
   - etcd.service.running
 
-## workaround salt/issues/49712
 opensds database ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
+      {%- for k, v in opensds.dir.items() %}
       - {{ v }}
       {%- endfor %}
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    - recurse:
+      - user
+      - mode
 
         #### update opensds.conf ####
 opensds database ensure opensds config file exists:
   file.managed:
-   - name: {{ opensds.controller.conf }}
-   - makedirs: True
-   - mode: '0755'
+    - name: {{ opensds.controller.conf }}
+    - makedirs: True
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
 
         {% for section, data in opensds.database.opensdsconf.items() %}
 
@@ -67,7 +71,6 @@ opensds database ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
     - name: {{ opensds.controller.conf }}
     - separator: '='
-    - strict: True
     - sections:
         {{ section }}:
           {{ k }}: {{ v }}

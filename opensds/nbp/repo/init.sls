@@ -21,7 +21,8 @@ opensds nbp ensure opensds dirs exist:
       - {{ golang.go_path }}/src/github.com/opensds/nbp
     - makedirs: True
     - force: True
-    - dir_mode: '0755'
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
 
 opensds nbp repo get source if missing:
   git.latest:
@@ -46,7 +47,8 @@ opensds nbp repo copy {{ driver }} deploy scripts to workdir:
     - source: {{ golang.go_path }}/github.com/opensds/nbp/deploy/
     - force: True
     - makedirs: True
-    - mode: 0755
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
 
 opensds nbp repo copy {{ driver }} deploy scripts to workdir:
    file.copy:
@@ -54,7 +56,8 @@ opensds nbp repo copy {{ driver }} deploy scripts to workdir:
     - source: {{ golang.go_path }}/github.com/opensds/nbp/examples/
     - force: True
     - makedirs: True
-    - mode: 0755
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
 
     {%- endfor %}
 
@@ -64,6 +67,7 @@ opensds nbp copy flexvolume plugin binary into flexvolume plugin dir:
     - source: {{ opensds.nbp.plugins[opensds.nbp.plugin_type]['binary'] }}
     - force: True
     - makedirs: True
-    - mode: 0755
-    - onlyif: test {{ plugin }} == 'flexvolume'
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
+    - onlyif: test '{{ plugin }}' == 'flexvolume'
 
