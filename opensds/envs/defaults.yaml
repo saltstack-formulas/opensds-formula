@@ -33,6 +33,13 @@ firewalld:
         tcp:
           - 6789
           - 6800:6810
+    opensds:
+      short: opensds
+      description: Open Software Defined Storage
+      ports:
+        tcp:
+          - 40040
+          - 50050
   zones:
     public:
       short: Public
@@ -43,6 +50,7 @@ firewalld:
         - ntp
         - saltstack
         - ceph
+        - opensds
 
       {%- if grains.os == 'Fedora' %}
     FedoraWorkstation:
@@ -54,4 +62,5 @@ firewalld:
         - ntp
         - saltstack
         - ceph
+        - opensds
       {%- endif %}

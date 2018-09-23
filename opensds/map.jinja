@@ -51,7 +51,7 @@
 {%- set docker = salt['grains.filter_by']( envs.docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
 {%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
 
-# Swordfish: merge any pillar data with defaults
+# DRIVER: merge any pillar data with, and over, defaults
+{% from "opensds/files/macros.jinja" import deep_merge with context %}
 {%- import_yaml 'opensds/dock/drivers/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}
-{%- do driver.update( salt['pillar.get']('opensds:swordfish', {})) %}
-
+{%- do deep_merge(driver, opensds.driver) %}

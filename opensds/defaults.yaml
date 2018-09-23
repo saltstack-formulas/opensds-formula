@@ -13,6 +13,9 @@ opensds:
   user: root
   controller:
     conf: /etc/opensds/opensds.conf
+  ports:
+    opensds: '50040'
+    dock: '50050'
   dir:
     work: /opt/opensds-linux-amd64
     config: /etc/opensds            #leave me alone
@@ -26,4 +29,4 @@ opensds:
   webservers:
     restart: 'apache2 restart && nginx restart'
 
-  swordfish: {}
+  driver: {}

@@ -1,13 +1,14 @@
 ###  opensds/dock/block/config.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds, driver with context %}
 
 opensds dock block ensure opensds config file exists:
   file.managed:
    - name: {{ opensds.controller.conf }}
    - makedirs: True
    - mode: {{ opensds.dir_mode }}
+   - replace: False
 
     {% set provider = opensds.dock.block.provider %}
     {% for section, data in opensds.dock.block[provider].opensdsconf.items() %}
@@ -51,7 +52,7 @@ opensds dock block generate {{ provider }} driver file:
     - source: salt://opensds/dock/drivers/template.jinja
     - template: jinja
     - context:
-      swordfish: {{ opensds.swordfish }}
+      driver: {{ driver }}
     - require:
       - opensds dock block ensure {{ provider }} driver directories exists
 

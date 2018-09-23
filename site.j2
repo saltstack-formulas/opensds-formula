@@ -1,6 +1,7 @@
 #************************************
 # SITE & RELEASE DATA COLLECTION
 # Save file as /srv/pillar/site.j2
+# this is jinja not yaml!!
 #************************************
 {%- set sitedata = {} %}
 {%- do sitedata.update( {
@@ -22,7 +23,9 @@
       'host_ipv6': grains.ipv6[-1],
       'devstack_enabled_services': 'mysql,key',
       'devstack_password': 'opensds@123',
-      'devstack_port': '50040',
+      'devstack_dir': '/opt/opensds-linux-amd64-devstack',
+      'port_controller': '50040',
+      'port_dock': '50050',
 
       'dock_type': 'provisioner',
       'nbp_plugin_type': 'hotpot_only',

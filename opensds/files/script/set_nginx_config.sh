@@ -29,7 +29,7 @@ cat > /etc/nginx/sites-available/default <<EOF
             proxy_pass http://$HOST_IP/identity/v3/;
         }
         location /v1beta/ {
-            proxy_pass http://$HOST_IP:50040/$OPENSDS_VERSION/;
+            proxy_pass http://$HOST_IP:${HOST_PORT:-50040}/$OPENSDS_VERSION/;
         }
     }
 EOF
