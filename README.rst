@@ -66,9 +66,12 @@ Site-specific Data Collection
 
 Optionally update ``site.j2`` parameters to reflect site specific parameters.
 
-Solution design
-===============
-# ![](solutionDesign.png)
+Architecture 
+=============
+
+.. image:: solutionDesign.png
+   :scale: 25 %
+   :alt: high level architecture
 
 Prerequisite
 ==============
