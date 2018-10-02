@@ -66,13 +66,15 @@ Site-specific Data Collection
 
 Optionally update ``site.j2`` parameters to reflect site specific parameters.
 
+Solution design
+===============
+# ![](solutionDesign.png)
+
 Prerequisite
 ==============
 
 Prepare your environment by running the ``salt.formulas`` state from ``https://github.com/saltstack-formulas/salt-formula``.  
-The following is an extract from the ``pillar.example`` for illustration-
-
-Suggested pillar data for ``salt.formulas`` state::
+The following ``pillar.example`` extract is suggested::
 
         salt:
           master:

@@ -15,17 +15,23 @@ etcd:
     etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
 
 opensds:
+  ports:
+    opensds: {{ site.port_controller }}
+    dock: {{ site.port_dock }}
   release:
     hotpot: {{ site.hotpot_release }}
     sushi: {{ site.sushi_release }}
   hashsum:
     hotpot: '{{ site.hotpot_hashsum }}'
     sushi: '{{ site.sushi_hashsum }}'
-  swordfish:
-    {{ site.poolname }}:
-      extras:
-        advanced:
-          a: 'b'
+  dir:
+    devstack: {{ site.devstack_dir }}
+  driver:
+    pool:
+      {{ site.poolname }}:
+        extras:
+          advanced:
+            a: 'b'
   auth:
     opensdsconf:
       keystone_authtoken:
@@ -41,14 +47,14 @@ opensds:
   let:
     opensdsconf:
       osdslet:
-        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50040
+        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}
   controller:
-    endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50050
+    endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
     container:
       enabled: False    #or True
       image: {{ site.img_controller }}
       ports:
-        - {{ site.host_ipv4 or site.host_ipv6 }}:50040:50040
+        - {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}:{{ site.port_controller }}
   dashboard:
     provider: repo       #or release
     container:
@@ -73,7 +79,7 @@ opensds:
         - /etc/opensds/:/etc/opensds
     opensdsconf:
       osdsdock:
-        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:50050
+        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
         dock_type: {{ site.dock_type }}
         enabled_backend: {{ site.enabled_backend }}
     block:
@@ -130,15 +136,25 @@ lvm:
         devices:
           - /dev/loop1
 
+firewalld:
+  services:
+    opensds:
+      ports:
+        tcp:
+          - {{ site.port_controller }}
+          - {{ site.port_dock }}
+
 devstack:
+  #hide_output: False
   local:
-    username: stack
     password: {{ site.devstack_password }}
     enabled_services: {{ site.devstack_enabled_services }}
     os_password: {{ site.devstack_password }}
     host_ip: {{ site.host_ipv4 }}
     host_ipv6: {{ site.host_ipv6 }}
     service_host: {{ site.host_ipv4 or site.host_ipv6 }}
+  dir:
+    dest: {{ site.devstack_dir }}
   cli:
     service:
       create:
@@ -181,15 +197,15 @@ devstack:
             group: service
     endpoint:
       create:
-        'opensds{{site.hotpot_release}} public https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.devstack_port }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+        'opensds{{site.hotpot_release}} public https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
           options:
             region: RegionOne
             enable: True
-        'opensds{{site.hotpot_release}} internal https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.devstack_port }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+        'opensds{{site.hotpot_release}} internal https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
           options:
             region: RegionOne
             enable: True
-        'opensds{{site.hotpot_release}} admin https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.devstack_port }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+        'opensds{{site.hotpot_release}} admin https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
           options:
             region: RegionOne
             enable: True
@@ -206,7 +222,7 @@ docker:
       container_name: opensds-controller
       network_mode: host
       ports:
-        - '{{ site.host_ipv4 or site.host_ipv6 }}:50050:50050'
+        - '{{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}:{{ site.port_dock }}'
       volumes:
         - '/etc/opensds/:/etc/opensds'
         # '/usr/share/ca-certificates/:/etc/ssl/certs'
@@ -370,7 +386,6 @@ salt_formulas:
      - deepsea-formula
      - docker-formula
      - etcd-formula
-     - firewalld-formula
      - helm-formula
      - iscsi-formula
      - lvm-formula

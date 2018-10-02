@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
+{% from "opensds/files/macros.jinja" import getlist with context %}
 
     {%- if opensds.dock.block.cinder.container.enabled %}
        {%- if opensds.dock.block.cinder.container.composed %}
