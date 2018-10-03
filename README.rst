@@ -9,6 +9,13 @@ Deploy 'Bali' release of OpenSDS (www.opensds.io) using the ``opensds`` state.
     See the full `Salt Formulas installation and usage instructions
     <http://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.
 
+Architecture design
+===================
+
+.. image:: solutionDesign.png
+   :scale: 25 %
+   :alt: high level architecture
+
 Available META states
 ======================
 
@@ -56,27 +63,17 @@ Deploy osdsnbp service.
 Deploy osdslet service.
 
 
-Default Pillars
+Site-specific Data Collection
 ================
 
-The ``site.j2`` and ``pillar.example`` files contain required pillars!!!
+The ``site.j2`` and ``pillar.example`` files contain required pillars!
 
-Site-specific Data Collection
-==============================
-
-Optionally update ``site.j2`` parameters to reflect site specific parameters.
-
-Architecture 
-=============
-
-.. image:: solutionDesign.png
-   :scale: 25 %
-   :alt: high level architecture
+Optionally update ``site.j2`` parameters to reflect your site specific parameters.
 
 Prerequisite
 ==============
 
-Prepare your environment by running the ``salt.formulas`` state from ``https://github.com/saltstack-formulas/salt-formula``.  
+Prepare your environment by running the ``salt.formulas`` state from ``https://github.com/saltstack-formulas/salt-formula``.
 The following ``pillar.example`` extract is suggested::
 
         salt:
@@ -133,4 +130,4 @@ The following ``pillar.example`` extract is suggested::
              - golang-formula
              - memcached-formula
              - opensds-formula
-        
+
