@@ -27,7 +27,7 @@ opensds dock block cinder loci ensure docker service running:
 
 opensds dock block cinder loci build from source:
   file.directory:
-    - name: /tmp/{{ opensds.dir.work }}/cinder
+    - name: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}/cinder
     - makedirs: True
   cmd.run:
     - cwd: {{ packages.archives.wanted.cinder.dest }}
