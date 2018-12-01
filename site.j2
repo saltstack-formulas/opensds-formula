@@ -5,16 +5,20 @@
 #************************************
 {%- set sitedata = {} %}
 {%- do sitedata.update( {
-      'hotpot_release': 'v0.3.0',
-      'hotpot_hashsum': 'md5=61dfd596a06869364917657e44901085',
-      'sushi_release': 'v0.3.0',
-      'sushi_hashsum': 'md5=6c82a9f139862799dcb9122142cd2533',
-      'cinder_hashsum': 'md5=1751f8e4f6b4cddd8c4843a0f4473274',
-      'kubectl_hashsum': 'md5=75fd51c605b6e8ef50816dff8cee6d40',
+      'hotpot_release': 'v0.3.3',
+      'hotpot_hashsum': 'md5=fa144886b3ac67af47790d018bbfb3d9',
       'hotpot_uri': 'https://github.com/opensds/opensds/releases/download',
+
+      'sushi_release': 'v0.3.3',
+      'sushi_hashsum': 'md5=91969a17ca772851ddb80feec2aa7a7c',
       'sushi_uri': 'https://github.com/opensds/nbp/releases/download',
+
+      'cinder_hashsum': 'md5=1751f8e4f6b4cddd8c4843a0f4473274',
       'cinder_url': 'https://raw.githubusercontent.com/openstack/cinder/master/contrib/block-box/docker-compose.yml',
-      'kubectl_url': 'https://storage.googleapis.com/kubernetes-release/release/v1.11.0/bin/linux/amd64/kubectl',
+
+      'kubectl_hashsum': 'md5=9e948c85b25cc347cff3866785ed8d2a',
+      'kubectl_url': 'https://github.com/kubernetes/kubernetes/releases/download/v1.12.3/kubernetes.tar.gz',
+
       'img_controller': 'opensdsio/opensds-controller:latest',
       'img_dock': 'opensdsio/opensds-dock:latest',
       'img_dashboard': 'opensdsio/dashboard:latest',
