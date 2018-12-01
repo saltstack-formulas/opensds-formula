@@ -22,7 +22,7 @@ opensds:
     driver: /etc/opensds/driver     #leave me alone
     devstack: /opt/opensds-linux-amd64-devstack
     log: /var/log/opensds
-    tmp: /tmp/opensds
+    tmp: /tmp
   k8s:
     start: 'source /etc/profile && kubectl create -f deploy/kubernetes'
     stop: 'source /etc/profile && kubectl delete -f deploy/kubernetes'
