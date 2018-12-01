@@ -306,6 +306,7 @@ packages:
       - mysql-server-5.7
       - mysql-server-core-5.7
      {%- endif %}
+  tmpdir: /tmp
   archives:
     wanted:
       kubectl:
@@ -315,21 +316,21 @@ packages:
           source: {{ site.kubectl_url }}
           hashsum: {{ site.kubectl_hashsum }}
       opensds-hotpot:
-        dest: /tmp/opt/opensds-linux-amd64/
+        dest: /tmp/opt/opensds-linux-amd64
         options: '--strip-components=1'
         dl:
           format: tar
           source: {{ site.hotpot_uri }}/{{ site.hotpot_release }}/opensds-hotpot-{{ site.hotpot_release }}-linux-amd64.tar.gz
           hashsum: {{ site.hotpot_hashsum }}
       opensds-sushi:
-        dest: /tmp/usr/local/go/bin/src/github.com/opensds/nbp/
+        dest: /tmp/usr/local/go/bin/src/github.com/opensds/nbp
         options: '--strip-components=1'
         dl:
           format: tar
           source: {{ site.sushi_uri }}/{{ site.sushi_release }}/opensds-sushi-{{ site.sushi_release }}-linux-amd64.tar.gz
           hashsum: {{ site.sushi_hashsum }}
       cinder:
-        dest: /tmp/opt/opensds-k8s-linux-amd64/cinder/
+        dest: /tmp/opt/opensds-k8s-linux-amd64/cinder
         dl:
           format: yml
           source: {{ site.cinder_url }}
