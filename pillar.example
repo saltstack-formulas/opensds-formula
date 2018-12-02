@@ -146,6 +146,7 @@ firewalld:
 
 devstack:
   #hide_output: False
+  disable_install_pip: True
   local:
     password: {{ site.devstack_password }}
     enabled_services: {{ site.devstack_enabled_services }}
