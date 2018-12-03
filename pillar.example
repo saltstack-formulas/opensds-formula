@@ -145,8 +145,8 @@ firewalld:
           - {{ site.port_dock }}
 
 devstack:
-  #hide_output: False
-  disable_install_pip: True
+  ##hide_output: False
+  ##disable_install_pip: True
   local:
     password: {{ site.devstack_password }}
     enabled_services: {{ site.devstack_enabled_services }}
@@ -307,7 +307,6 @@ packages:
       - mysql-server-5.7
       - mysql-server-core-5.7
      {%- endif %}
-  tmpdir: /tmp
   archives:
     wanted:
       kubectl:
