@@ -9,6 +9,8 @@ mysql:
   # mysql password needs to match devstack 'DATABASE_PASSWORD' !!!!!!!!! Important !!!!
   server:
     root_password: {{ site.devstack_password }}
+    mysqld:
+      bind_address: {{ host_ipv4 or host_ipv6 }}
 
 etcd:
   service:

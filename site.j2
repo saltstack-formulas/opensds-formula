@@ -5,6 +5,7 @@
 #************************************
 {%- set sitedata = {} %}
 {%- do sitedata.update( {
+
       'hotpot_release': 'v0.3.3',
       'hotpot_hashsum': 'md5=fa144886b3ac67af47790d018bbfb3d9',
       'hotpot_uri': 'https://github.com/opensds/opensds/releases/download',
@@ -19,20 +20,22 @@
       'kubectl_hashsum': 'md5=b0629c3ca34bc043da2f5d3eb226fb9e',
       'kubectl_url': 'https://storage.googleapis.com/kubernetes-release/release/v1.12.3/bin/linux/amd64/kubectl',
 
-      'img_controller': 'opensdsio/opensds-controller:latest',
-      'img_dock': 'opensdsio/opensds-dock:latest',
-      'img_dashboard': 'opensdsio/dashboard:latest',
-      'img_etcd': 'quay.io/coreos/etcd:latest',
-      'host_ipv4': grains.ipv4[-1],
-      'host_ipv6': grains.ipv6[-1],
-      'devstack_enabled_services': 'mysql,key',
-      'devstack_password': 'opensds@123',
-      'devstack_dir': '/opt/opensds-linux-amd64-devstack',
-      'port_controller': '50040',
-      'port_dock': '50050',
-
       'dock_type': 'provisioner',
       'nbp_plugin_type': 'hotpot_only',
       'enabled_backend': 'lvm',
       'poolname': 'opensds-volumes',
+
+      'img_controller': 'opensdsio/opensds-controller:latest',
+      'img_dock': 'opensdsio/opensds-dock:latest',
+      'img_dashboard': 'opensdsio/dashboard:latest',
+      'img_etcd': 'quay.io/coreos/etcd:latest',
+
+      'devstack_enabled_services': 'mysql,key',
+      'devstack_password': 'opensds@123',
+      'devstack_dir': '/opt/opensds-linux-amd64-devstack',
+
+      'host_ipv4': grains.ipv4[-1],
+      'host_ipv6': grains.ipv6[-1],
+      'port_controller': '50040',
+      'port_dock': '50050',
 }) %}
