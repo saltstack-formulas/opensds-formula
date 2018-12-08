@@ -156,6 +156,7 @@ devstack:
     host_ip: {{ site.host_ipv4 }}
     host_ipv6: {{ site.host_ipv6 }}
     service_host: {{ site.host_ipv4 or site.host_ipv6 }}
+    db_host: {{ site.db_host }}
   dir:
     dest: {{ site.devstack_dir }}
   cli:
