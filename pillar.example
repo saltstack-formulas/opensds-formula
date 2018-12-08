@@ -10,7 +10,7 @@ mysql:
   server:
     root_password: {{ site.devstack_password }}
     mysqld:
-      bind_address: {{ host_ipv4 or host_ipv6 }}
+      bind_address: {{ site.host_ipv4 or site.host_ipv6 }}
 
 etcd:
   service:
@@ -215,6 +215,7 @@ devstack:
 
 docker:
   # Global functions for all docker_container states
+  install_docker_py: True
   containers:
     skip_translate: ports
     force_present: False
