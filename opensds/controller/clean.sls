@@ -27,6 +27,5 @@ opensds controller {{ opensds.controller.release }} clean release files:
       - {{ opensds.dir.config }}
       - {{ opensds.dir.driver }}
       - {{ opensds.dir.log }}
-      - {{ opensds.dir.tmp }}
 
     {% endif %}
