@@ -86,7 +86,7 @@ opensds let ensure opensds config {{ section }} {{ k }} exists:
 opensds let start daemon service attempt {{ loop.index }}:
   cmd.run:
     - name: nohup {{opensds.dir.work}}/bin/osdslet >{{opensds.dir.log}}/osdslet.out 2> {{opensds.dir.log}}/osdslet.err &
-    - unless: sleep 5 && ps aux | grep osdslet | grep -v grep
+    - unless: (ps aux | grep osdslet | grep -v grep) | sleep 5
 
      {% endfor %}
   {%- endif %}
