@@ -7,7 +7,7 @@
         {%- if opensds.database.container.composed %}
 
 include:
-  - opensds.envs.database
+  - opensds.envs.docker
 
         {%- elif opensds.database.container.build %}
 

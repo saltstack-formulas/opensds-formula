@@ -17,9 +17,15 @@ etcd:
     #etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
   docker:
     enabled: True
+    skip_translate: None
     ports:
-      - '127.0.0.1:2379:2379'
-      - '127.0.0.1:2380:2380'
+      - 2379
+      - 2380
+      - 2379/udp
+      - 2380/udp
+    port_bindings:
+      - 0.0.0.0:2379:2379
+      - 0.0.0.0:2380:2380
     stop_local_etcd_service_first: True
 
 
@@ -269,21 +275,6 @@ docker:
           delay: 5s
           max_attempts: 3
           window: 120s
-    db:
-      image: {{ site.img_etcd }}
-      container_name: osdsdb
-      privileged: True
-      network_mode: host
-      ports:
-        - '{{ site.host_ipv4 or site.host_ipv6 }}:2379:2379'
-        - '{{ site.host_ipv4 or site.host_ipv6 }}:2380:2380'
-      volumes:
-        - /usr/share/ca-certificates/:/etc/ssl/certs
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 5s
-          max_attempts: 3
 
 packages:
   pips:
