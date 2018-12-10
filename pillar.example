@@ -13,8 +13,15 @@ mysql:
       bind_address: {{ site.db_host or site.host_ipv4 or site.host_ipv6 }}
 
 etcd:
-  service:
-    etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
+  #service:
+    #etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
+  docker:
+    enabled: True
+    ports:
+      - '127.0.0.1:2379:2379'
+      - '127.0.0.1:2380:2380'
+    stop_local_etcd_service_first: True
+
 
 opensds:
   ports:
