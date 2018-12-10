@@ -18,6 +18,9 @@ etcd:
   docker:
     enabled: True
     ports:
+      - tcp/2379
+      - tcp/2380
+    port_bindings:
       - '127.0.0.1:2379:2379'
       - '127.0.0.1:2380:2380'
     stop_local_etcd_service_first: True
