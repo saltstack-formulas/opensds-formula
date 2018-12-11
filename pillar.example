@@ -16,6 +16,7 @@ etcd:
   #service:
     #etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
   docker:
+    container_name: osdsdb-etcd
     enabled: True
     skip_translate: None
     ports:
