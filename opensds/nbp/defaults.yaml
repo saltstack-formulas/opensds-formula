@@ -16,12 +16,14 @@ opensds:
       composed: False
       build: False
       image: None
+      version: latest
     plugins:
       container:
         enabled: False
         composed: False
         build: False
         image: None
+        version: latest
       csi:
         dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
         conf: csi-k8s_configmap-opensdsplugin.yaml

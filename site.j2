@@ -25,10 +25,15 @@
       'enabled_backend': 'lvm',
       'poolname': 'opensds-volumes',
 
-      'img_controller': 'opensdsio/opensds-controller:latest',
-      'img_dock': 'opensdsio/opensds-dock:latest',
-      'img_dashboard': 'opensdsio/dashboard:latest',
-      'img_etcd': 'quay.io/coreos/etcd:latest',
+      'img_controller': 'opensdsio/opensds-controller',
+      'img_dock': 'opensdsio/opensds-dock',
+      'img_dashboard': 'opensdsio/dashboard',
+      'img_etcd': 'quay.io/coreos/etcd',
+
+      'ver_controller': 'latest',
+      'ver_dock': 'latest',
+      'ver_dashboard': 'latest',
+      'ver_etcd': 'latest',
 
       'devstack_enabled_services': 'mysql,key',
       'devstack_password': 'opensds@123',

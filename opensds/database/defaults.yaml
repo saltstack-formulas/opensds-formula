@@ -8,7 +8,9 @@ opensds:
     container:
       enabled: True
       composed: False
-      build: True
+      build: True   {# we will use etcd.docker.running state instead of this #}
+      image: None
+      version: latest
     opensdsconf:
       database:
         db_driver: etcd

@@ -15,7 +15,7 @@ include:
 opensds dock block ceph container running:
   docker_container.running:
     - name: {{ opensds.dock.block.ceph.service }}
-    - image: {{ opensds.dock.block.ceph.container.image }}
+    - image: {{opensds.dock.block.ceph.container.image}}:{{opensds.dock.block.ceph.container.version}}
     - restart_policy: always
     - network_mode: host
          {%- if "volumes" in opensds.dock.block.ceph.container %}

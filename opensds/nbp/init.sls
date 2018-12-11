@@ -15,7 +15,7 @@ include:
 opensds nbp container service running:
   docker_container.running:
     - name: {{ opensds.nbp.service }}
-    - image: {{ opensds.nbp.container.image }}
+    - image: {{ opensds.nbp.container.image }}:{{ opensds.nbp.container.version }}
     - restart_policy: always
     - network_mode: host
            {%- if "volumes" in opensds.nbp.container %}

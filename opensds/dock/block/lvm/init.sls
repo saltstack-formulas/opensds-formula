@@ -14,7 +14,7 @@ include:
 opensds dock block lvm container running:
   docker_container.running:
     - name: {{ opensds.dock.block.lvm.service }}
-    - image: {{ opensds.dock.block.lvm.container.image }}
+    - image: {{opensds.dock.block.lvm.container.image}}:{{opensds.dock.block.lvm.container.version}}
     - restart_policy: always
     - network_mode: host
          {%- if "volumes" in opensds.dock.block.lvm.container %}

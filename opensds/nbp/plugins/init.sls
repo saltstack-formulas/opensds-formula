@@ -16,7 +16,7 @@ include:
 opensds nbp plugins container service running:
   docker_container.running:
     - name: {{ opensds.nbp.plugins.service }}
-    - image: {{ opensds.nbp.plugins.container.image }}
+    - image: {{opensds.nbp.plugins.container.image}}:{{opensds.nbp.plugins.container.version}}
     - restart_policy: always
     - network_mode: host
            {%- if "volumes" in opensds.nbp.plugins.container %}
@@ -82,6 +82,7 @@ opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists:
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
+    - replace: False
 
 opensds nbp ensure correct endpoint in opensds k8s {{ plugin }} plugin:
   file.replace:

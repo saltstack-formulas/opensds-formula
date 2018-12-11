@@ -16,6 +16,8 @@ etcd:
   #service:
     #etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
   docker:
+    image: {{ site.img_etcd }}
+    version: {{ site.ver_etcd }}
     container_name: osdsdb-etcd
     enabled: True
     skip_translate: None
@@ -69,12 +71,14 @@ opensds:
     container:
       enabled: False    #or True
       image: {{ site.img_controller }}
+      version: {{ site.ver_controller }}
       ports:
         - {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}:{{ site.port_controller }}
   dashboard:
     provider: repo       #or release
     container:
       image: {{ site.img_dashboard }}
+      version: {{ site.ver_dashboard }}
   nbp:
     provider: release  #or repo
     plugin_type: {{ site.dock_type }}
@@ -91,6 +95,7 @@ opensds:
   dock:
     container:
       image: {{ site.img_dock }}
+      version: {{ site.ver_dock }}
       volumes:
         - /etc/opensds/:/etc/opensds
     opensdsconf:
@@ -238,6 +243,7 @@ docker:
   compose:
     controller:
       image: {{ site.img_controller }}
+      version: {{ site.ver_controller }}
       container_name: opensds-controller
       network_mode: host
       ports:
@@ -253,6 +259,7 @@ docker:
           window: 120s
     dock:
       image: {{ site.img_dock }}
+      version: {{ site.ver_dock }}
       container_name: osdsdock
       privileged: True
       network_mode: host
@@ -267,6 +274,7 @@ docker:
           window: 120s
     dashboard:
       image: {{ site.img_dashboard }}
+      version: {{ site.ver_dashboard }}
       container_name: dashboard
       privileged: True
       network_mode: host

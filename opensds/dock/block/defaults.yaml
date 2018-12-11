@@ -12,12 +12,15 @@ opensds:
         composed: True
         build: False
         image: None
+        version: latest
       cinder:
         opensdsconf: {}
         container:
           enabled: True
           composed: False
           build: True
+          image: None
+          version: latest
       ceph:
         opensdsconf: {}
         container:
@@ -25,6 +28,7 @@ opensds:
           composed: False
           build: False
           image: None
+          version: latest
       lvm:
         opensdsconf: {}
         container:

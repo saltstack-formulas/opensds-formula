@@ -15,7 +15,7 @@ include:
 opensds dock block {{ opensds.dock.block.provider }} container running:
   docker_container.running:
     - name: {{ opensds.dock.block.service }}
-    - image: {{ opensds.dock.block.container.image }}
+    - image: {{opensds.dock.block.container.image}}:{{opensds.dock.block.container.version}}
     - restart_policy: always
     - network_mode: host
          {%- if "volumes" in opensds.dock.block.container %}
