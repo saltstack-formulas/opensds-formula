@@ -9,7 +9,8 @@ opensds:
       enabled: True
       composed: False
       build: False
-      image: opensdsio/opensds-dock:latest
+      image: opensdsio/opensds-dock
+      version: latest
       volumes:
         - /etc/opensds/:/etc/opensds
         - /etc/ceph/:/etc/ceph

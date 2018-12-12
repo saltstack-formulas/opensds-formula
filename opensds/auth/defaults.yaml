@@ -11,6 +11,7 @@ opensds:
       composed: False
       build: False
       image: None
+      version: latest
     opensdsconf:
       keystone_authtoken:
         memcached_servers: {{ grains.ipv4[-1] or grains.ipv6[-1] }}:11211

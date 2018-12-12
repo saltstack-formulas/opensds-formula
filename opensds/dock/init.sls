@@ -15,7 +15,7 @@ include:
 opensds dock container service running:
   docker_container.running:
     - name: {{ opensds.dock.service }}
-    - image: {{ opensds.dock.container.image }}
+    - image: {{ opensds.dock.container.image }}:{{ opensds.dock.container.version }}
     - restart_policy: always
     - network_mode: host
           {%- if "volumes" in opensds.dock.container %}
@@ -62,6 +62,7 @@ opensds dock ensure opensds config file exists:
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
+    - replace: False
 
        {% for section, data in opensds.dock.opensdsconf.items() %}
 

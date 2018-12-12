@@ -15,7 +15,7 @@ include:
 opensds dashboard container service running:
   docker_container.running:
     - name: {{ opensds.dashboard.service }}
-    - image: {{ opensds.dashboard.container.image }}
+    - image: {{ opensds.dashboard.container.image }}:{{ opensds.dashboard.container.version}}
     - restart_policy: always
     - network_mode: host
          {%- if "volumes" in opensds.dashboard.container %}

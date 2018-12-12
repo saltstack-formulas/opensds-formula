@@ -39,7 +39,7 @@ opensds dock block cinder loci build from source:
 opensds dock block cinder container running:
   docker_container.running:
     - name: {{ opensds.dock.block.cinder.service }}
-    - image: {{ opensds.dock.block.cinder.container.image }}
+    - image: {{opensds.dock.block.cinder.container.image}}:{{opensds.dock.block.cinder.container.version}}
     - restart_policy: always
     - network_mode: host
          {%- if "volumes" in opensds.dock.block.cinder.container %}

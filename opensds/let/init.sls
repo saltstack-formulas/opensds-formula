@@ -15,7 +15,7 @@ include:
 opensds let {{ opensds.controller.release }} container service running:
   docker_container.running:
     - name: {{ opensds.let.service }}
-    - image: {{ opensds.let.container.image }}
+    - image: {{ opensds.let.container.image }}:{{ opensds.let.container.version }}
     - restart_policy: always
     - network_mode: host
          {%- if "volumes" in opensds.let.container %}

@@ -19,7 +19,7 @@ include:
 opensds database container service running:
   database_container.running:
     - name: {{ opensds.database.service }}
-    - image: {{ opensds.database.container.image }}
+    - image: {{ opensds.database.container.image }}:{{ opensds.database.container.version }}
     - restart_policy: always
     - network_mode: host
            {%- if "volumes" in opensds.database.container %}

@@ -12,7 +12,8 @@ opensds:
       enabled: False
       composed: False
       build: False
-      image: opensdsio/opensds-controller:aruba
+      image: opensdsio/opensds-controller
+      version: latest
       ports:
         - {{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040:50040
       volumes:

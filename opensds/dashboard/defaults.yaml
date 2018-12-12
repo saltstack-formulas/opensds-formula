@@ -9,7 +9,8 @@ opensds:
       enabled: True
       composed: False
       build: False
-      image: opensdsio/dashboard:latest
+      image: opensdsio/dashboard
+      version: latest
     repo:
       url: https://github.com/opensds/opensds.git
       branch: development

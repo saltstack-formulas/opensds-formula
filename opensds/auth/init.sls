@@ -15,7 +15,7 @@ include:
 opensds auth container service running:
   docker_container.running:
     - name: {{ opensds.auth.service }}
-    - image: {{ opensds.auth.container.image }}
+    - image: {{ opensds.auth.container.image }}:{{ opensds.auth.container.version }}
     - restart_policy: always
     - network_mode: host
          {%- if "volumes" in opensds.auth.container %}
