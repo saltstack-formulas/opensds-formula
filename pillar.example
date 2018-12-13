@@ -276,18 +276,6 @@ docker:
           delay: 5s
           max_attempts: 3
           window: 120s
-    dashboard:
-      image: {{ site.img_dashboard }}
-      version: {{ site.ver_dashboard }}
-      container_name: osdsDash
-      privileged: True
-      network_mode: host
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 5s
-          max_attempts: 3
-          window: 120s
 
 packages:
   pips:
