@@ -55,3 +55,8 @@
 {% from "opensds/files/macros.jinja" import deep_merge with context %}
 {%- import_yaml 'opensds/dock/drivers/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}
 {%- do deep_merge(driver, opensds.driver) %}
+
+# SITE SPECIFIC PARAM INJECTION
+{%- if opensds.dock.block.provider in ('lvm',) %}
+  {%- do driver.update({'tgtBindIp': opensds.host or '127.0.0.1'}) %}
+{%- endif %}

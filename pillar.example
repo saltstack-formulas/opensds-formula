@@ -16,7 +16,7 @@ etcd:
   #service:
     #etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
   dir:
-    tmp: /tmp/devstack  {# not sure why centos wants this here? #}
+    tmp: /tmp/devstack
   docker:
     image: {{ site.img_etcd }}
     version: {{ site.ver_etcd }}
@@ -35,6 +35,7 @@ etcd:
 
 
 opensds:
+  host: {{ site.host_ipv4 or site.host_ipv6 }}
   ports:
     opensds: {{ site.port_controller }}
     dock: {{ site.port_dock }}
@@ -180,6 +181,7 @@ devstack:
     db_host: {{ site.db_host }}
   dir:
     dest: {{ site.devstack_dir }}
+    tmp: /tmp/devstack
   cli:
     service:
       create:
@@ -277,7 +279,7 @@ docker:
     dashboard:
       image: {{ site.img_dashboard }}
       version: {{ site.ver_dashboard }}
-      container_name: dashboard
+      container_name: osdsDash
       privileged: True
       network_mode: host
       deploy:

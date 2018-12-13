@@ -13,6 +13,7 @@ opensds:
   user: root
   controller:
     conf: /etc/opensds/opensds.conf
+  host: 127.0.0.1
   ports:
     opensds: '50040'
     dock: '50050'
