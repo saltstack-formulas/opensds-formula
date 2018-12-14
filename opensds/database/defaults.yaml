@@ -14,12 +14,12 @@ opensds:
     opensdsconf:
       database:
         db_driver: etcd
-        db_endpoint: https://{{grains.ipv4[1] or grains.ipv6[1] or '127.0.0.1' }}:2379,https://{{grains.ipv4[1] or grains.ipv6[1] or '127.0.0.1' }}:2380
+        db_endpoint: https://{{grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:2379,https://{{grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:2380
 
 etcd:
   service:
     name: osdsdb
-    etcd_endpoints: https://{{ grains.ipv4[1] or grains.ipv6[1] or '127.0.0.1'  }}:2379,https://{{ grains.ipv4[1] or grains.ipv6[1] or '127.0.0.1' }}:2380
+    etcd_endpoints: https://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1'  }}:2379,https://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:2380
   docker:
     enabled: True
 
