@@ -69,6 +69,8 @@ opensds:
     opensdsconf:
       osdslet:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}
+        auth_strategy: noauth
+
   controller:
     endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
     container:
@@ -244,38 +246,7 @@ docker:
     skip_translate: ports
     force_present: False
     force_running: False   #maybe unsupported by python-py
-  compose:
-    controller:
-      image: {{ site.img_controller }}
-      version: {{ site.ver_controller }}
-      container_name: opensds-controller
-      network_mode: host
-      ports:
-        - '{{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}:{{ site.port_dock }}'
-      volumes:
-        - '/etc/opensds/:/etc/opensds'
-        # '/usr/share/ca-certificates/:/etc/ssl/certs'
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 5s
-          max_attempts: 3
-          window: 120s
-    dock:
-      image: {{ site.img_dock }}
-      version: {{ site.ver_dock }}
-      container_name: osdsdock
-      privileged: True
-      network_mode: host
-      volumes:
-        - '/etc/opensds/:/etc/opensds'
-        - '/etc/ceph/:/etc/ceph'
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 5s
-          max_attempts: 3
-          window: 120s
+  compose: {}
 
 packages:
   pips:

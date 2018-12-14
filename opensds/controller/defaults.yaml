@@ -9,7 +9,7 @@ opensds:
       url: https://github.com/opensds/opensds.git
       branch: development
     container:
-      enabled: False
+      enabled: True
       composed: False
       build: False
       image: opensdsio/opensds-controller
