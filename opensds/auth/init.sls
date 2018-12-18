@@ -65,6 +65,7 @@ opensds auth ensure opensds config file exists:
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
+    - replace: False
 
     {% for section, data in opensds.auth.opensdsconf.items() %}
 

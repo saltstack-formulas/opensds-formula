@@ -12,7 +12,7 @@ opensds:
       version: latest
     opensdsconf:
       osdslet:
-        api_endpoint: '{{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040'
+        api_endpoint: '{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:50040'
         graceful: True
         log_file: /var/log/opensds/osdslet.log
         socket_order: inc

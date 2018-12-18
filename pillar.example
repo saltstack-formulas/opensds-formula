@@ -16,7 +16,7 @@ etcd:
   #service:
     #etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
   dir:
-    tmp: /tmp/devstack  {# not sure why centos wants this here? #}
+    tmp: /tmp/devstack
   docker:
     image: {{ site.img_etcd }}
     version: {{ site.ver_etcd }}
@@ -35,6 +35,7 @@ etcd:
 
 
 opensds:
+  host: {{ site.host_ipv4 or site.host_ipv6 }}
   ports:
     opensds: {{ site.port_controller }}
     dock: {{ site.port_dock }}
@@ -68,6 +69,8 @@ opensds:
     opensdsconf:
       osdslet:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}
+        auth_strategy: noauth
+
   controller:
     endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
     container:
@@ -180,6 +183,7 @@ devstack:
     db_host: {{ site.db_host }}
   dir:
     dest: {{ site.devstack_dir }}
+    tmp: /tmp/devstack
   cli:
     service:
       create:
@@ -242,50 +246,7 @@ docker:
     skip_translate: ports
     force_present: False
     force_running: False   #maybe unsupported by python-py
-  compose:
-    controller:
-      image: {{ site.img_controller }}
-      version: {{ site.ver_controller }}
-      container_name: opensds-controller
-      network_mode: host
-      ports:
-        - '{{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}:{{ site.port_dock }}'
-      volumes:
-        - '/etc/opensds/:/etc/opensds'
-        # '/usr/share/ca-certificates/:/etc/ssl/certs'
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 5s
-          max_attempts: 3
-          window: 120s
-    dock:
-      image: {{ site.img_dock }}
-      version: {{ site.ver_dock }}
-      container_name: osdsdock
-      privileged: True
-      network_mode: host
-      volumes:
-        - '/etc/opensds/:/etc/opensds'
-        - '/etc/ceph/:/etc/ceph'
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 5s
-          max_attempts: 3
-          window: 120s
-    dashboard:
-      image: {{ site.img_dashboard }}
-      version: {{ site.ver_dashboard }}
-      container_name: dashboard
-      privileged: True
-      network_mode: host
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 5s
-          max_attempts: 3
-          window: 120s
+  compose: {}
 
 packages:
   pips:

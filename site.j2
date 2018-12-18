@@ -39,9 +39,11 @@
       'devstack_password': 'opensds@123',
       'devstack_dir': '/opt/opensds-linux-amd64-devstack',
 
-      'host_ipv4': grains.ipv4[-1],
-      'host_ipv6': grains.ipv6[-1],
-      'db_host': '127.0.0.1',
+      'host_ipv4': grains.ipv4[2],
+      'host_ipv6': grains.ipv6[2],
+      'tgtBindIp': grains.ipv4[2],
+      'db_host': grains.ipv4[2],
+
       'port_controller': '50040',
       'port_dock': '50050',
 }) %}

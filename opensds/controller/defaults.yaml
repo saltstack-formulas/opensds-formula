@@ -3,18 +3,18 @@
 #
 opensds:
   controller:
-    endpoint: http://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040
+    endpoint: http://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:50040
     provider: release    #release or repo
     repo:
       url: https://github.com/opensds/opensds.git
       branch: development
     container:
-      enabled: False
+      enabled: True
       composed: False
       build: False
       image: opensdsio/opensds-controller
       version: latest
       ports:
-        - {{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040:50040
+        - {{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:50040:50040
       volumes:
         - /etc/opensds/:/etc/opensds

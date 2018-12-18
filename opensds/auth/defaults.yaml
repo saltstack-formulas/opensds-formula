@@ -5,7 +5,7 @@ opensds:
   auth:
     service: osdsauth
     provider: keystone
-    endpoint: http://{{ grains.ipv4[-1] or grains.ipv6[-1] }}:50040
+    endpoint: http://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:50040
     container:
       enabled: False
       composed: False
@@ -14,9 +14,9 @@ opensds:
       version: latest
     opensdsconf:
       keystone_authtoken:
-        memcached_servers: {{ grains.ipv4[-1] or grains.ipv6[-1] }}:11211
+        memcached_servers: {{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1'}}:11211
         project_domain_name: Default
         project_name: service
         user_domain_name: Default
-        auth_url: http://{{ grains.ipv4[-1] or grains.ipv6[-1] }}/identity
+        auth_url: http://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}/identity
         auth_type: password

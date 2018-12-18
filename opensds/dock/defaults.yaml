@@ -16,7 +16,7 @@ opensds:
         - /etc/ceph/:/etc/ceph
     opensdsconf:
       osdsdock:
-        api_endpoint: {{ grains.ipv4[-1] or grains.ipv6[-1] }}:50050
+        api_endpoint: {{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:50050
         log_file: /var/log/opensds/osdsdock.log
         dock_type: provisioner
         enabled_backends: lvm           ## lvm, ceph, and/or cinder
