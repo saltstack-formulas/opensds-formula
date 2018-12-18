@@ -58,6 +58,8 @@ opensds:
       keystone_authtoken:
         memcached_servers: {{ site.host_ipv4 }}:11211
         auth_url: http://{{ site.host_ipv4 or site.host_ipv6 }}/identity
+        username: opensds{{ site.hotpot_release }}
+        password: {{ site.devstack_password }}
   database:
     container:
       enabled: True

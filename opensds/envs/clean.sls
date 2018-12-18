@@ -7,3 +7,4 @@ include:
   # golang.remove
   - devstack.remove
   - opensds.envs.profile.clean
+  - memcached.uninstall

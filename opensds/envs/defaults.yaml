@@ -1,6 +1,10 @@
 ###  opensds/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
 #
+
+memcached:
+  daemonize: True
+
 docker:
   # Global functions for all docker_container states
   containers:
