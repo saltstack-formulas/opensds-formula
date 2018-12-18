@@ -6,6 +6,15 @@
 {%- set sitedata = {} %}
 {%- do sitedata.update( {
 
+      'host_ipv4': grains.ipv4[-1],
+      'host_ipv6': grains.ipv6[-1],
+      'tgtBindIp': grains.ipv4[-1],
+      'db_host': grains.ipv4[-1],
+      'dns_host1': '8.8.8.8',
+      'dns_host2': '64.6.64.6',
+      'ipdomain': 'example.com',
+      'timezone': 'America/Denver',
+
       'hotpot_release': 'v0.3.3',
       'hotpot_hashsum': 'md5=fa144886b3ac67af47790d018bbfb3d9',
       'hotpot_uri': 'https://github.com/opensds/opensds/releases/download',
@@ -38,11 +47,6 @@
       'devstack_enabled_services': 'mysql,key',
       'devstack_password': 'opensds@123',
       'devstack_dir': '/opt/opensds-linux-amd64-devstack',
-
-      'host_ipv4': grains.ipv4[2],
-      'host_ipv6': grains.ipv6[2],
-      'tgtBindIp': grains.ipv4[2],
-      'db_host': grains.ipv4[2],
 
       'port_controller': '50040',
       'port_dock': '50050',
