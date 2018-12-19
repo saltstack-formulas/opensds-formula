@@ -24,9 +24,4 @@ opensds dock cinder block service container stopped:
            {%- endif %}
 
        {%- endif %}
-    {%- else %}
-
-include:
-  - opensds.dock.block.cinder.clean
-
     {%- endif %}

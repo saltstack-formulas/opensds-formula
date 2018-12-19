@@ -1,5 +1,28 @@
 {% from "site.j2" import sitedata as site %}
 
+timezone:
+  name: {{ site.timezone or 'America/Denver' }}
+  utc: True
+
+resolver:
+  ng:
+    resolvconf:
+      enabled: False
+  #domain: {{ site.ipdomain or 'example.com' }}
+  nameservers:
+    - {{ site.dns_host1 or '8.8.8.8' }}
+    - {{ site.dns_host2 or '64.6.64.6' }}
+  #searchpaths:
+  #- {{ site.ipdomain or 'example.com' }}
+  options:
+    - rotate
+    - timeout:1
+    - attempts:5
+
+memcached:
+  daemonize: True
+  listen_address: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
+
 golang:
   prefix: /usr/local
   go_root: /usr/local/golang
@@ -58,6 +81,8 @@ opensds:
       keystone_authtoken:
         memcached_servers: {{ site.host_ipv4 }}:11211
         auth_url: http://{{ site.host_ipv4 or site.host_ipv6 }}/identity
+        username: opensds
+        password: {{ site.devstack_password }}
   database:
     container:
       enabled: True
@@ -69,7 +94,7 @@ opensds:
     opensdsconf:
       osdslet:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}
-        auth_strategy: noauth
+        auth_strategy: keystone
 
   controller:
     endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
