@@ -1,8 +1,9 @@
-#************************************
+#*****************************************
 # SITE & RELEASE DATA COLLECTION
 # Save file as /srv/pillar/site.j2
 # this is jinja not yaml!!
-#************************************
+# Set ipaddress here using single quotes.
+#*****************************************
 {%- set sitedata = {} %}
 {%- do sitedata.update( {
 

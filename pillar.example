@@ -19,6 +19,36 @@ resolver:
     - timeout:1
     - attempts:5
 
+nginx:
+  ng:
+    servers:
+      managed:
+        default:
+          enabled: True
+          overwrite: True
+          config:
+            - server:
+              - root:
+                - /var/www/html
+              - server_name: '_'
+              - listen:
+                - 8080
+                - default_server
+              - listen:
+                - '[::]:8080'
+                - default_server
+              - index:
+                - index.html
+                - index.htm
+          {%- if grains.os_family == 'Debian' %}
+                - index.nginx-debian.html
+          {%- endif %}
+              - location /v3/:
+                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
+              - location /v1beta/:
+                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040//{{ site.hotpot_release }}/
+
+
 memcached:
   daemonize: True
   listen_address: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
@@ -396,3 +426,6 @@ salt_formulas:
      - memcached-formula
      - opensds-formula
      - mysql-formula
+     - timezone-formula
+     - resolver-formula
+     - nginx-formula
