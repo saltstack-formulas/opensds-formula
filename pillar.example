@@ -46,9 +46,25 @@ nginx:
               - location /v3/:
                 - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
               - location /v1beta/:
-                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040//{{ site.hotpot_release }}/
+                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
 
-
+apache:
+  sites:
+    {{ site.ipdomain or 'example.com' }}:
+      DocumentRoot: /var/www/html
+      ServerName: '_'
+      interface: '*'
+      port: '8080'
+      ProxyRequests: 'Off'
+      ProxyPreserveHost: 'On'
+      ProxyRoute:
+        v3:
+          ProxyPassSource: '/v3/'
+          ProxyPassTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
+        v1beta:
+          ProxyPassSource: '/v1beta/'
+          ProxyPassTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
+          
 memcached:
   daemonize: True
   listen_address: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
