@@ -133,7 +133,6 @@ The following ``pillar.example`` extract is suggested::
              - timezone-formula
              - resolver-formula
              - nginx-formula
-             - apache-formula
              - mysql-formula
              - mongodb-formula
 
