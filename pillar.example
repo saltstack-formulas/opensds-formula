@@ -88,8 +88,6 @@ mysql:
       bind_address: {{ site.db_host or site.host_ipv4 or site.host_ipv6 }}
 
 etcd:
-  #service:
-    #etcd_endpoints: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
   dir:
     tmp: /tmp/devstack
   docker:
@@ -135,6 +133,7 @@ opensds:
         auth_url: http://{{ site.host_ipv4 or site.host_ipv6 }}/identity
         username: opensds
         password: {{ site.devstack_password }}
+
   database:
     container:
       enabled: True
@@ -142,25 +141,35 @@ opensds:
     opensdsconf:
       database:
         db_endpoint: https://{{ site.host_ipv4 or site.host_ipv6 }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 }}:2380
-  let:
-    opensdsconf:
-      osdslet:
-        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}
-        auth_strategy: noauth
 
-  controller:
-    endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
+  let:
     container:
-      enabled: False    #or True
+      enabled: False
       image: {{ site.img_controller }}
       version: {{ site.ver_controller }}
       ports:
         - {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}:{{ site.port_controller }}
+    opensdsconf:
+      osdslet:
+        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 or '0.0.0.0' }}:{{ site.port_controller }}
+        auth_strategy: noauth
+        graceful: True
+
+  controller:
+    endpoint: {{ site.host_ipv4 or site.host_ipv6 or '0.0.0.0' }}:{{ site.port_controller }}
+    container:
+      enabled: False
+      image: {{ site.img_controller }}
+      version: {{ site.ver_controller }}
+      ports:
+        - {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}:{{ site.port_controller }}
+
   dashboard:
     provider: repo       #or release
     container:
       image: {{ site.img_dashboard }}
       version: {{ site.ver_dashboard }}
+
   nbp:
     provider: release  #or repo
     plugin_type: {{ site.dock_type }}
@@ -174,6 +183,7 @@ opensds:
       flexvolume:
         dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
         binary: /opt/opensds-sushi-linux-amd64/bin/flexvolume.server.opensds
+
   dock:
     container:
       image: {{ site.img_dock }}
@@ -182,7 +192,7 @@ opensds:
         - /etc/opensds/:/etc/opensds
     opensdsconf:
       osdsdock:
-        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
+        api_endpoint: localhost:{{ site.port_dock }}
         dock_type: {{ site.dock_type }}
         enabled_backend: {{ site.enabled_backend }}
     block:
@@ -303,15 +313,15 @@ devstack:
             group: service
     endpoint:
       create:
-        'opensds{{site.hotpot_release}} public https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+        'opensds{{site.hotpot_release}} public https://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
           options:
             region: RegionOne
             enable: True
-        'opensds{{site.hotpot_release}} internal https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+        'opensds{{site.hotpot_release}} internal https://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
           options:
             region: RegionOne
             enable: True
-        'opensds{{site.hotpot_release}} admin https://{{ site.host_ipv4 or site.host_ipv6 }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
+        'opensds{{site.hotpot_release}} admin https://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/{{ site.port_controller }}/{{ site.hotpot_release }}/%\(tenant_id\)s':
           options:
             region: RegionOne
             enable: True
