@@ -27,7 +27,5 @@ opensds:
   k8s:
     start: 'source /etc/profile && kubectl create -f deploy/kubernetes'
     stop: 'source /etc/profile && kubectl delete -f deploy/kubernetes'
-  webservers:
-    restart: 'apache2 restart && nginx restart'
 
   driver: {}
