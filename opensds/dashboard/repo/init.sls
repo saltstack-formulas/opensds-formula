@@ -8,11 +8,6 @@ include:
   - packages.pips
   - packages.pkgs
   - packages.archives
-  - apache
-  - apache.config
-  - apache.mod_proxy
-  - apache.mod_proxy_http
-  - apache.vhosts.standard
   - nginx.ng
 
 opensds dashboard ensure opensds dirs exist:
