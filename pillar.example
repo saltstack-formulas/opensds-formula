@@ -23,7 +23,7 @@ nginx:
   ng:
     servers:
       managed:
-        default:
+        opensds-dashboard.conf:
           enabled: True
           overwrite: True
           config:
@@ -124,7 +124,7 @@ opensds:
     opensdsconf:
       osdslet:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}
-        auth_strategy: keystone
+        auth_strategy: noauth
 
   controller:
     endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}

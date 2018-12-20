@@ -4,6 +4,8 @@
 {% from "opensds/map.jinja" import opensds with context %}
 
 include:
+  - timezone
+  - resolver.ng
   {{ '- epel' if grains.os_family in ('Redhat',) else '' }}
   - packages.pips
   - packages.pkgs
