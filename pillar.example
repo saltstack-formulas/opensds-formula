@@ -50,21 +50,27 @@ nginx:
 
 apache:
   sites:
-    {{ site.ipdomain or 'example.com' }}:
+    opensds-dashboard-{{ site.ipdomain or 'example.com' }}:
+      template_file: salt://apache/vhosts/proxy.tmpl
       DocumentRoot: /var/www/html
-      ServerName: '_'
+      ServerName: '{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}'
       interface: '*'
       port: '8080'
-      ProxyRequests: 'Off'
+      ProxyRequests: 'On'
       ProxyPreserveHost: 'On'
       ProxyRoute:
         v3:
           ProxyPassSource: '/v3/'
           ProxyPassTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
+          ProxyPassReverseSource: '/v3/'
+          ProxyPassReverseTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
         v1beta:
           ProxyPassSource: '/v1beta/'
           ProxyPassTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
-          
+          ProxyPassReverseSource: '/v1beta/'
+          ProxyPassReverseTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
+
+
 memcached:
   daemonize: True
   listen_address: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
