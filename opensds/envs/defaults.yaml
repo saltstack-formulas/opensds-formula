@@ -4,6 +4,7 @@
 
 memcached:
   daemonize: True
+  listen_address: {{ grains.ipv4 or grains.ipv6 or '127.0.0.1' }}
 
 docker:
   # Global functions for all docker_container states
