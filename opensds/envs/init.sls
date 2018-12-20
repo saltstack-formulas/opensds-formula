@@ -13,6 +13,7 @@ include:
   - opensds.envs.docker
   - opensds.envs.profile
   - memcached
+  - mysql.apparmor
   - devstack.user          #https://github.com/saltstack-formulas/devstack-formula
   - devstack.install
   - devstack.cli

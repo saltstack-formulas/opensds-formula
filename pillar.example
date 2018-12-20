@@ -80,6 +80,7 @@ golang:
   go_root: /usr/local/golang
   go_path: /usr/local/go
 
+### Note: we use devstack to deploy mysql not mysql-formula ###
 mysql:
   # mysql password needs to match devstack 'DATABASE_PASSWORD' !!!!!!!!! Important !!!!
   server:
