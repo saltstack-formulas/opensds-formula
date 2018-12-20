@@ -439,3 +439,4 @@ salt_formulas:
      - timezone-formula
      - resolver-formula
      - nginx-formula
+     - mongodb-formula
