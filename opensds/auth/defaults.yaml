@@ -15,8 +15,10 @@ opensds:
     opensdsconf:
       keystone_authtoken:
         memcached_servers: {{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1'}}:11211
+        signing_dir: /var/cache/opensds
+        cafile: /opt/stack/data/ca-bundle.pem
+        auth_uri: http://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}/identity
         project_domain_name: Default
-        project_default_name: Default
         project_name: service
         user_domain_name: Default
         auth_url: http://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}/identity

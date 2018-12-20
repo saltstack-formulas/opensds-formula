@@ -19,6 +19,58 @@ resolver:
     - timeout:1
     - attempts:5
 
+nginx:
+  ng:
+    servers:
+      managed:
+        opensds-dashboard.conf:
+          enabled: True
+          overwrite: True
+          config:
+            - server:
+              - root:
+                - /var/www/html
+              - server_name: '_'
+              - listen:
+                - 8080
+                - default_server
+              - listen:
+                - '[::]:8080'
+                - default_server
+              - index:
+                - index.html
+                - index.htm
+          {%- if grains.os_family == 'Debian' %}
+                - index.nginx-debian.html
+          {%- endif %}
+              - location /v3/:
+                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
+              - location /v1beta/:
+                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
+
+apache:
+  sites:
+    opensds-dashboard-{{ site.ipdomain or 'example.com' }}:
+      template_file: salt://apache/vhosts/proxy.tmpl
+      DocumentRoot: /var/www/html
+      ServerName: '{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}'
+      interface: '*'
+      port: '8080'
+      ProxyRequests: 'On'
+      ProxyPreserveHost: 'On'
+      ProxyRoute:
+        v3:
+          ProxyPassSource: '/v3/'
+          ProxyPassTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
+          ProxyPassReverseSource: '/v3/'
+          ProxyPassReverseTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
+        v1beta:
+          ProxyPassSource: '/v1beta/'
+          ProxyPassTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
+          ProxyPassReverseSource: '/v1beta/'
+          ProxyPassReverseTarget: http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
+
+
 memcached:
   daemonize: True
   listen_address: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
@@ -94,7 +146,7 @@ opensds:
     opensdsconf:
       osdslet:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_controller }}
-        auth_strategy: keystone
+        auth_strategy: noauth
 
   controller:
     endpoint: {{ site.host_ipv4 or site.host_ipv6 }}:{{ site.port_dock }}
@@ -396,3 +448,6 @@ salt_formulas:
      - memcached-formula
      - opensds-formula
      - mysql-formula
+     - timezone-formula
+     - resolver-formula
+     - nginx-formula

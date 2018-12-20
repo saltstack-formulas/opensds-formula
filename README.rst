@@ -130,4 +130,8 @@ The following ``pillar.example`` extract is suggested::
              - golang-formula
              - memcached-formula
              - opensds-formula
+             - timezone-formula
+             - resolver-formula
+             - nginx-formula
+             - apache-formula
 

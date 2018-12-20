@@ -8,6 +8,12 @@ include:
   - packages.pips
   - packages.pkgs
   - packages.archives
+  - apache
+  - apache.config
+  - apache.mod_proxy
+  - apache.mod_proxy_http
+  - apache.vhosts.standard
+  - nginx.ng
 
 opensds dashboard ensure opensds dirs exist:
   file.directory:
@@ -42,17 +48,3 @@ opensds dashboard repo build from source:
       - make
       - {{ opensds.webservers.restart }}
     - cwd: {{ golang.go_path }}/src/github.com/opensds/dashboard
-
-opensds dashboard repo reconfigure nginx:
-  file.managed:
-    - name: {{ opensds.dir.tmp }}/script/set_nginx_config.sh
-    - source: salt://opensds/files/script/set_nginx_config.sh
-    - template: jinja
-    - user: {{ opensds.user or 'root' }}
-    - mode: {{ opensds.file_mode or '0644' }}
-    - unless: test -f {{ opensds.dir.tmp }}/script/set_nginx_config.sh
-  cmd.run:
-    - names:
-      - {{ opensds.dir.tmp }}/script/set_nginx_config.sh
-      - {{ opensds.dashboard.webservers.restart }}
-
