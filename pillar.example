@@ -44,9 +44,9 @@ nginx:
                 - index.nginx-debian.html
           {%- endif %}
               - location /v3/:
-                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/
+                - proxy_pass: 'http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}/identity/v3/'
               - location /v1beta/:
-                - proxy_pass http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}
+                - proxy_pass: 'http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:50040/{{ site.hotpot_release }}'
 
 memcached:
   daemonize: True
@@ -439,3 +439,4 @@ salt_formulas:
      - timezone-formula
      - resolver-formula
      - nginx-formula
+     - mongodb-formula
