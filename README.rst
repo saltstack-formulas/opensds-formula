@@ -68,7 +68,7 @@ Site-specific Data Collection
 
 The ``site.j2`` and ``pillar.example`` files contain required pillars!
 
-Optionally update ``site.j2`` parameters to reflect your site specific parameters.
+You MUST review and update ``site.j2`` parameters to reflect site requirements and subnetworks.
 
 Prerequisite
 ==============
