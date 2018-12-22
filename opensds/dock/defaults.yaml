@@ -11,6 +11,7 @@ opensds:
       build: False
       image: opensdsio/opensds-dock
       version: latest
+      privileged: True
       volumes:
         - /etc/opensds/:/etc/opensds
         - /etc/ceph/:/etc/ceph

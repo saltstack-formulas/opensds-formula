@@ -3,10 +3,13 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
+include:
+    {%- if opensds.dock.block.enabled %}
+  - opensds.dock.block
+    {%- endif %}
+
     {%- if opensds.dock.container.enabled %}
        {%- if opensds.dock.container.composed %}
-
-include:
   - opensds.envs.docker
 
        {#- elif opensds.dock.container.build #}
@@ -35,11 +38,7 @@ opensds dock container service running:
            {%- endif %}
 
        {%- endif %}
-    {%- endif %}
-    {%- if opensds.dock.block.enabled %}
-
-include:
-  - opensds.dock.block
+    {%- else %}
 
 opensds dock ensure opensds dirs exist:
   file.directory:
@@ -100,6 +99,6 @@ opensds osdsdock systemd service:
     - name: osdsdock
     - enable: True
     - watch:
-      - file: opensds osdsock systemd service
+      - file: opensds osdsdock systemd service
 
     {%- endif %}
