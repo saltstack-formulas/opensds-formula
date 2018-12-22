@@ -23,3 +23,15 @@ opensds:
     block:
       opensdsconf: {}        #Dynamically defined in pillar data (not here)
 
+    systemd:
+      file: /usr/lib/systemd/system/osdsdock.service
+      conf:
+        Type: forking
+        LimitFSIZE: infinity
+        LimitCPU: infinity
+        LimitAS: infinity
+        LimitNOFILE: 64000
+        LimitNPROC: 64000
+        LimitMEMLOCK: infinity
+        TasksMax: infinity
+        TasksAccounting: false

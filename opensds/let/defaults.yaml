@@ -17,3 +17,15 @@ opensds:
         log_file: /var/log/opensds/osdslet.log
         socket_order: inc
         auth_strategy: keystone
+    systemd:
+      file: /usr/lib/systemd/system/osdslet.service
+      conf:
+        Type: forking
+        LimitFSIZE: infinity
+        LimitCPU: infinity
+        LimitAS: infinity
+        LimitNOFILE: 64000
+        LimitNPROC: 64000
+        LimitMEMLOCK: infinity
+        TasksMax: infinity
+        TasksAccounting: false
