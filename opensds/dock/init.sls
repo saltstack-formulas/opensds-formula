@@ -85,4 +85,22 @@ opensds dock ensure opensds config {{ section }} {{ k }} exists:
             {%- endfor %}
 
        {%- endfor %}
+
+opensds {{ svc }} systemd service:
+  file.managed:
+    - name: {{ opensds[svc]['systemd']['file'] }}
+    - source: salt://opensds/files/service.jinja
+    - mode: '0644'
+    - template: jinja
+    - makedirs: True
+    - context:
+        svc: {{ svc }}
+        binpath: '/usr/bin'
+        data: {{ opensds.dock.server|json }}
+  service.running:
+    - name: {{ svc }}
+    - enable: True
+    - watch:
+      - file: opensds {{ svc }} systemd service
+
     {%- endif %}

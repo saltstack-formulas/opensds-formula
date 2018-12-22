@@ -1,0 +1,36 @@
+#########################################################
+# File managed by Salt. Changes risk being overwritten.
+#########################################################
+[Unit]
+Description=OpenSDS {{ svc }} service
+After=network.target docker.target
+Documentation=https://opensds.io
+
+[Service]
+User=root
+Group=root
+EnvironmentFile=-/etc/sysconfig/{{ svc }}
+ExecStart={{ command }}
+PermissionsStartOnly=true
+PIDFile=/var/run/{{ svc }}.pid
+
+# file size
+LimitFSIZE={{ opensds[svc]['systemd']['conf']['LimitFSIZE'] }}
+# cpu time
+LimitCPU={{ opensds[svc]['systemd']['conf']['LimitCPU'] }}
+# virtual memory size
+LimitAS={{ opensds[svc]['systemd']['conf']['LimitAS'] }}
+# open files
+LimitNOFILE={{ opensds[svc]['systemd']['conf']['LimitNOFILE'] }}
+# processes/threads
+LimitNPROC={{ opensds[svc]['systemd']['conf']['LimitNPROC'] }}
+# locked memory
+LimitMEMLOCK={{ opensds[svc]['systemd']['conf']['LimitMEMLOCK'] }}
+# total threads (user+kernel)
+TasksMax={{ opensds[svc]['systemd']['conf']['TasksMax'] }}
+TasksAccounting={{ opensds[svc]['systemd']['conf']['TasksAccounting'] }}
+# Recommended limits for for mongod as specified in
+# http://docs.opensds.org/manual/reference/ulimit/#recommended-settings
+
+[Install]
+WantedBy=multi-user.target
