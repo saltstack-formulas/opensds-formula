@@ -93,7 +93,7 @@ opensds osdslet systemd service:
     - context:
         svc: osdslet
         systemd: {{ opensds.let.systemd|json }}
-        command: 'nohup {{opensds.dir.work}}/bin/osdslet >{{opensds.dir.log}}/osdslet.out 2>{{opensds.dir.log}}/osdslet.err'
+        command: '{{opensds.dir.work}}/bin/osdslet >{{opensds.dir.log}}/osdslet.out 2>{{opensds.dir.log}}/osdslet.err'
   service.running:
     - name: osdslet
     - enable: True
