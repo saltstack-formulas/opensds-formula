@@ -82,14 +82,22 @@ opensds let ensure opensds config {{ section }} {{ k }} exists:
 
         {%- endfor %}
      {%- endfor %}
-     {%- for i in (1,2,3,4,5) %}
 
-opensds let start daemon service attempt {{ loop.index }}:
-  cmd.run:
-    - names:
-      - nohup {{opensds.dir.work}}/bin/osdslet >{{opensds.dir.log}}/osdslet.out 2> {{opensds.dir.log}}/osdslet.err &
-      - (ps aux | grep osdslet | grep -v grep) | sleep 5
-    - unless: ps aux | grep osdslet | grep -v grep
+opensds osdslet systemd service:
+  file.managed:
+    - name: {{ opensds.let['systemd']['file'] }}
+    - source: salt://opensds/files/service.jinja
+    - mode: '0644'
+    - template: jinja
+    - makedirs: True
+    - context:
+        svc: osdslet
+        systemd: {{ opensds.let.systemd|json }}
+        command: 'nohup {{opensds.dir.work}}/bin/osdslet >{{opensds.dir.log}}/osdslet.out 2>{{opensds.dir.log}}/osdslet.err'
+  service.running:
+    - name: osdslet
+    - enable: True
+    - watch:
+      - file: opensds osdslet systemd service
 
-     {% endfor %}
   {%- endif %}

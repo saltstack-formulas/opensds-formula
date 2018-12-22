@@ -1,0 +1,34 @@
+#########################################################
+# File managed by Salt. Changes risk being overwritten.
+#########################################################
+[Unit]
+Description=OpenSDS {{ svc }} service
+After=network.target docker.target
+Documentation=https://opensds.io
+
+[Service]
+User=root
+Group=root
+EnvironmentFile=-/etc/sysconfig/{{ svc }}
+ExecStart={{ command }}
+PermissionsStartOnly=true
+PIDFile=/var/run/{{ svc }}.pid
+
+# file size
+LimitFSIZE={{ systemd['conf']['LimitFSIZE'] }}
+# cpu time
+LimitCPU={{ systemd['conf']['LimitCPU'] }}
+# virtual memory size
+LimitAS={{ systemd['conf']['LimitAS'] }}
+# open files
+LimitNOFILE={{ systemd['conf']['LimitNOFILE'] }}
+# processes/threads
+LimitNPROC={{ systemd['conf']['LimitNPROC'] }}
+# locked memory
+LimitMEMLOCK={{ systemd['conf']['LimitMEMLOCK'] }}
+# total threads (user+kernel)
+TasksMax={{ systemd['conf']['TasksMax'] }}
+TasksAccounting={{ systemd['conf']['TasksAccounting'] }}
+
+[Install]
+WantedBy=multi-user.target
