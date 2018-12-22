@@ -29,8 +29,6 @@ LimitMEMLOCK={{ systemd['conf']['LimitMEMLOCK'] }}
 # total threads (user+kernel)
 TasksMax={{ systemd['conf']['TasksMax'] }}
 TasksAccounting={{ systemd['conf']['TasksAccounting'] }}
-# Recommended limits for for mongod as specified in
-# http://docs.opensds.org/manual/reference/ulimit/#recommended-settings
 
 [Install]
 WantedBy=multi-user.target

@@ -82,7 +82,6 @@ opensds let ensure opensds config {{ section }} {{ k }} exists:
 
         {%- endfor %}
      {%- endfor %}
-     {%- set svc = 'osdslet' %}
 
 opensds osdslet systemd service:
   file.managed:
