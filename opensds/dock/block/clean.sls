@@ -4,13 +4,7 @@
 {% from "opensds/map.jinja" import opensds with context %}
 
     {%- if opensds.dock.block.container.enabled %}
-       {%- if opensds.dock.block.container.composed %}
-
-include:
-  - opensds.envs.docker.clean
-
-       {#- elif opensds.dock.block.container.build #}
-       {%- elif opensds.dock.block.provider in ('lvm', 'ceph',) %}
+       {%- if opensds.dock.block.provider in ('lvm', 'ceph',) %}
 
 opensds dock block {{ opensds.dock.block.provider }} service container stopped:
   docker_container.stopped:
@@ -30,5 +24,3 @@ include:
 
        {%- endif %}
     {%- endif %}
-
-

@@ -3,14 +3,8 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
+
     {%- if opensds.nbp.container.enabled %}
-        {%- if opensds.nbp.container.composed %}
-
-include:
-  - opensds.envs.docker
-
-        {#- elif opensds.nbp.container.build #}
-        {%- else %}
 
 opensds nbp container service running:
   docker_container.running:
@@ -34,7 +28,6 @@ opensds nbp container service running:
     - force_running: {{ docker.containers.force_running }}
            {%- endif %}
 
-        {% endif %}
     {%- else %}
 
 include:

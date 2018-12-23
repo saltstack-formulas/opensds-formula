@@ -5,13 +5,6 @@
 
     {%- set plugin = opensds.nbp.plugin_type %}
     {%- if opensds.nbp.plugins.container.enabled %}
-        {%- if opensds.nbp.plugins.container.composed %}
-
-include:
-  - opensds.envs.docker
-
-        {#- elif opensds.nbp.plugins.container.build #}
-        {%- else %}
 
 opensds nbp plugins container service running:
   docker_container.running:
@@ -35,9 +28,10 @@ opensds nbp plugins container service running:
     - force_running: {{ docker.containers.force_running }}
            {%- endif %}
 
-        {% endif %}
-    {%- else %}
+    {% endif %}
 
+
+### opensds.conf ###
 opensds nbp ensure opensds dirs exist:
   file.directory:
     - names:
@@ -131,4 +125,3 @@ opensds nbp plugins k8s start:
     - require:
       - opensds nbp plugins ensure opensds k8s {{ plugin }} plugin file exists
 
-    {%- endif %}

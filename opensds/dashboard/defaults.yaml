@@ -7,7 +7,6 @@ opensds:
     service: dashboard
     container:
       enabled: True
-      composed: False
       build: False
       image: opensdsio/dashboard
       version: latest

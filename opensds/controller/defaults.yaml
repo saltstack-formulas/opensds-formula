@@ -10,7 +10,6 @@ opensds:
       branch: development
     container:
       enabled: True
-      composed: False
       build: False
       image: opensdsio/opensds-controller
       version: latest

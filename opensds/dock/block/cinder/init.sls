@@ -4,14 +4,10 @@
 {% from "opensds/map.jinja" import opensds, docker with context %}
 {% from "opensds/files/macros.jinja" import getlist with context %}
 
+
     {%- if opensds.dock.block.cinder.container.enabled %}
-       {%- if opensds.dock.block.cinder.container.composed %}
 
-include:
-  - opensds.envs.docker
-
-       {%- elif opensds.dock.block.cinder.container.build %}
-
+       {%- if opensds.dock.block.cinder.container.build %}
 include:
   - packages.archives
   - opensds.dock.block.lvm
@@ -34,7 +30,7 @@ opensds dock block cinder loci build from source:
     - name: {{ opensds.dock.block.cinder.container.build }}
     - onlyif: echo $DOCKER_PASS | docker login -u$DOCKER_USER --password-stdin $DOCKER_HOST
 
-       {%- else %}
+   {%- else %}
 
 opensds dock block cinder container running:
   docker_container.running:
@@ -58,6 +54,4 @@ opensds dock block cinder container running:
     - force_running: {{ docker.containers.force_running }}
            {%- endif %}
 
-       {%- endif %}
-    {#- else #}
     {%- endif %}

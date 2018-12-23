@@ -7,7 +7,6 @@ opensds:
     provider: osdsdock
     container:
       enabled: True
-      composed: False
       build: False
       image: opensdsio/opensds-dock
       version: latest
@@ -17,13 +16,10 @@ opensds:
         - /etc/ceph/:/etc/ceph
     opensdsconf:
       osdsdock:
-        api_endpoint: {{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:50050
+        api_endpoint: '0.0.0.0:50050'
         log_file: /var/log/opensds/osdsdock.log
         dock_type: provisioner
-        enabled_backends: lvm           ## lvm, ceph, and/or cinder
-    block:
-      opensdsconf: {}        #Dynamically defined in pillar data (not here)
-
+        enabled_backends: lvm    ##or ceph or cinder
     systemd:
       file: /usr/lib/systemd/system/osdsdock.service
       conf:

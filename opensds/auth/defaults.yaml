@@ -5,10 +5,9 @@ opensds:
   auth:
     service: osdsauth
     provider: keystone
-    endpoint: http://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:50040
+    endpoint: '127.0.0.1:50040'
     container:
       enabled: False
-      composed: False
       build: False
       image: None
       version: latest

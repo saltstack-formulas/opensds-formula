@@ -4,12 +4,6 @@
 {% from "opensds/map.jinja" import opensds with context %}
 
     {%- if opensds.dock.block.lvm.container.enabled %}
-       {%- if opensds.dock.block.lvm.container.composed %}
-
-include:
-  - opensds.envs.docker.clean
-
-       {%- else %}
 
 opensds dock lvm block service container stopped:
   docker_container.stopped:
@@ -21,7 +15,6 @@ opensds dock lvm block service container stopped:
            {%- if "ports" in opensds.dock.block.lvm.container %}
     - port_bindings: {{ opensds.dock.block.lvm.container.ports }}
            {%- endif %}
-       {%- endif %}
 
     {%- elif opensds.dock.block.lvm.build %}
 

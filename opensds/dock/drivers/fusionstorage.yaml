@@ -13,19 +13,14 @@
 # limitations under the License.
 
 authOptions:
-  #noAuth: true
-  endpoint: "http://127.0.0.1/identity"
-  #cinderEndpoint: "http://127.0.0.1:8776/v2"
-  #domainId: "Default"
-  domainName: "Default"
-  #username: ""
-  #password: ""
-  username: "admin"
-  password: "admin"
-  tenantName: "admin"
-  #tenantId: "myproject"
+  fmIp: 192.168.0.100
+  fsaIp:
+    - 192.168.0.1
+    - 192.168.0.2
+    - 192.168.0.3
+
 pool:
-  pool1:
+  0:
     storageType: block
     availabilityZone: nova-01
     extras:
@@ -33,13 +28,13 @@ pool:
         provisioningPolicy: Thin
         isSpaceEfficient: false
       ioConnectivity:
-        accessProtocol: iscsi
+        accessProtocol: DSWARE
         maxIOPS: 7000000
         maxBWS: 600
       advanced:
         diskType: SSD
         latency: 3ms
-  pool2:
+  1:
     storageType: block
     availabilityZone: nova-01
     extras:
@@ -47,7 +42,7 @@ pool:
         provisioningPolicy: Thin
         isSpaceEfficient: false
       ioConnectivity:
-        accessProtocol: iscsi
+        accessProtocol: DSWARE
         maxIOPS: 3000000
         maxBWS: 300
       advanced:

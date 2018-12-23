@@ -3,14 +3,8 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds with context %}
 
+
     {%- if opensds.dock.block.cinder.container.enabled %}
-       {%- if opensds.dock.block.cinder.container.composed %}
-
-include:
-  - opensds.envs.docker.clean
-
-       {#- elif opensds.dock.block.cinder.container.build #}
-       {%- else %}
 
 opensds dock cinder block service container stopped:
   docker_container.stopped:
@@ -23,5 +17,4 @@ opensds dock cinder block service container stopped:
     - port_bindings: {{ opensds.dock.block.cinder.container.ports }}
            {%- endif %}
 
-       {%- endif %}
     {%- endif %}

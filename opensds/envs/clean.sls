@@ -3,7 +3,6 @@
 # vim: ft=yaml
 
 include:
-  # opensds.envs.docker.clean
   # golang.remove
   - devstack.remove
   - opensds.envs.profile.clean

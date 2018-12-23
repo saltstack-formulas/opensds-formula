@@ -14,7 +14,7 @@
 
 configFile: /etc/ceph/ceph.conf
 pool:
-  rdb:
+  rbd:
     storageType: block
     availabilityZone: default
     extras:

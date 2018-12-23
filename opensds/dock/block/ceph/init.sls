@@ -4,13 +4,6 @@
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
    {%- if opensds.dock.block.ceph.container.enabled %}
-       {%- if opensds.dock.block.ceph.container.composed %}
-
-include:
-  - opensds.envs.docker
-
-       {#- elif opensds.dock.block.ceph.container.build #}
-       {%- else %}
 
 opensds dock block ceph container running:
   docker_container.running:
@@ -34,7 +27,6 @@ opensds dock block ceph container running:
     - force_running: {{ docker.containers.force_running }}
            {%- endif %}
 
-       {%- endif %}
     {%- else %}
 
 include:
@@ -45,5 +37,5 @@ include:
   - ceph.repo
   - deepsea
 
-    {%- endif %}
+   {%- endif %}
 

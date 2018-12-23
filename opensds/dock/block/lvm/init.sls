@@ -4,12 +4,6 @@
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
    {%- if opensds.dock.block.lvm.container.enabled %}
-       {%- if opensds.dock.block.lvm.container.composed %}
-
-include:
-  - opensds.envs.docker
-
-       {%- else %}
 
 opensds dock block lvm container running:
   docker_container.running:
@@ -32,9 +26,6 @@ opensds dock block lvm container running:
            {%- if docker.containers.force_running %}
     - force_running: {{ docker.containers.force_running }}
            {%- endif %}
-
-       {%- endif %}
-    {%- elif opensds.dock.block.lvm.container.build %}
 
     {%- else %}
 
