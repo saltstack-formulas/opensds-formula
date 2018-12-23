@@ -14,18 +14,21 @@ opensds dock block lvm container running:
          {%- if "volumes" in opensds.dock.block.lvm.container %}
     - binds: {{ opensds.dock.block.lvm.container.volumes }}
          {%- endif %}
-         {%- if "ports" in opensds.dock.block.lvm.container %}
-    - port_bindings: {{ opensds.dock.block.lvm.container.ports }}
+         {%- if "ports" in opensds.auth.container %}
+    - ports: {{ opensds.auth.container.ports }}
          {%- endif %}
-           {%- if docker.containers.skip_translate %}
+         {%- if "port_bindings" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.port_bindings }}
+         {%- endif %}
+         {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate or '' }}
-           {%- endif %}
-           {%- if docker.containers.force_present %}
+         {%- endif %}
+         {%- if docker.containers.force_present %}
     - force_present: {{ docker.containers.force_present }}
-           {%- endif %}
-           {%- if docker.containers.force_running %}
+         {%- endif %}
+         {%- if docker.containers.force_running %}
     - force_running: {{ docker.containers.force_running }}
-           {%- endif %}
+         {%- endif %}
 
     {%- else %}
 

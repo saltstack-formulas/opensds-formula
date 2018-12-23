@@ -16,7 +16,10 @@ opensds auth container service running:
     - binds: {{ opensds.auth.container.volumes }}
          {%- endif %}
          {%- if "ports" in opensds.auth.container %}
-    - port_bindings: {{ opensds.auth.container.ports }}
+    - ports: {{ opensds.auth.container.ports }}
+         {%- endif %}
+         {%- if "port_bindings" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.port_bindings }}
          {%- endif %}
          {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate }}

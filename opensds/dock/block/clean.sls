@@ -8,14 +8,8 @@
 
 opensds dock block {{ opensds.dock.block.provider }} service container stopped:
   docker_container.stopped:
-    - names: {{ opensds.dock.block.service }}
+    - nams: {{ opensds.dock.block.service }}
     - error_on_absent: False
-           {%- if "volumes" in opensds.dock.block.container %}
-    - binds: {{ opensds.dock.block.container.volumes }}
-           {%- endif %}
-           {%- if "ports" in opensds.dock.block.container %}
-    - port_bindings: {{ opensds.dock.block.container.ports }}
-           {%- endif %}
 
        {%- elif opensds.dock.block.provider == 'cinder' %}
 

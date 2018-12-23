@@ -8,7 +8,6 @@ include:
   - packages.pips
   - packages.pkgs
   - packages.archives
-  - nginx.ng
 
 opensds dashboard ensure opensds dirs exist:
   file.directory:

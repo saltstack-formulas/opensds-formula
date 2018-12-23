@@ -7,7 +7,7 @@
 
 opensds dock ceph block service container stopped:
   docker_container.stopped:
-    - names: {{ opensds.dock.block.ceph.service }}
+    - name: {{ opensds.dock.block.ceph.service }}
     - error_on_absent: False
 
     {%- else %}

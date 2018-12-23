@@ -12,12 +12,15 @@ opensds controller container service running:
     - image: {{opensds.controller.container.image}}:{{opensds.controller.container.version}}
     - restart_policy: always
     - network_mode: host
-          {%- if "volumes" in opensds.controller.container %}
+         {%- if "volumes" in opensds.controller.container %}
     - binds: {{ opensds.controller.container.volumes }}
-          {%- endif %}
-          {%- if "ports" in opensds.controller.container %}
-    - port_bindings: {{ opensds.controller.container.ports }}
-          {%- endif %}
+         {%- endif %}
+         {%- if "ports" in opensds.auth.container %}
+    - ports: {{ opensds.auth.container.ports }}
+         {%- endif %}
+         {%- if "port_bindings" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.port_bindings }}
+         {%- endif %}
          {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate or '' }}
          {%- endif %}

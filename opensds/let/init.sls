@@ -5,7 +5,7 @@
 
     {%- if opensds.let.container.enabled %}
 
-opensds let {{ opensds.controller.release }} container service running:
+opensds let container service running:
   docker_container.running:
     - name: {{ opensds.let.service }}
     - image: {{ opensds.let.container.image }}:{{ opensds.let.container.version }}
@@ -14,8 +14,11 @@ opensds let {{ opensds.controller.release }} container service running:
          {%- if "volumes" in opensds.let.container %}
     - binds: {{ opensds.let.container.volumes }}
          {%- endif %}
-         {%- if "ports" in opensds.let.container %}
-    - port_bindings: {{ opensds.let.container.ports }}
+         {%- if "ports" in opensds.auth.container %}
+    - ports: {{ opensds.auth.container.ports }}
+         {%- endif %}
+         {%- if "port_bindings" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.port_bindings }}
          {%- endif %}
          {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate or '' }}

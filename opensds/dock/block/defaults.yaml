@@ -14,37 +14,56 @@ opensds:
 
       provider: lvm
       providers:
-        - lvm
-        - ceph
-        - cinder
         - sample
+        - cinder
+        - ceph
+        - lvm
         - huawei_dorado
         - huawei_fusionstorage
+
       sample:
         opensdsconf:
           name: sample
           description: Sample Test
           driver_name: sample
-        container: {}
+
       cinder:
-        opensdsconf: {}
+        opensdsconf:
+          name: cinder
+          description: Cinder Test
+          driver_name: cinder
+          config_path: /etc/opensds/driver/cinder.yaml
         container:
           enabled: True
           build: True
           image: None
           version: latest
+
       ceph:
-        opensdsconf: {}
+        opensdsconf:
+          name: ceph
+          description: Ceph Test
+          driver_name: ceph
+          config_path: /etc/opensds/driver/ceph.yaml
         container:
           enabled: False
           build: False
           image: None
           version: latest
+
       lvm:
-        opensdsconf: {}
+        opensdsconf:
+          name: lvm
+          description: LVM Test
+          driver_name: lvm
+          config_path: /etc/opensds/driver/lvm.yaml
+          host_based_replication_driver: DRBD
         container:
           enabled: False
           build: False
+          image: None
+          version: latest
+
       huawei_dorado:
         opensdsconf:
           name: dorado
@@ -55,6 +74,9 @@ opensds:
         container:
           enabled: False
           build: False
+          image: None
+          version: latest
+
       huawei_fusionstorage:
         opensdsconf:
           name: fusionstorage backend
@@ -64,3 +86,5 @@ opensds:
         container:
           enabled: False
           build: False
+          image: None
+          version: latest

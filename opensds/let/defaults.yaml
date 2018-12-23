@@ -11,7 +11,7 @@ opensds:
       version: latest
     opensdsconf:
       osdslet:
-        api_endpoint: '0.0.0.0:50050'
+        api_endpoint: '0.0.0.0:50040'
         graceful: True
         log_file: /var/log/opensds/osdslet.log
         socket_order: inc

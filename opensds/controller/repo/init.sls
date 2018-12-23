@@ -38,7 +38,7 @@ opensds controller repo download from git:
     - env:
        - GOPATH: {{ golang.go_path }}/bin
     - require:
-      - git: opensds controller {{ opensds.controller.release }} repo download from git
+      - git: opensds controller repo download from git
   file.managed:
     - name: {{ opensds.dir.work }}/
     - makedirs: True
@@ -48,7 +48,7 @@ opensds controller repo download from git:
       - user
       - mode
 
-opensds controller {{ opensds.controller.release }} copy repo content to work directory:
+opensds controller copy repo content to work directory:
   file.copy:
     - name: {{ opensds.dir.work }}/
     - source: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}/*

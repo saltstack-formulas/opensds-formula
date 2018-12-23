@@ -7,14 +7,8 @@
 
 opensds dock lvm block service container stopped:
   docker_container.stopped:
-    - names: {{ opensds.dock.block.lvm.service }}
-    - error_on_absent: False
-           {%- if "volumes" in opensds.dock.block.lvm.container %}
-    - binds: {{ opensds.dock.block.lvm.container.volumes }}
-           {%- endif %}
-           {%- if "ports" in opensds.dock.block.lvm.container %}
-    - port_bindings: {{ opensds.dock.block.lvm.container.ports }}
-           {%- endif %}
+    - name: {{ opensds.dock.block.lvm.service }}
+    - error_on_absent: True
 
     {%- elif opensds.dock.block.lvm.build %}
 

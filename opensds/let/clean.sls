@@ -6,14 +6,14 @@
 
     {%- if opensds.let.container.enabled %}
 
-opensds let {{ opensds.controller.release }} container service stopped:
+opensds let container service stopped:
   docker_container.stopped:
-    - names: {{ opensds.let.service }}
-    - error_on_absent:False
+    - name: {{ opensds.let.service }}
+    - error_on_absent: False
 
    {%- else %}
 
-opensds let {{ opensds.controller.release }} kill daemon service:
+opensds let kill daemon service:
   service.dead:
     - name: {{ opensds.let.service }}
 

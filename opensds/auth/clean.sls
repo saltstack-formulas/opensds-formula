@@ -9,7 +9,7 @@
 opensds auth container service stopped:
   docker_container.stopped:
     - name: {{ opensds.auth.service }}
-    - error_on_removed: False
+    - error_on_absent: False
 
       {%- if opensds.auth.provider in ('keystone', 'devstack',) %}
 include:

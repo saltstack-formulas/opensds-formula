@@ -10,16 +10,18 @@ opensds:
       build: True   {# we will use etcd.docker.running state instead of this #}
       image: None
       version: latest
+      volumes:
+        - /usr/share/ca-certificates/:/etc/ssl/certs
     opensdsconf:
       database:
         driver: etcd
-        endpoint: 'localhost:2379,https://localhost:2380'
+        endpoint: 'https://0.0.0.0:2379,https://0.0.0.0:2380'
         credential: 'opensds:password@127.0.0.1:3306/dbname'
 
 etcd:
   service:
     name: osdsdb
-    etcd_endpoints: 'localhost:2379,https://localhost:2380'
+    etcd_endpoints: 'https://localhost:2379,https://localhost:2380'
   docker:
     enabled: True
 

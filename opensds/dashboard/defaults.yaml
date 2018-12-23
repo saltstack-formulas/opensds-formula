@@ -10,6 +10,11 @@ opensds:
       build: False
       image: opensdsio/dashboard
       version: latest
+       {%- if grains.os_family in ('Debian') %}
+      volumes:
+        - /etc/nginx/sites-available/default:/etc/nginx/sites-available/default
+        - /run/nginx:/run/nginx
+       {%- endif %}
     repo:
       url: https://github.com/opensds/opensds.git
       branch: development

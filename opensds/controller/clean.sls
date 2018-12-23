@@ -13,7 +13,7 @@ opensds controller container service stopped:
 
     {%- elif opensds.controller.provider|lower|trim in ('release', 'repo',) %}
 
-opensds controller {{ opensds.controller.release }} clean release files:
+opensds controller clean release files:
   file.absent:
     - names:
       - {{ opensds.dir.work }}
