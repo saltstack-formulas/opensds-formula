@@ -13,14 +13,12 @@ opensds:
       url: https://github.com/opensds/nbp.git
     container:
       enabled: False
-      composed: False
       build: False
       image: None
       version: latest
     plugins:
       container:
         enabled: False
-        composed: False
         build: False
         image: None
         version: latest

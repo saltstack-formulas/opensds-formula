@@ -5,4 +5,3 @@
 include:
   {{ '- epel' if grains.os_family in ('RedHat',) else '' }} 
   - docker
-  - docker.compose-ng

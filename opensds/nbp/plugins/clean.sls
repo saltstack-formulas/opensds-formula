@@ -5,20 +5,12 @@
 
     {%- set plugin = opensds.nbp.plugin_type %}
     {%- if opensds.nbp.plugins.container.enabled %}
-        {%- if opensds.nbp.plugins.container.composed %}
-
-include:
-  - opensds.envs.docker.clean
-
-        {#- elif opensds.nbp.plugins.container.build #}
-        {%- else %}
 
 opensds nbp plugins container service stopped:
   docker_container.stopped:
     - name: {{ opensds.nbp.plugins.service }}
     - error_on_absent: False
 
-        {%- endif %}
     {%- else %}
 
 opensds nbp plugins {{ plugin }} k8s stop:
@@ -34,13 +26,11 @@ opensds nbp plugins stop service:
     - sig: {{ opensds.nbp.service }}
 
          {%- for plugin in opensds.nbp.plugins %}
-
 opensds nbp plugins {{ plugin }} clean plugin dir:
   file.absent:
     - name: {{ opensds.nbp.plugins[plugin] }}
     - require:
       - opensds nbp stop service
       - opensds nbp {{ plugin }} k8s stop
-
          {%- endfor %}
     {%- endif %}

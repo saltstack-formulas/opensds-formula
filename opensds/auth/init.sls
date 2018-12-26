@@ -3,14 +3,8 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
+
     {%- if opensds.auth.container.enabled %}
-        {%- if opensds.auth.container.composed %}
-
-include:
-  - opensds.envs.docker
-
-        {#- elif opensds.auth.container.build #}
-        {%- else %}
 
 opensds auth container service running:
   docker_container.running:
@@ -22,7 +16,10 @@ opensds auth container service running:
     - binds: {{ opensds.auth.container.volumes }}
          {%- endif %}
          {%- if "ports" in opensds.auth.container %}
-    - port_bindings: {{ opensds.auth.container.ports }}
+    - ports: {{ opensds.auth.container.ports }}
+         {%- endif %}
+         {%- if "port_bindings" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.port_bindings }}
          {%- endif %}
          {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate }}
@@ -34,16 +31,17 @@ opensds auth container service running:
     - force_running: {{ docker.containers.force_running }}
          {%- endif %}
 
-       {%- endif %}
     {% else %}
 
 include:
-  - devstack.user          #https://github.com/saltstack-formulas/devstack-formula
+  - devstack.user
   - devstack.install
   - devstack.cli
 
     {% endif %}
 
+
+### opensds.conf ###
 opensds auth ensure opensds dirs exist:
   file.directory:
     - names:

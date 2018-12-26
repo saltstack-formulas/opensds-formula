@@ -3,17 +3,13 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
-include:
     {%- if opensds.dock.block.enabled %}
+
+include:
   - opensds.dock.block
+
     {%- endif %}
-
     {%- if opensds.dock.container.enabled %}
-       {%- if opensds.dock.container.composed %}
-  - opensds.envs.docker
-
-       {#- elif opensds.dock.container.build #}
-       {%- else %}
 
 opensds dock container service running:
   docker_container.running:
@@ -21,24 +17,30 @@ opensds dock container service running:
     - image: {{ opensds.dock.container.image }}:{{ opensds.dock.container.version }}
     - restart_policy: always
     - network_mode: host
-          {%- if "volumes" in opensds.dock.container %}
+    - privileged: true
+         {%- if "volumes" in opensds.dock.container %}
     - binds: {{ opensds.dock.container.volumes }}
-          {%- endif %}
-          {%- if "ports" in opensds.dock.container %}
-    - port_bindings: {{ opensds.dock.container.ports }}
-          {%- endif %}
-           {%- if docker.containers.skip_translate %}
+         {%- endif %}
+         {%- if "ports" in opensds.auth.container %}
+    - ports: {{ opensds.auth.container.ports }}
+         {%- endif %}
+         {%- if "port_bindings" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.port_bindings }}
+         {%- endif %}
+         {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate or '' }}
-           {%- endif %}
-           {%- if docker.containers.force_present %}
+         {%- endif %}
+         {%- if docker.containers.force_present %}
     - force_present: {{ docker.containers.force_present }}
-           {%- endif %}
-           {%- if docker.containers.force_running %}
+         {%- endif %}
+         {%- if docker.containers.force_running %}
     - force_running: {{ docker.containers.force_running }}
-           {%- endif %}
+         {%- endif %}
 
-       {%- endif %}
-    {%- else %}
+    {%- endif %}
+
+
+### opensds.conf ###
 
 opensds dock ensure opensds dirs exist:
   file.directory:
@@ -54,7 +56,6 @@ opensds dock ensure opensds dirs exist:
       - user
       - mode
 
-       #### update opensds.conf ####
 opensds dock ensure opensds config file exists:
   file.managed:
     - name: {{ opensds.controller.conf }}
@@ -83,6 +84,9 @@ opensds dock ensure opensds config {{ section }} {{ k }} exists:
       - opensds dock ensure opensds config {{ section }} section exists
             {%- endfor %}
        {%- endfor %}
+
+
+    {%- if not opensds.dock.container.enabled %}
 
 opensds osdsdock systemd service:
   file.managed:

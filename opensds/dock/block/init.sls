@@ -3,14 +3,12 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
-   {%- if opensds.dock.block.container.enabled %}
-       {%- if opensds.dock.block.container.composed %}
-
 include:
-  - opensds.envs.docker
+  - opensds.dock.block.config
 
-       {#- elif opensds.dock.block.container.build #}
-       {%- elif opensds.dock.block.provider in ('lvm', 'ceph',) %}
+
+  {%- if opensds.dock.block.lvm.container.enabled %}
+    {%- if opensds.dock.block.provider in ('lvm', 'ceph',) %}
 
 opensds dock block {{ opensds.dock.block.provider }} container running:
   docker_container.running:
@@ -34,17 +32,11 @@ opensds dock block {{ opensds.dock.block.provider }} container running:
     - force_running: {{ docker.containers.force_running }}
            {%- endif %}
 
-       {%- elif opensds.dock.block.provider == 'cinder' %}
-
-include:
+   {%- elif opensds.dock.block.provider == 'cinder' %}
   - opensds.dock.block.cinder
-  - opensds.dock.block.config
 
-       {%- endif %}
    {%- else %}
-
-include:
   - {{ 'opensds.dock.block.' ~ opensds.dock.block.provider  }}
-  - opensds.dock.block.config
 
-   {%- endif %}
+    {%- endif %}
+  {%- endif %}

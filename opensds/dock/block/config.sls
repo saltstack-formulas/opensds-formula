@@ -10,29 +10,27 @@ opensds dock block ensure opensds config file exists:
    - mode: {{ opensds.dir_mode }}
    - replace: False
 
-    {% set provider = opensds.dock.block.provider %}
-    {% for section, data in opensds.dock.block[provider].opensdsconf.items() %}
+    {%- for provider in opensds.dock.block.providers %}
 
-opensds dock block ensure opensds config {{ section }} section exists:
+opensds dock block ensure opensds config {{ provider }} section exists:
   ini.sections_present:
     - name: {{ opensds.controller.conf }}
     - sections:
-      - {{ section }}
+      - {{ provider }}
 
-        {%- for k, v in data.items() %}
+      {%- for k, v in opensds.dock.block[provider].opensdsconf.items() %}
 
-opensds dock block ensure opensds config {{ section }} {{ k }} exists:
+opensds dock block ensure opensds config {{ provider }} {{ k }} exists:
   ini.options_present:
     - name: {{ opensds.controller.conf }}
     - separator: '='
     - sections:
-        {{ section }}:
+        {{ provider }}:
           {{ k }}: {{ v }}
     - require:
-      - opensds dock block ensure opensds config {{ section }} section exists
+      - opensds dock block ensure opensds config {{ provider }} section exists
 
-        {%- endfor %}
-    {%- endfor %}
+      {%- endfor %}
 
 opensds dock block ensure {{ provider }} driver directories exists:
   file.directory:
@@ -56,3 +54,4 @@ opensds dock block generate {{ provider }} driver file:
     - require:
       - opensds dock block ensure {{ provider }} driver directories exists
 
+    {%- endfor %}

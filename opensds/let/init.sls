@@ -4,15 +4,8 @@
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
     {%- if opensds.let.container.enabled %}
-       {% if opensds.let.container.composed %}
 
-include:
-  - opensds.envs.docker
-
-       {#- elif opensds.let.container.build #}
-       {%- else %}
-
-opensds let {{ opensds.controller.release }} container service running:
+opensds let container service running:
   docker_container.running:
     - name: {{ opensds.let.service }}
     - image: {{ opensds.let.container.image }}:{{ opensds.let.container.version }}
@@ -21,8 +14,11 @@ opensds let {{ opensds.controller.release }} container service running:
          {%- if "volumes" in opensds.let.container %}
     - binds: {{ opensds.let.container.volumes }}
          {%- endif %}
-         {%- if "ports" in opensds.let.container %}
-    - port_bindings: {{ opensds.let.container.ports }}
+         {%- if "ports" in opensds.auth.container %}
+    - ports: {{ opensds.auth.container.ports }}
+         {%- endif %}
+         {%- if "port_bindings" in opensds.auth.container %}
+    - port_bindings: {{ opensds.auth.container.port_bindings }}
          {%- endif %}
          {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate or '' }}
@@ -34,9 +30,10 @@ opensds let {{ opensds.controller.release }} container service running:
     - force_running: {{ docker.containers.force_running }}
          {%- endif %}
 
-       {%- endif %}
-  {% else %}
+    {%- endif %}
 
+
+### opensds.conf ###
 opensds let ensure opensds dirs exist:
   file.directory:
     - names:
@@ -51,7 +48,6 @@ opensds let ensure opensds dirs exist:
       - user
       - mode
 
-    #### Update opensds.conf ####
 opensds let ensure opensds config file exists:
   file.managed:
     - name: {{ opensds.controller.conf }}
@@ -69,7 +65,6 @@ opensds let ensure opensds config {{ section }} section exists:
       - {{ section }}
 
          {%- for k, v in data.items() %}
-
 opensds let ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
     - name: {{ opensds.controller.conf }}
@@ -79,9 +74,12 @@ opensds let ensure opensds config {{ section }} {{ k }} exists:
           {{ k }}: {{ v }}
     - require:
       - opensds let ensure opensds config {{ section }} section exists
-
         {%- endfor %}
-     {%- endfor %}
+
+    {%- endfor %}
+
+
+  {%- if not opensds.let.container.enabled %}
 
 opensds osdslet systemd service:
   file.managed:

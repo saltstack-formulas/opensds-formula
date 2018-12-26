@@ -7,19 +7,21 @@ opensds:
     provider: etcd
     container:
       enabled: True
-      composed: False
       build: True   {# we will use etcd.docker.running state instead of this #}
       image: None
       version: latest
+      volumes:
+        - /usr/share/ca-certificates/:/etc/ssl/certs
     opensdsconf:
       database:
-        db_driver: etcd
-        db_endpoint: https://{{grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:2379,https://{{grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:2380
+        driver: etcd
+        endpoint: 'https://0.0.0.0:2379,https://0.0.0.0:2380'
+        credential: 'opensds:password@127.0.0.1:3306/dbname'
 
 etcd:
   service:
     name: osdsdb
-    etcd_endpoints: https://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1'  }}:2379,https://{{ grains.ipv4[-1] or grains.ipv6[-1] or '127.0.0.1' }}:2380
+    etcd_endpoints: 'https://localhost:2379,https://localhost:2380'
   docker:
     enabled: True
 
