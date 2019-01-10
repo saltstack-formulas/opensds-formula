@@ -80,6 +80,7 @@ etcd:
     listen_peer_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
     listen_client_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2379'
     advertise_client_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2379'
+    cmd_args: ''
     auto_tls: False
     peer_auto_tls: False
   docker:
