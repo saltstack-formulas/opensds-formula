@@ -68,10 +68,20 @@ mysql:
       bind_address: {{ site.db_host or site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
 
 etcd:
-  service:
-    etcd_endpoints: '{{ site.db_host or site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }},{{ site.db_host or site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:2380'
   dir:
     tmp: /tmp/etcd_tmp
+  service:
+    name: osdsdb
+    data_dir: /var/lib/etcd/osdsdb
+    initial_cluster: 'osdsdb=http://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
+    initial_cluster_state: new
+    initial_cluster_token: osdsdb-1
+    initial_advertise_peer_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
+    listen_peer_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
+    listen_client_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2379'
+    advertise_client_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2379'
+    auto_tls: False
+    peer_auto_tls: False
   docker:
     image: {{ site.img_etcd }}
     version: {{ site.ver_etcd }}
