@@ -4,7 +4,7 @@
 {% from "opensds/map.jinja" import opensds, golang with context %}
 
 include:
-  {{ '- epel if grains.os_family in ('RedHat',) else '' }}
+  {{ '- epel' if grains.os_family in ('RedHat',) else '' }}
   - packages.pips
   - packages.pkgs
   - packages.archives
@@ -26,9 +26,9 @@ opensds dashboard ensure opensds dirs exist:
 
 opensds dashboard repo build from source:
   git.latest:
-    - name: {{ opensds.repo.url }}
+    - name: {{ opensds.dashboard.repo.url }}
     - target: {{ golang.go_path }}/src/github.com/opensds/dashboard
-    - rev: {{ opensds.repo.get('branch', 'master') }}
+    - rev: {{ opensds.dashboard.repo.get('branch', 'master') }}
     - force_checkout: True
     - force_clone: True
     - force_fetch: True
@@ -39,6 +39,13 @@ opensds dashboard repo build from source:
       - cmd: opensds dashboard repo build from source
   cmd.run:
     - names:
+      - service apache2 stop 2>/dev/null || true
       - make
-      - {{ opensds.webservers.restart }}
+      - service apache2 start 2>/dev/null || true
     - cwd: {{ golang.go_path }}/src/github.com/opensds/dashboard
+    - output_loglevel: quiet
+  service.running:
+    - name: nginx
+    - enable: True
+    - watch:
+      - cmd: opensds dashboard repo build from source

@@ -3,6 +3,7 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
+  {%- if opensds.deploy_project not in ('gelato',)  %}
     {%- if opensds.dock.block.enabled %}
 
 include:
@@ -58,7 +59,7 @@ opensds dock ensure opensds dirs exist:
 
 opensds dock ensure opensds config file exists:
   file.managed:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
@@ -68,14 +69,14 @@ opensds dock ensure opensds config file exists:
 
 opensds dock ensure opensds config {{ section }} section exists:
   ini.sections_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - sections:
       - {{ section }}
 
             {%- for k, v in data.items() %}
 opensds dock ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - separator: '='
     - sections:
         {{ section }}:
@@ -97,12 +98,19 @@ opensds osdsdock systemd service:
     - makedirs: True
     - context:
         svc: osdsdock
-        command: /usr/bin/osdsdock
         systemd: {{ opensds.dock.systemd|json }}
+        command: {{ opensds.dir.work }}/bin/osdsdock >{{opensds.dir.log}}/osdsdock.out 2>{{opensds.dir.log}}/osdsdock.err
+  cmd.run:
+    - names:
+      - systemctl daemon-reload
+    - watch:
+      - file: opensds osdsdock systemd service
   service.running:
     - name: osdsdock
     - enable: True
     - watch:
-      - file: opensds osdsdock systemd service
+      - cmd: opensds osdsdock systemd service
 
     {%- endif %}
+
+  {%- endif %}

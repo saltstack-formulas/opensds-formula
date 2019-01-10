@@ -11,7 +11,10 @@ opensds:
   dir_mode: '0755'
   file_mode: '0644'
   user: root
-  controller:
+  deploy_project: all    ##### 'hotpot', 'gelato' or 'all' ####
+  server_name: opensds
+
+  hotpot:
     conf: /etc/opensds/opensds.conf
   host: 127.0.0.1
   ports:

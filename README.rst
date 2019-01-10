@@ -27,15 +27,15 @@ Available META states
 
 Runs all the other states in the formula. This state is used by the ``OpenSDS-installer/salt`` module.
 
-``opensds.envs``
+``opensds.infra``
 -----------------
 
 Deploy os profile (PATHS) and environmental dependencies (devstack, packages, docker) via salt.
 
-``opensds.controller``
+``opensds.hotpot``
 -----------------
 
-Deploy opensds controller
+Deploy opensds hotpot
 
 ``opensds.auth``
 -----------------
@@ -52,7 +52,7 @@ Deploy database service (default etcd).
 
 Deploy osdsdock service.
 
-``opensds.nbp``
+``opensds.sushi``
 -----------------
 
 Deploy osdsnbp service.
@@ -92,7 +92,7 @@ The following ``pillar.example`` extract is suggested::
               base:
                 - /srv/pillar
           ssh_roster:
-            controller1:
+            hotpot1:
               host: {{ grains.ipv4 or grains.ipv6 }}
               user: stack
               sudo: True

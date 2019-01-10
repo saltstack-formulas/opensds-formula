@@ -1,19 +1,20 @@
-### opensds/controller/init.sls
+### opensds/hotpot/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, golang, docker, devstack with context %}
 
 
-    {%- if opensds.controller.container.enabled %}
+  {%- if opensds.deploy_project not in ('gelato',) %}
+    {%- if opensds.hotpot.container.enabled %}
 
-opensds controller container service running:
+opensds hotpot container service running:
   docker_container.running:
-    - name: {{ opensds.controller.service }}
-    - image: {{opensds.controller.container.image}}:{{opensds.controller.container.version}}
+    - name: {{ opensds.hotpot.service }}
+    - image: {{opensds.hotpot.container.image}}:{{opensds.hotpot.container.version}}
     - restart_policy: always
     - network_mode: host
-         {%- if "volumes" in opensds.controller.container %}
-    - binds: {{ opensds.controller.container.volumes }}
+         {%- if "volumes" in opensds.hotpot.container %}
+    - binds: {{ opensds.hotpot.container.volumes }}
          {%- endif %}
          {%- if "ports" in opensds.auth.container %}
     - ports: {{ opensds.auth.container.ports }}
@@ -31,7 +32,7 @@ opensds controller container service running:
     - force_running: {{ docker.containers.force_running }}
          {%- endif %}
 
-    {%- elif opensds.controller.provider|trim|lower in ('release', 'repo',) %}
+    {%- elif opensds.hotpot.provider|trim|lower in ('release', 'repo',) %}
 
 include:
   {{ '- epel' if grains.os_family in ('Redhat',) else '' }}
@@ -39,13 +40,13 @@ include:
   - packages.pkgs
   - packages.archives
   - golang
-  - opensds.controller.{{ opensds.controller.provider|trim|lower }}
+  - opensds.hotpot.{{ opensds.hotpot.provider|trim|lower }}
 
     {%- endif %}
 
 
 ### opensds.conf ###
-opensds controller ensure opensds dirs exist:
+opensds hotpot ensure opensds dirs exist:
   file.directory:
     - names:
       {%- for k, v in opensds.dir.items() %}
@@ -72,4 +73,6 @@ opensds sdrc file generated:
     - context:
       go_path: {{ golang.go_path }}
       devstack: {{ devstack }}
-      opensds_hotpot_release: {{ opensds.release.hotpot }}
+      opensds: {{ opensds }}
+
+  {%- endif %}

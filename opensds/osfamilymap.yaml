@@ -9,6 +9,10 @@ Default:
     - git
     - gcc
     - make
+{%- if grains.os_family in ('Debian',) %}
+    - nodejs
+    - npm
+{%- endif %}
   let:
     conf:
       log_file: /var/log/opensds/osdslet.log
@@ -23,7 +27,7 @@ Default:
         image: debian-cinder
         platform: debian:stretch
         datadir: /opt/opensds/driver/container/data_dir
-  nbp:
+  sushi:
     dir:
       work: /opt/opensds-k8s-linux-amd64
       deploy: /opt/opensds-k8s-linux-amb64/provisioner/deploy

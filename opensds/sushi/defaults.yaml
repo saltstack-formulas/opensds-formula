@@ -1,15 +1,15 @@
-###  opensds/nbp/defaults.sls
+###  opensds/sushi/defaults.sls
 #
 
 opensds:
-  nbp:
-    provider: release             ## release or repo
+  sushi:
+    provider: release               ## release or repo
     service: osdsnbp
-    plugin_type: hotpot_only
+    plugin_type: 'hotpot_only'      ## 'csi' or 'flexvolume'
     dir:
       work: /opt/opensds-sushi-linux-amd64
     repo:
-      branch: master
+      branch: stable/bali
       url: https://github.com/opensds/nbp.git
     container:
       enabled: False
@@ -22,6 +22,7 @@ opensds:
         build: False
         image: None
         version: latest
+      hotpot_only: {}
       csi:
         dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
         conf: csi-k8s_configmap-opensdsplugin.yaml
@@ -32,4 +33,3 @@ opensds:
         dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
         conf:
         binary: /opt/opensds-sushi-linux-amd64/bin/flexvolume.server.opensds
-

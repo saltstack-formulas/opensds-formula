@@ -3,15 +3,15 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
+opensds dashboard disable other web servers:
+  service.dead:
+    - names:
+      - apache2
+    - enable: False
+
     {%- if opensds.dashboard.container.enabled %}
 
-include:
-  - apache.uninstall
-
 opensds dashboard container service running:
-  service.dead:
-    - name: nginx
-    - enable: False
   cmd.run:
     - names:
       - mkdir -p /run/nginx 2>/dev/null
@@ -50,11 +50,16 @@ include:
   - apache.uninstall
   - opensds.dashboard.{{ opensds.dashboard.provider|trim|lower }}
 
+opensds dashboard install angular cli:
+  cmd.run:
+    - name: npm install -g @angular/cli
+    - onlyif: npm --version 2>/dev/null
+
     {%- endif %}
 
 
 ### opensds.conf ###
-opensds dashboard ensure opensds dirs exist:
+opensds dashboard ensure opensds dirs exist init:
   file.directory:
     - names:
       {%- for k, v in opensds.dir.items() %}
@@ -70,7 +75,7 @@ opensds dashboard ensure opensds dirs exist:
 
 opensds dashboard ensure opensds config file exists:
   file.managed:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
@@ -80,14 +85,14 @@ opensds dashboard ensure opensds config file exists:
 
 opensds dashboard config ensure dashboard {{ section }} section exists:
   ini.sections_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - sections:
       - {{ section }}
 
             {%- for k, v in data.items() %}
 opensds dashboard config ensure dashboard {{ section }} {{ k }} exists:
   ini.options_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - separator: '='
     - sections:
         {{ section }}:

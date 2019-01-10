@@ -1,19 +1,19 @@
-###  opensds/nbp/init.sls
+###  opensds/sushi/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
 
-    {%- if opensds.nbp.container.enabled %}
+    {%- if opensds.sushi.container.enabled %}
 
-opensds nbp container service running:
+opensds sushi container service running:
   docker_container.running:
-    - name: {{ opensds.nbp.service }}
-    - image: {{ opensds.nbp.container.image }}:{{ opensds.nbp.container.version }}
+    - name: {{ opensds.sushi.service }}
+    - image: {{ opensds.sushi.container.image }}:{{ opensds.sushi.container.version }}
     - restart_policy: always
     - network_mode: host
-         {%- if "volumes" in opensds.nbp.container %}
-    - binds: {{ opensds.nbp.container.volumes }}
+         {%- if "volumes" in opensds.sushi.container %}
+    - binds: {{ opensds.sushi.container.volumes }}
          {%- endif %}
          {%- if "ports" in opensds.auth.container %}
     - ports: {{ opensds.auth.container.ports }}
@@ -35,6 +35,6 @@ opensds nbp container service running:
 
 include:
   - iscsi.initiator
-  - opensds.nbp.plugins
+  - opensds.sushi.plugins
 
     {%- endif %}

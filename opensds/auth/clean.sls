@@ -21,6 +21,6 @@ include:
 ### opensds.conf ###
 opensds config ensure osdsauth section removed from opensds.conf:
   ini.sections_absent:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - sections:
       - {{ opensds.auth.service }}

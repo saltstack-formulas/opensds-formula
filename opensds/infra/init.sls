@@ -1,7 +1,8 @@
-###  opensds/salt/init.sls
+###  opensds/infra/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds with context %}
+
 
 include:
   - timezone
@@ -10,15 +11,22 @@ include:
   - packages.pips
   - packages.pkgs
   - packages.archives
-  - opensds.envs.docker
-  - opensds.envs.profile
+  - opensds.infra.docker
+  - opensds.infra.profile
   - memcached
   - mysql.apparmor
   - devstack.user
   - devstack.install
-  - devstack.cli
 
-opensds envs ensure opensds dirs exist:
+  {%- if opensds.pkgs %}
+
+opensds infra ensure required packages installed:
+  pkg.installed:
+    - names: {{ opensds.pkgs }}
+
+  {%- endif %}
+   
+opensds infra ensure opensds dirs exist:
   file.directory:
     - names:
       {%- for k, v in opensds.dir.items() %}
@@ -31,3 +39,4 @@ opensds envs ensure opensds dirs exist:
     - recurse:
       - user
       - mode
+

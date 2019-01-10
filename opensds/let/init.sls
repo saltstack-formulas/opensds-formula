@@ -50,7 +50,7 @@ opensds let ensure opensds dirs exist:
 
 opensds let ensure opensds config file exists:
   file.managed:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
@@ -60,14 +60,14 @@ opensds let ensure opensds config file exists:
 
 opensds let ensure opensds config {{ section }} section exists:
   ini.sections_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - sections:
       - {{ section }}
 
          {%- for k, v in data.items() %}
 opensds let ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - separator: '='
     - sections:
         {{ section }}:
@@ -92,10 +92,15 @@ opensds osdslet systemd service:
         svc: osdslet
         systemd: {{ opensds.let.systemd|json }}
         command: '{{opensds.dir.work}}/bin/osdslet >{{opensds.dir.log}}/osdslet.out 2>{{opensds.dir.log}}/osdslet.err'
+  cmd.run:
+    - names:
+      - systemctl daemon-reload
+    - watch:
+      - file: opensds osdslet systemd service
   service.running:
     - name: osdslet
     - enable: True
     - watch:
-      - file: opensds osdslet systemd service
+      - cmd: opensds osdslet systemd service
 
   {%- endif %}
