@@ -100,4 +100,5 @@ opensds dashboard config ensure dashboard {{ section }} {{ k }} exists:
     - require:
       - opensds dashboard config ensure dashboard {{ section }} section exists
             {%- endfor %}
+
         {% endfor %}

@@ -3,16 +3,6 @@
 # vim: ft=jinja
 
 Default:
-  pkgs:
-    - python-setuptools
-    - salt-api
-    - git
-    - gcc
-    - make
-{%- if grains.os_family in ('Debian',) %}
-    - nodejs
-    - npm
-{%- endif %}
   let:
     conf:
       log_file: /var/log/opensds/osdslet.log

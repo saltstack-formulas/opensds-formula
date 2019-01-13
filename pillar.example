@@ -5,9 +5,6 @@ opensds:
   ports:
     opensds: {{ site.port_hotpot }}
     dock: {{ site.port_dock }}
-  hashsum:
-    hotpot: '{{ site.hotpot_hashsum }}'
-    sushi: '{{ site.sushi_hashsum }}'
   dir:
     devstack: {{ site.devstack_dir }}
   driver:
@@ -23,7 +20,7 @@ opensds:
     container:
       compose:
         url:  {{ site.gelato_url }}
-        hash: {{ site.gelato_hashsum }}
+        hashsum: {{ site.gelato_hashsum }}
 
   auth:
     opensdsconf:
@@ -59,7 +56,7 @@ opensds:
     opensdsconf:
       osdslet:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:{{ site.port_hotpot }}
-        auth_strategy: keystone
+        auth_strategy: noauth
         graceful: True
 
   hotpot:
@@ -408,14 +405,14 @@ packages:
           format: bin
           source: {{ site.kubectl_url }}
           hashsum: {{ site.kubectl_hashsum }}
-      opensds-hotpot:
+      hotpot:
         dest: /opt/opensds-linux-amd64
         options: '--strip-components=1'
         dl:
           format: tar
           source: {{ site.hotpot_uri }}/{{ site.hotpot_release }}/opensds-hotpot-{{ site.hotpot_release }}-linux-amd64.tar.gz
           hashsum: {{ site.hotpot_hashsum }}
-      opensds-sushi:
+      sushi:
         dest: /usr/local/go/bin/src/github.com/opensds/nbp
         options: '--strip-components=1'
         dl:

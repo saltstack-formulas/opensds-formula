@@ -5,11 +5,17 @@
 
   {%- if opensds.deploy_project not in ('hotpot',) %}
 
-opensds gelato download docker-compose.yaml configuration file:
-  file.managed:
-    - name: {{ opensds.gelato.dir.work }}/docker-compose.yml
-    - source: {{ opensds.gelato.container.compose.url }}
-    - unless: {{ opensds.gelato.provider }} = 'repo'
+opensds gelato download docker-compose.yml configuration file:
+  cmd.run:
+    - name: curl -O {{ opensds.gelato.container.compose.url }}
+    - cwd: {{ opensds.gelato.dir.work }}
+    - unless: test {{ opensds.gelato.provider }} = 'repo'
+  #file.managed: file corrupted ##
+  #  - name: {{ opensds.gelato.dir.work }}/docker-compose.yml
+  #  - source: {{ opensds.gelato.container.compose.url }}
+  #  - source_hash: {{ opensds.gelato.container.compose.hashsum }}
+    - require_in:
+      - cmd: opensds gelato start service run compose up
 
 opensds gelato modify configuration auth strategy:
   file.replace:
@@ -17,6 +23,8 @@ opensds gelato modify configuration auth strategy:
     - pattern: OS_AUTH_AUTHSTRATEGY=.*$
     - repl: OS_AUTH_AUTHSTRATEGY={{ opensds.auth.provider }}
     - backup: '.salt.bak'
+    - require_in:
+      - cmd: opensds gelato start service run compose up
 
 opensds gelato modify configuration auth url:
   file.replace:
@@ -24,6 +32,8 @@ opensds gelato modify configuration auth url:
     - pattern: OS_AUTH_URL=.*$
     - repl: OS_AUTH_URL=http://{{ opensds.host }}/identity
     - backup: '.salt.bak'
+    - require_in:
+      - cmd: opensds gelato start service run compose up
 
 opensds gelato modify configuration username:
   file.replace:
@@ -31,18 +41,26 @@ opensds gelato modify configuration username:
     - pattern: OS_USERNAME=.*
     - repl: OS_USERNAME={{ opensds.gelato.service }}
     - backup: '.salt.bak'
+    - require_in:
+      - cmd: opensds gelato start service run compose up
 
-opensds gelato modify configuration password strategy:
+opensds gelato modify configuration password:
   file.replace:
     - name: {{ opensds.gelato.container.compose.conf }}
     - pattern: OS_PASSWORD=.*
     - repl: OS_PASSWORD={{ opensds.auth.opensdsconf.keystone_authtoken.password or devstack.local.password }}
     - backup: '.salt.bak'
+    - require_in:
+      - cmd: opensds gelato start service run compose up
 
 opensds gelato start service run compose up:
   cmd.run:
-    - name: docker-compose up -d
-    - cwd: {{ opensds.gelato.dir }}
+    - names:
+      - dos2unix docker-compose.yml
+      - docker-compose up -d
+    - cwd: {{ opensds.gelato.dir.work }}
+    - require_in:
+      - cmd: opensds gelato start service wait compose up
 
 opensds gelato start service wait compose up:
   cmd.run:

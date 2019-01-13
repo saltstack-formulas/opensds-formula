@@ -8,7 +8,7 @@
 opensds gelato ensure opensds dirs exist:
   file.directory:
     - names:
-      {%- for k, v in opensds.dir.items() %}
+      {%- for k, v in opensds.gelato.dir.items() %}
       - {{ v }}
       {%- endfor %}
       - {{ golang.go_path }}/src/github.com/opensds/multi-cloud
