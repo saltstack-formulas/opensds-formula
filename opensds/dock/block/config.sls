@@ -5,7 +5,7 @@
 
 opensds dock block ensure opensds config file exists:
   file.managed:
-   - name: {{ opensds.controller.conf }}
+   - name: {{ opensds.hotpot.conf }}
    - makedirs: True
    - mode: {{ opensds.dir_mode }}
    - replace: False
@@ -14,7 +14,7 @@ opensds dock block ensure opensds config file exists:
 
 opensds dock block ensure opensds config {{ provider }} section exists:
   ini.sections_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - sections:
       - {{ provider }}
 
@@ -22,7 +22,7 @@ opensds dock block ensure opensds config {{ provider }} section exists:
 
 opensds dock block ensure opensds config {{ provider }} {{ k }} exists:
   ini.options_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - separator: '='
     - sections:
         {{ provider }}:

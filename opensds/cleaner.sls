@@ -9,6 +9,6 @@ include:
   - opensds.dock.clean
   - opensds.database.clean
   - opensds.let.clean
-  - opensds.nbp.clean
+  - opensds.sushi.clean
   - opensds.profile.clean
-  - opensds.envs.clean
+  - opensds.infra.clean

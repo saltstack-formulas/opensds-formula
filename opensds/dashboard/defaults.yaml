@@ -3,7 +3,7 @@
 #
 opensds:
   dashboard:
-    provider: repo       #.ie. source_code
+    provider: repo       #.ie. source_code or release
     service: dashboard
     container:
       enabled: True
@@ -16,6 +16,6 @@ opensds:
         - /run/nginx:/run/nginx
        {%- endif %}
     repo:
-      url: https://github.com/opensds/opensds.git
-      branch: development
+      url: https://github.com/opensds/opensds-dashboard.git
+      branch: stable/bali
     opensdsconf: {}

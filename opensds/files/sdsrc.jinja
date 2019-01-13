@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2018 Huawei Technologies Co., Ltd. All Rights Reserved.
+# Copyright (c) 2019 Noel McLoughlin. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,17 +21,23 @@ if [ "$HOST_IP" == "" ]; then
 fi
 
 # OpenSDS configuration.
-OPENSDS_VERSION={{ opensds_hotpot_release or '${OPENSDS_VERSION:-v1beta}' }}
+OPENSDS_VERSION={{ opensds.hotpot.release or '${OPENSDS_VERSION:-v1beta}' }}
+
+# Multi-cloud
+MULTICLOUD_VERSION={{ opensds.gelato.release or '${MULTICLOUD_VERSION:-v1}' }}
 
 # OpenSDS service name in keystone.
-OPENSDS_SERVER_NAME=${OPENSDS_SERVER_NAME:-opensds}
+OPENSDS_SERVER_NAME={{ opensds.hotpot.service or '${OPENSDS_SERVER_NAME:-opensds}' }}
+
+# Multi-Cloud service name in keystone
+MULTICLOUD_SERVER_NAME={{ opensds.gelato.service or '${MULTICLOUD_SERVER_NAME:-multicloud}' }}
 
 # devstack keystone configuration
 STACK_GIT_BASE=${STACK_GIT_BASE:-https://git.openstack.org}
 STACK_USER_NAME={{ devstack.local.username or '${STACK_USER_NAME:-stack}' }}
 STACK_PASSWORD={{ devstack.local.password or '${STACK_PASSWORD:-devstack}' }}
-STACK_HOME=${STACK_HOME:-/opt/stack}
-STACK_BRANCH=${STACK_BRANCH:-stable/rocky}
+STACK_HOME={{ devstack.dir.dest or '${STACK_HOME:-/opt/stack}' }}
+STACK_BRANCH='${STACK_BRANCH:-stable/rocky}'
 DEV_STACK_DIR=$STACK_HOME/devstack
 
 GOPATH={{ go_path or '${GOPATH:-$HOME/gopath}' }}

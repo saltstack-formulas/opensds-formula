@@ -1,0 +1,21 @@
+###  opensds/gelato/defaults.sls
+#
+
+opensds:
+  gelato:
+    provider: 'repo'
+    service: 'multicloud'
+    dir:
+      work: /opt/opensds-gelato-linux-amd64
+    repo:
+      branch: stable/bali
+      url: https://github.com/opensds/multi-cloud.git
+    container:
+      enabled: False
+      build: False
+      image: None
+      version: latest
+      compose:  
+        conf: /opt/opensds-gelato-linux-amd64/docker-compose.yml
+        url:  https://raw.githubusercontent.com/opensds/multi-cloud/master/docker-compose.yml
+        hash: 'sha256=bcd3e3cfe0c064f60ffbf1db58bf41a32fcc458bb7c4dcc9bdd395ba1251e2d5'

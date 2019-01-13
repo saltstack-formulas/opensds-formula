@@ -1,4 +1,4 @@
-### opensds/controller/repo.sls
+### opensds/hotpot/repo.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {% from "opensds/map.jinja" import opensds with context %}
@@ -6,7 +6,7 @@
 include:
   - golang
 
-opensds controller ensure opensds dirs exist:
+opensds hotpot ensure opensds dirs exist:
   file.directory:
     - names:
       {%- for k, v in opensds.dir.items() %}
@@ -21,9 +21,9 @@ opensds controller ensure opensds dirs exist:
       - user
       - mode
 
-opensds controller repo download from git:
+opensds hotpot repo download from git:
   git.latest:
-    - name: {{ opensds.controller.repo.url }}
+    - name: {{ opensds.hotpot.repo.url }}
     - target: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     - rev: {{ opensds.repo.get('branch', 'master') }}
     - force_checkout: True
@@ -31,14 +31,14 @@ opensds controller repo download from git:
     - force_fetch: True
     - force_reset: True
     - require:
-      - opensds controller ensure opensds dirs exist
+      - opensds hotpot ensure opensds dirs exist
   cmd.run:
     - name: make
     - cwd: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}
     - env:
        - GOPATH: {{ golang.go_path }}/bin
     - require:
-      - git: opensds controller repo download from git
+      - git: opensds hotpot repo download from git
   file.managed:
     - name: {{ opensds.dir.work }}/
     - makedirs: True
@@ -48,7 +48,7 @@ opensds controller repo download from git:
       - user
       - mode
 
-opensds controller copy repo content to work directory:
+opensds hotpot copy repo content to work directory:
   file.copy:
     - name: {{ opensds.dir.work }}/
     - source: {{ opensds.dir.tmp }}/{{ opensds.dir.work }}/*
@@ -57,5 +57,5 @@ opensds controller copy repo content to work directory:
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
     - require:
-      - file: opensds controller repo download from git
+      - file: opensds hotpot repo download from git
      

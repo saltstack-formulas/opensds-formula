@@ -4,6 +4,7 @@
 {% from "opensds/map.jinja" import opensds with context %}
 
 
+  {%- if opensds.deploy_project not in ('gelato',)  %}
     {%- if opensds.database.container.enabled %}
 
 include:
@@ -35,7 +36,7 @@ opensds database ensure opensds dirs exist:
 
 opensds database ensure opensds config file exists:
   file.managed:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
@@ -45,14 +46,14 @@ opensds database ensure opensds config file exists:
 
 opensds database ensure opensds config {{ section }} section exists:
   ini.sections_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - sections:
       - {{ section }}
 
            {%- for k, v in data.items() %}
 opensds database ensure opensds config {{ section }} {{ k }} exists:
   ini.options_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - separator: '='
     - sections:
         {{ section }}:
@@ -62,3 +63,4 @@ opensds database ensure opensds config {{ section }} {{ k }} exists:
            {%- endfor %}
 
         {%- endfor %}
+  {%- endif %}

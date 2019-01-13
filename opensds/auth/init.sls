@@ -34,8 +34,6 @@ opensds auth container service running:
     {% else %}
 
 include:
-  - devstack.user
-  - devstack.install
   - devstack.cli
 
     {% endif %}
@@ -59,7 +57,7 @@ opensds auth ensure opensds dirs exist:
     #### update opensds.conf ####
 opensds auth ensure opensds config file exists:
   file.managed:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - makedirs: True
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
@@ -69,7 +67,7 @@ opensds auth ensure opensds config file exists:
 
 opensds auth config ensure osdsauth {{ section }} section exists:
   ini.sections_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - sections:
       - {{ section }}
 
@@ -77,7 +75,7 @@ opensds auth config ensure osdsauth {{ section }} section exists:
 
 opensds auth config ensure osdsauth {{ section }} {{ k }} exists:
   ini.options_present:
-    - name: {{ opensds.controller.conf }}
+    - name: {{ opensds.hotpot.conf }}
     - separator: '='
     - sections:
         {{ section }}:

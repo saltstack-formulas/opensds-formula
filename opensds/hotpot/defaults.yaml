@@ -1,18 +1,18 @@
-###  opensds/controller/defaults.yaml
+###  opensds/hotpot/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
 #
 opensds:
-  controller:
+  hotpot:
     endpoint: http://127.0.0.1:50040
     provider: release    #release or repo
     repo:
       url: https://github.com/opensds/opensds.git
-      branch: development
+      branch: stable/bali
     container:
-      enabled: True
+      enabled: False
       build: False
-      image: opensdsio/opensds-controller
-      version: latest
+      image: opensdsio/opensds-hotpot
+      version: bali
       ports:
         - 50040
         - 50040/udp
