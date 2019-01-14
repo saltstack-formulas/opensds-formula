@@ -7,16 +7,7 @@ golang:
   go_path: /var/lib/golang
 
 opensds:
-  pkgs:
-    - python-setuptools
-    - salt-api
-    - git
-    - gcc
-    - make
-    - dos2unix
-    - docker-compose
-    - nodejs
-    - npm
+  pkgs: []
   dir_mode: '0755'
   file_mode: '0644'
   user: root
