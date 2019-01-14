@@ -1,9 +1,7 @@
 ### opensds/map.jinja ###
-### exported dicts: opensds, driver, docker, firewalld, golang, ceph, devstack ###
+### exported dicts: opensds, driver, docker, firewalld, golang, ceph,  ###
 
 #OpenSDS: import formula default dicts
-{% import_yaml "opensds/infra/defaults.yaml" as infra %}
-{% import_yaml "opensds/infra/devstack/defaults.yaml" as devstack %}
 {% import_yaml "opensds/defaults.yaml" as defaults %}
 {% import_yaml "opensds/hotpot/defaults.yaml" as hotpot %}
 {% import_yaml "opensds/auth/defaults.yaml" as auth %}
@@ -29,10 +27,8 @@
                           let, merge=salt['grains.filter_by'](
                              sushi, merge=salt['grains.filter_by'](
                                 gelato, merge=salt['grains.filter_by'](
-                                   infra, merge=salt['grains.filter_by'](
-                                      osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
-                                         osmap, grain='os', merge=salt['pillar.get']('opensds', {}),
-                                         base='opensds',),
+                                   osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
+                                      osmap, grain='os', merge=salt['pillar.get']('opensds', {}),
                                       base='opensds',),
                                    base='opensds',),
                                 base='opensds',),
@@ -47,19 +43,34 @@
      base='opensds',)
 %}
 
-# Third-party upstream formulas: merge opensds-provided pillar data over upstream defaults
-{%- set firewalld = salt['grains.filter_by']( infra.firewalld, merge=salt['pillar.get']('firewalld', {}), base='firewalld') %}
-{%- set golang = salt['grains.filter_by']( infra.golang, merge=salt['pillar.get']('golang', {}), base='golang') %}
-{%- set ceph = salt['grains.filter_by']( infra.ceph, merge=salt['pillar.get']('ceph', {}), base='ceph') %}
-{%- set docker = salt['grains.filter_by']( infra.docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
+#################################################################
+# To access 3rd-party salt formula defaults (in opensds-formula)
+# we import their defaults.yaml file & then merge our pillar data
+# ontop. The resulting DICT is accessible in this formula.
+# Here is the method illustrated ....
+############################################################
+{% import_yaml "firewalld/defaults.yaml" as firewalld %}
+{% import_yaml "golang/defaults.yaml" as golang %}
+{% import_yaml "docker/defaults.yaml" as docker %}
+{% import_yaml "devstack/defaults.yaml" as devstack %}
+{% import_yaml "etcd/defaults.yaml" as etcd %}
+
+{%- set firewalld = salt['grains.filter_by']( firewalld, merge=salt['pillar.get']('firewalld', {}), base='firewalld') %}
+{%- set golang = salt['grains.filter_by']( golang, merge=salt['pillar.get']('golang', {}), base='golang') %}
+{%- set etcd = salt['grains.filter_by']( etcd, merge=salt['pillar.get']('ceph', {}), base='ceph') %}
+{%- set docker = salt['grains.filter_by']( docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
 {%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
 
-# DRIVER: merge any pillar data with, and over, defaults
+####################################################################
+# DRIVER: merge any pillar data onto vendor supplied driver(.yaml)
+####################################################################
 {% from "opensds/files/macros.jinja" import deep_merge with context %}
 {%- import_yaml 'opensds/dock/drivers/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}
 {%- do deep_merge(driver, opensds.driver) %}
 
+#################################
 # SITE SPECIFIC PARAM INJECTION
+################################
 {%- if opensds.dock.block.provider in ('lvm',) %}
   {%- do driver.update({'tgtBindIp': opensds.host or '127.0.0.1'}) %}
 {%- endif %}

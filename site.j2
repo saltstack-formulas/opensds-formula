@@ -7,6 +7,8 @@
 {%- set sitedata = {} %}
 {%- do sitedata.update( {
 
+      'deploy_project': 'all',
+
       'host_ipv6': '::1/128',
       'host_ipv4': '127.0.0.1',
       'tgtBindIp': '127.0.0.1',
@@ -15,10 +17,6 @@
       'dns_host2': '64.6.64.6',
       'ipdomain': 'example.com',
       'timezone': 'America/Denver',
-
-      'port_hotpot': '50040',
-      'port_dock': '50050',
-      'port_gelato': '8089',
 
       'gelato_release': 'v1',
       'gelato_service': 'multicloud',
@@ -57,4 +55,13 @@
       'devstack_enabled_services': 'mysql,key',
       'devstack_password': 'opensds@123',
       'devstack_dir': '/opt/opensds-linux-amd64-devstack',
+
+      'port_hotpot': '50040',
+      'port_dock': '50050',
+      'port_gelato': '8089',
+      'port_mysql': '3306',
+      'port_nginx': '8088',
+      'port_auth1': '2379',
+      'port_auth2': '2380',
+
 }) %}

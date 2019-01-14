@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # Global
-HOST_IP={{ devstack.local.host_ip or devstack.local.host_ipv6 or '${HOST_IP:-}' }}
+HOST_IP={{ devstack.local.host_ipv4 or devstack.local.host_ipv6 or '${HOST_IP:-}' }}
 if [ "$HOST_IP" == "" ]; then
     die $LINENO "Could not determine host ip address. See local.conf for suggestions on setting HOST_IP."
 fi

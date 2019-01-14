@@ -37,7 +37,7 @@ opensds sushi repo get source if missing:
       - opensds sushi ensure opensds dirs exist
   cmd.run:
     - name: make
-    - cwd: {{ {{ golang.go_path }}/src/github.com/opensds/sushi
+    - cwd: {{ golang.go_path }}/src/github.com/opensds/sushi
 
     {%- for driver in ('csi', 'provisioner',) %}
 

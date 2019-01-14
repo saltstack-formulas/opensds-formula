@@ -1,6 +1,7 @@
 {% from "site.j2" import sitedata as site %}
 
 opensds:
+  deploy_project: {{ site.deploy_project }}
   host: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
   ports:
     opensds: {{ site.port_hotpot }}
@@ -35,12 +36,12 @@ opensds:
       enabled: True
       build: True
       port_bindings:
-        - '2379:2379'
-        - '2380:2380'
+        - '{{ site.port_auth1 }}:{{ site.port_auth1 }}'
+        - '{{ site.port_auth2 }}:{{ site.port_auth2 }}'
     opensdsconf:
       database:
-        endpoint: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2379,https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
-        credential: 'opensds:{{ site.devstack_password }}@{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:3306/dbname'
+        endpoint: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:{{ site.port_auth1 }},https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:{{ site.port_auth2 }}'
+        credential: 'opensds:{{ site.devstack_password }}@{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:{{ site.port_mysql }}/dbname'
 
   let:
     container:
@@ -114,6 +115,9 @@ opensds:
         container:
           enabled: True
 
+ceph:
+  use_upstream_repo: true
+
 lvm:
   files:
     loopbackdir: /tmp/opensds_loopdevs    #Where to create backing files
@@ -157,24 +161,70 @@ lvm:
           - /dev/loop1
 
 firewalld:
+  enabled: True
   services:
+    saltstack:
+      short: salt
+      description: SaltStack rules
+      ports:
+        tcp:
+          - 4505
+          - 4506
+    ceph:
+      short: ceph
+      description: Ceph firewall rules
+      ports:
+        tcp:
+          - 6789
+          - 6800:6810
     opensds:
+      short: opensds
+      description: Open Software Defined Storage
       ports:
         tcp:
           - {{ site.port_hotpot }}
           - {{ site.port_gelato }}
           - {{ site.port_dock }}
-          - '3306'
+          - {{ site.port_mysql }}
+          - {{ site.port_auth1 }}
+          - {{ site.port_auth2 }}
+          - '11211'
+  zones:
+    public:
+      short: Public
+      services:
+        - http
+        - https
+        - ssh
+        - ntp
+        - saltstack
+        - ceph
+        - opensds
+
+      {%- if grains.os == 'Fedora' %}
+    FedoraWorkstation:
+      short: FedoraWorkstation
+      services:
+        - http
+        - https
+        - ssh
+        - ntp
+        - saltstack
+        - ceph
+        - opensds
+      {%- endif %}
+
 
 devstack:
   local:
+    username: stack
     password: {{ site.devstack_password }}
     enabled_services: {{ site.devstack_enabled_services }}
     os_password: {{ site.devstack_password }}
-    host_ip: {{ site.host_ipv4 }}
-    host_ipv6: {{ site.host_ipv6 or '127.0.0.1' }}
-    service_host: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}
-    db_host: {{ site.db_host }}
+    host_ipv4: {{ site.host_ipv4 or '127.0.0.1' }}
+    host_ipv6: {{ site.host_ipv6 or '::1/128' }}
+    service_host: {{ site.host_ipv4 or '127.0.0.1' }}
+    db_host: {{ site.db_host or '127.0.0.1' }}
   dir:
     dest: {{ site.devstack_dir }}
     tmp: /tmp/devstack
@@ -326,7 +376,8 @@ memcached:
 golang:
   prefix: /usr/local
   go_root: /usr/local/golang
-  go_path: /usr/local/go
+  go_path: /usr/local/go    #its symlinked to /usr/local/golang/<ver>/go/
+
 
 ### Note: we use devstack to deploy mysql not mysql-formula ###
 mysql:
@@ -342,14 +393,15 @@ etcd:
   service:
     name: osdsdb
     data_dir: /var/lib/etcd/osdsdb
-    initial_cluster: 'osdsdb=https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
+    initial_cluster: 'osdsdb=http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:{{ site.port_auth2 }}'
     initial_cluster_state: new
     initial_cluster_token: osdsdb-1
-    initial_advertise_peer_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
-    listen_peer_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2380'
-    listen_client_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2379'
-    advertise_client_urls: 'https://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:2379'
-    cmd_args: '--auto-tls --peer-auto-tls'
+    initial_advertise_peer_urls: 'http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:{{ site.port_auth2 }}'
+    listen_peer_urls: 'http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:{{ site.port_auth2 }}'
+    listen_client_urls: 'http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:{{ site.port_auth1 }}'
+    advertise_client_urls: 'http://{{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:{{ site.port_auth1 }}'
+    #cmd_args: '--auto-tls --peer-auto-tls'
+    cmd_args: ''
   docker:
     enabled: False
     image: {{ site.container_etcd_img }}
@@ -357,8 +409,8 @@ etcd:
     container_name: osdsdb
     skip_translate: None
     port_bindings:
-      - '2379:2379'
-      - '2380:2380'
+      - '{{ site.port_auth1 }}:{{ site.port_auth1 }}'
+      - '{{ site.port_auth2 }}:{{ site.port_auth2 }}'
     binds:
       - /usr/share/ca-certificates/:/etc/ssl/certs
     stop_local_etcd_service_first: True

@@ -3,7 +3,7 @@
 
 opensds:
   gelato:
-    provider: 'repo'
+    provider: 'container'
     service: 'multicloud'
     dir:
       work: /opt/opensds-gelato-linux-amd64

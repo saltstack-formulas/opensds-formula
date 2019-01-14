@@ -9,6 +9,8 @@
 
 include:
   - etcd.docker.running
+  - etcd.install   ###for etcdctl client
+  - etcd.linuxenv  ###for etcdctl client
 
     {%- elif opensds.database.provider|trim|lower == 'etcd' %}
 

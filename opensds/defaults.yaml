@@ -1,10 +1,6 @@
 ###  opensds/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
 #
-golang:
-  prefix: /usr/local
-  go_root: /usr/local/go
-  go_path: /var/lib/golang
 
 opensds:
   pkgs: []

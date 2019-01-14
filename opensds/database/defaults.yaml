@@ -16,8 +16,3 @@ opensds:
         endpoint: 'https://127.0.0.1:2379,https://127.0.0.1:2380'
         credential: 'opensds:password@127.0.0.1:3306/dbname'
 
-etcd:
-  service:
-    name: osdsdb
-  docker:
-    enabled: True

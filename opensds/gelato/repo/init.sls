@@ -20,6 +20,7 @@ opensds gelato repo build from source:
     - onlyif: test {{ opensds.gelato.provider }} = 'repo'
   cmd.run:
     - names:
+      - echo $GOPATH
       - make docker
     - cwd: {{ golang.go_path }}/src/github.com/opensds/multi-cloud
     - env:

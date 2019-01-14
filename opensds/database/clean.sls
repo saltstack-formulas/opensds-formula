@@ -9,7 +9,7 @@
 opensds database container service stopped:
   docker_container.stopped:
     - name: {{ opensds.database.service }}
-    - error_on_absent: True
+    - error_on_absent: False
 
     {%- elif opensds.database.provider|lower == 'etcd' %}
 

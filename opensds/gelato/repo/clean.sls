@@ -7,4 +7,4 @@ opensds gelato remove source directory:
   file.absent:
     - name: {{ golang.go_path }}/src/github.com/opensds/multi-cloud
     - onlyif: test -d {{ golang.go_path }}/src/github.com/opensds/multi-cloud
-    - onlyif: {{ opensds.gelato.provider }} = 'repo'
+    - onlyif: test {{ opensds.gelato.provider }} = 'repo'

@@ -93,7 +93,7 @@ The following ``pillar.example`` extract is suggested::
                 - /srv/pillar
           ssh_roster:
             hotpot1:
-              host: {{ grains.ipv4 or grains.ipv6 }}
+              host: {{ grains.ipv4[-1] }}
               user: stack
               sudo: True
               priv: /etc/salt/ssh_keys/sshkey.pem
