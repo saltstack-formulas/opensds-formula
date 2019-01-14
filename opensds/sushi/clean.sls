@@ -1,7 +1,7 @@
 ###  opensds/sushi/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds, golang with context %}
 
 
   {%- if opensds.deploy_project not in ('gelato',)  %}
@@ -19,7 +19,7 @@ include:
   - iscsi.initiator.remove
 
     {% endif %}
-  {%- elif opensds.sushi.plugin_type not in ('hotpot_only',) and opensds.sushi.provider = 'repo' %}
+  {%- elif opensds.sushi.plugin_type not in ('hotpot_only',) and opensds.sushi.provider in ('repo',) %}
 
 opensds sushi clean northbound plugin data:
   cmd.run:

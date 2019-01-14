@@ -1,7 +1,7 @@
 ### opensds/sushi/repo/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds with context %}
+{% from "opensds/map.jinja" import opensds, golang with context %}
 
 opensds sushi repo {{ driver }} directory removed:
   file.absent:

@@ -10,9 +10,10 @@ Default:
           build: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag debian-cinder
 
 Centos:
-  pkgs:
+  pips:
     - python-cinderclient 
     - python-brick-cinderclient-ext
+  pkgs:
     - docker-compose
     - device-mapper-persistent-data
   dock:

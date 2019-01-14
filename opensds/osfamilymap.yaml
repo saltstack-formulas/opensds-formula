@@ -36,14 +36,15 @@ Arch:
     - python2-pip
 
 RedHat:
+  pips:
+    - python-brick-cinderclient-ext
+    - python-cinderclient 
   pkgs:
     - python2-pip
     - python-click
     - python-tox
-    - librados-devel
-    - librbd-devel
-    - python-cinderclient 
-    - python-brick-cinderclient-ext
+    - librados2-devel
+    - librbd1-devel
     - docker-compose
     - device-mapper-persistent-data
     - python-setuptools

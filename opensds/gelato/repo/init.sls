@@ -17,7 +17,7 @@ opensds gelato repo build from source:
     - require_in:
       - cmd: opensds gelato repo build from source
     - unless: {{ opensds.deploy_project in ('hotpot',) }}
-    - onlyif: test {{ opensds.gelato.provider }} = 'repo'
+    - onlyif: test '{{ opensds.gelato.provider }}' = 'repo'
   cmd.run:
     - names:
       - echo $GOPATH
@@ -27,7 +27,7 @@ opensds gelato repo build from source:
         - GOPATH: {{ golang.go_path }}
     - output_loglevel: quiet
     - unless: {{ opensds.deploy_project in ('hotpot',) }}
-    - onlyif: test {{ opensds.gelato.provider }} = 'repo'
+    - onlyif: test '{{ opensds.gelato.provider }}' = 'repo'
 
 opensds gelato repo docker-compose.yml file into gelato work directory:
    file.copy:
@@ -38,5 +38,5 @@ opensds gelato repo docker-compose.yml file into gelato work directory:
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
     - unless: {{ opensds.deploy_project in ('hotpot',) }}
-    - onlyif: test {{ opensds.gelato.provider }} = 'repo'
+    - onlyif: test '{{ opensds.gelato.provider }}' = 'repo'
 

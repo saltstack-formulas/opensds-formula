@@ -71,7 +71,7 @@ opensds sdrc file generated:
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
     - context:
-      go_path: {{ golang.go_path }}
+      golang: {{ golang }}
       devstack: {{ devstack }}
       opensds: {{ opensds }}
 

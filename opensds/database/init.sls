@@ -8,9 +8,7 @@
     {%- if opensds.database.container.enabled %}
 
 include:
-  - etcd.docker.running
-  - etcd.install   ###for etcdctl client
-  - etcd.linuxenv  ###for etcdctl client
+  - etcd
 
     {%- elif opensds.database.provider|trim|lower == 'etcd' %}
 
