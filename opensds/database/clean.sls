@@ -1,19 +1,12 @@
-### opensds/database/clean.sls
+###  opensds/database/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds with context %}
 
-
-    {%- if opensds.database.container.enabled %}
-
-opensds database container service stopped:
-  docker_container.stopped:
-    - name: {{ opensds.database.service }}
-    - error_on_absent: False
-
-    {%- elif opensds.database.provider|lower == 'etcd' %}
+    {%- if opensds.deploy_project not in ('gelato',)  %}
 
 include:
-  - etcd.service.stopped
+  - opensds.database.container.clean
+  - opensds.database.daemon.clean
 
-    {% endif %}
+    {%- endif %}

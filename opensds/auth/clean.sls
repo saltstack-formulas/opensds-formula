@@ -1,26 +1,11 @@
-### opensds/auth/clean.sls
+###  opensds/auth/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds with context %}
 
+   {%- if opensds.deploy_project not in ('gelato',)  %}
 
-    {%- if opensds.auth.container.enabled %}
-
-opensds auth container service stopped:
-  docker_container.stopped:
-    - name: {{ opensds.auth.service }}
-    - error_on_absent: False
-
-      {%- if opensds.auth.provider in ('keystone', 'devstack',) %}
 include:
-  - devstack.remove
-      {% endif %}
+  - opensds.auth.daemon.clean
 
-    {% endif %}
-
-### opensds.conf ###
-opensds config ensure osdsauth section removed from opensds.conf:
-  ini.sections_absent:
-    - name: {{ opensds.hotpot.conf }}
-    - sections:
-      - {{ opensds.auth.service }}
+   {%- endif %}

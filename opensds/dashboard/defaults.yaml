@@ -3,19 +3,30 @@
 #
 opensds:
   dashboard:
-    provider: repo       #.ie. source_code or release
-    service: dashboard
+
+    instances:
+      - dashboard
+
+    opensdsconf:
+      dashboard:
+        endpoint: 127.0.0.1
+        port: 50040
+
     container:
-      enabled: True
-      build: False
-      image: opensdsio/dashboard
-      version: latest
-       {%- if grains.os_family in ('Debian') %}
-      volumes:
-        - /etc/nginx/sites-available/default:/etc/nginx/sites-available/default
-        - /run/nginx:/run/nginx
-       {%- endif %}
-    repo:
-      url: https://github.com/opensds/opensds-dashboard.git
-      branch: stable/bali
-    opensdsconf: {}
+      dashboard:
+        enabled: True
+        build: False
+        image: opensdsio/dashboard
+        version: latest
+        volumes:
+          - /etc/nginx/sites-available/default:/etc/nginx/sites-available/default
+          - /run/nginx:/run/nginx
+
+    daemon:
+      dashboard:
+        strategy: container-systemd     ##or 'repo-systemd'
+        start: /opt/opensds-linux-amd64/bin/dashboard
+        repo:
+          url: https://github.com/opensds/opensds-dashboard.git
+          branch: stable/bali
+          build_cmd: make

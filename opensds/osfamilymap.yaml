@@ -2,38 +2,28 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
-Default:
-  let:
-    conf:
-      log_file: /var/log/opensds/osdslet.log
-  auth:
-    conf:
-      keystone_authtoken:
-        signing_dir: /var/cache/opensds
-        cafile: /opt/stack/data/ca-bundle.pem
-  dock:
+Debian:
+  pkgs:
+    - python-pip
+    - librados-dev
+    - librbd-dev
+    - git
+    - gcc
+    - make
+    - dos2unix
+    - docker-compose
+    - nodejs
+    - npm
+  systemd:
+    dir: /usr/lib/systemd/system
+  backend:
     block:
       container:
-        image: debian-cinder
-        platform: debian:stretch
-        datadir: /opt/opensds/driver/container/data_dir
-  sushi:
-    dir:
-      work: /opt/opensds-k8s-linux-amd64
-      deploy: /opt/opensds-k8s-linux-amb64/provisioner/deploy
-      flexvolume: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
-      csi: /opt/opensds-k8s-linux-amd64/csi/deploy/kubernetes
-
-FreeBSD:
-  salt:
-    basedir:
-      states: /usr/local/salt/base
-      pillars: /usr/local/salt/pillar
-      formula: /usr/local/salt/formula
-
-Arch:
-  pkgs:
-    - python2-pip
+        cinder:
+          build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
+      daemon:
+        cinder:
+          start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
 
 RedHat:
   pips:
@@ -41,7 +31,7 @@ RedHat:
     - python-cinderclient 
   pkgs:
     - python2-pip
-    - python-click
+    - python2-click
     - python-tox
     - librados2-devel
     - librbd1-devel
@@ -55,11 +45,19 @@ RedHat:
     - docker-compose
     - nodejs
     - npm
-  dock:
+  dashboard:
+    container:
+      volumes:
+        - /etc/nginx/conf.d/default.conf:/etc/nginx/sites-available/default
+        - /run/nginx:/run/nginx
+  backend:
     block:
-      cinder:
-        container:
-          build: docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
+      container:
+        cinder:
+          build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
+      daemon:
+        cinder:
+          start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
 
 Suse:
   pkgs:
@@ -75,21 +73,14 @@ Suse:
     - nodejs
     - npm
 
-Debian:
+FreeBSD:
+  salt:
+    basedir:
+      states: /usr/local/salt/base
+      pillars: /usr/local/salt/pillar
+      formula: /usr/local/salt/formula
+
+Arch:
   pkgs:
-    - python-pip
-    - librados-dev
-    - librbd-dev
-    - git
-    - gcc
-    - make
-    - dos2unix
-    - docker-compose
-    - nodejs
-    - npm
-  dock:
-    block:
-      cinder:
-        container:
-          build: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag loci-cinder:ubuntu
+    - python2-pip
 

@@ -1,34 +1,37 @@
 ### opensds/map.jinja ###
-### exported dicts: opensds, driver, docker, firewalld, golang, ceph,  ###
+### exported dicts: opensds, driver, docker, firewalld, golang, etcd, ceph ###
 
 #OpenSDS: import formula default dicts
 {% import_yaml "opensds/defaults.yaml" as defaults %}
+{% import_yaml "opensds/database/defaults.yaml" as database %}
 {% import_yaml "opensds/hotpot/defaults.yaml" as hotpot %}
 {% import_yaml "opensds/auth/defaults.yaml" as auth %}
-{% import_yaml "opensds/dashboard/defaults.yaml" as dashboard %}
-{% import_yaml "opensds/database/defaults.yaml" as database %}
-{% import_yaml "opensds/dock/defaults.yaml" as dock %}
-{% import_yaml "opensds/dock/block/defaults.yaml" as block %}
-{% import_yaml "opensds/let/defaults.yaml" as let %}
-{% import_yaml "opensds/sushi/defaults.yaml" as sushi %}
 {% import_yaml "opensds/gelato/defaults.yaml" as gelato %}
+{% import_yaml "opensds/backend/defaults.yaml" as backend %}
+{% import_yaml "opensds/backend/block/defaults.yaml" as block %}
+{% import_yaml "opensds/dashboard/defaults.yaml" as dashboard %}
+{% import_yaml "opensds/sushi/defaults.yaml" as sushi %}
+{% import_yaml "opensds/sushi/plugin/defaults.yaml" as plugin %}
+{% import_yaml "opensds/dock/defaults.yaml" as dock %}
 {% import_yaml "opensds/osfamilymap.yaml" as osfamilymap %}
 {% import_yaml "opensds/osmap.yaml" as osmap %}
 
 #OpenSDS: merge any pillar data with defaults
 {%- set opensds = salt['grains.filter_by'](
      defaults, merge=salt['grains.filter_by'](
-        hotpot, merge=salt['grains.filter_by'](
-           auth, merge=salt['grains.filter_by'](
-              dashboard, merge=salt['grains.filter_by'](
-                 database, merge=salt['grains.filter_by'](
-                    dock, merge=salt['grains.filter_by'](
+        database, merge=salt['grains.filter_by'](
+           hotpot, merge=salt['grains.filter_by'](
+              auth, merge=salt['grains.filter_by'](
+                 gelato, merge=salt['grains.filter_by'](
+                    backend, merge=salt['grains.filter_by'](
                        block, merge=salt['grains.filter_by'](
-                          let, merge=salt['grains.filter_by'](
+                          dashboard, merge=salt['grains.filter_by'](
                              sushi, merge=salt['grains.filter_by'](
-                                gelato, merge=salt['grains.filter_by'](
-                                   osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
-                                      osmap, grain='os', merge=salt['pillar.get']('opensds', {}),
+                                plugin, merge=salt['grains.filter_by'](
+                                   dock, merge=salt['grains.filter_by'](
+                                      osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
+                                         osmap, grain='os', merge=salt['pillar.get']('opensds', {}),
+                                         base='opensds',),
                                       base='opensds',),
                                    base='opensds',),
                                 base='opensds',),
@@ -51,26 +54,33 @@
 ############################################################
 {% import_yaml "firewalld/defaults.yaml" as firewalld %}
 {% import_yaml "golang/defaults.yaml" as golang %}
+{% import_yaml "etcd/defaults.yaml" as etcd %}
+{% import_yaml "ceph/defaults.yaml" as ceph %}
 {% import_yaml "docker/defaults.yaml" as docker %}
 {% import_yaml "devstack/defaults.yaml" as devstack %}
-{% import_yaml "etcd/defaults.yaml" as etcd %}
 
 {%- set firewalld = salt['grains.filter_by']( firewalld, merge=salt['pillar.get']('firewalld', {}), base='firewalld') %}
 {%- set golang = salt['grains.filter_by']( golang, merge=salt['pillar.get']('golang', {}), base='golang') %}
-{%- set etcd = salt['grains.filter_by']( etcd, merge=salt['pillar.get']('ceph', {}), base='ceph') %}
+{%- set etcd = salt['grains.filter_by']( etcd, merge=salt['pillar.get']('etcd', {}), base='etcd') %}
+{%- set ceph = salt['grains.filter_by']( ceph, merge=salt['pillar.get']('ceph', {}), base='ceph') %}
 {%- set docker = salt['grains.filter_by']( docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
 {%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
 
-####################################################################
-# DRIVER: merge any pillar data onto vendor supplied driver(.yaml)
-####################################################################
+########################################################
+#    UPDATE OPENSDS DOCK DRIVER YML FILES
+#      TAKE DEFAULTS & MERGE SITE SPECIFIC VALUES
+########################################################
+{%- set enabled_backends = [] %}
 {% from "opensds/files/macros.jinja" import deep_merge with context %}
-{%- import_yaml 'opensds/dock/drivers/' ~ opensds.dock.block.provider ~ '.yaml' as driver %}
-{%- do deep_merge(driver, opensds.driver) %}
+{% for instance in opensds.dock.instances %}
+   {%- for backend in opensds.dock.opensdsconf[instance|string]['enabled_backends'] %}
+      {%- do enabled_backends.append(backend) %}
+   {%- endfor %}
+{%- endfor %}
 
-#################################
-# SITE SPECIFIC PARAM INJECTION
-################################
-{%- if opensds.dock.block.provider in ('lvm',) %}
-  {%- do driver.update({'tgtBindIp': opensds.host or '127.0.0.1'}) %}
-{%- endif %}
+{%- for backend in enabled_backends|unique %}
+   {%- import_yaml 'opensds/files/drivers/' ~ backend ~ '.yaml' as driver %}
+   {%- if backend in opensds.backend.drivers %}
+       {%- do deep_merge(driver, opensds.backend.drivers[backend]) %}
+   {%- endif %}
+{%- endfor %}

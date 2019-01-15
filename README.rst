@@ -2,19 +2,23 @@
 opensds-formula
 ================
 
-Deploy 'Bali' release of OpenSDS (www.opensds.io) using the ``opensds`` state.
+Deploy official releases of OpenSDS (www.opensds.io) using Salt Infrastructure as Code.  See OpenSDS salt-installer project at <https://github.com/opensds/opensds-installer/salt>
 
-.. note::
+This is an experimental solution using repeatable patterns to deploy cloud-native stack using infrastructure as code.
+
+
+.. notes::
 
     See the full `Salt Formulas installation and usage instructions
     <http://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.
 
-Architecture design
+Architectural View
 ===================
 
 .. image:: solutionDesign.png
+   :target: https://github.com/opensds/opensds
    :scale: 25 %
-   :alt: high level architecture
+   :alt: salt formula high level architecture
 
 Available META states
 ======================
@@ -57,10 +61,15 @@ Deploy osdsdock service.
 
 Deploy osdsnbp service.
 
-``opensds.let``
+``opensds.gelato``
 -----------------
 
-Deploy osdslet service.
+Deploy multi-cloud service.
+
+``opensds.dashboard``
+-----------------
+
+Deploy Dashboard service.
 
 
 Site-specific Data Collection
@@ -68,7 +77,7 @@ Site-specific Data Collection
 
 The ``site.j2`` and ``pillar.example`` files contain required pillars!
 
-You MUST review and update ``site.j2`` parameters to reflect site requirements and subnetworks.
+You may review and cautiously update ``site.j2`` to reflect site requirements and preferences.
 
 Prerequisite
 ==============

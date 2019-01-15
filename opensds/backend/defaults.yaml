@@ -1,0 +1,42 @@
+### opensds/backend/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
+
+opensds:
+  backend:
+    drivers:
+
+      lvm:
+        tgtBindIp: '127.0.0.1'
+
+      ceph:
+        configFile: /etc/ceph/ceph.conf
+
+      fusionstorage:
+        authOptions:
+          fmIp: 192.168.0.200
+          fsaIp:
+            - 192.168.0.4
+            - 192.168.0.5
+            - 192.168.0.6
+
+      drbd:
+        Hosts:
+          - Hostname: rckdeba
+            IP: 10.43.70.115
+            Node-ID: 0
+          - Hostname: rckdebb
+            IP: 10.43.70.116
+            Node-ID: 1
+
+      cinder:
+        authOptions:
+          #noAuth: true
+          endpoint: 127.0.0.1/identity
+          #cinderEndpoint: '127.0.0.1:8776/v2'
+          domainId: "Default"
+          domainName: "Default"
+          username: "admin"
+          password: "admin"
+          tenantName: "admin"
+          #tenantId: "myproject"
+

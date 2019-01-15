@@ -3,16 +3,23 @@
 #
 opensds:
   database:
-    service: osdsdb
-    provider: etcd
-    container:
-      enabled: True
-      build: True   {# we will use etcd.docker.running state instead of this #}
-      image: None
-      version: latest
+
+    instances:
+      - database
+      - etcd
+
     opensdsconf:
       database:
         driver: etcd
         endpoint: 'http://127.0.0.1:2379,http://127.0.0.1:2380'
         credential: 'opensds:password@127.0.0.1:3306/dbname'
+
+    container:
+      etcd:
+        enabled: True
+        build: False
+
+    daemon:
+      etcd:
+        strategy: etcd
 
