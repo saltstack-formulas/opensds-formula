@@ -7,10 +7,12 @@ After=network.target docker.target
 Documentation=https://opensds.io
 
 [Service]
+WorkingDirectory={{ workdir }}
 User=root
 Group=root
 EnvironmentFile=-/etc/sysconfig/{{ svc }}
-ExecStart={{ command }}
+ExecStart={{ start }}
+ExecStop={{ stop }}
 PermissionsStartOnly=true
 PIDFile=/var/run/{{ svc }}.pid
 

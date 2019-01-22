@@ -1,23 +1,5 @@
-###  opensds/osfamilymap.yaml
+###  opensds/osmap.yaml
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
 Default:
-  dock:
-    block:
-      cinder:
-        container:
-          build: docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag debian-cinder
-
-Centos:
-  pkgs:
-    - python-cinderclient 
-    - python-brick-cinderclient-ext
-    - docker-compose
-    - device-mapper-persistent-data
-  dock:
-    block:
-      cinder:
-        container:
-          build: docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag debian-cinder
-

@@ -1,34 +1,34 @@
 ###  opensds/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
 #
-golang:
-  prefix: /usr/local
-  go_root: /usr/local/go
-  go_path: /var/lib/golang
 
 opensds:
+  deploy_project: all    ##### 'hotpot', 'gelato' or 'all' ####
+  host: 127.0.0.1
   pkgs: []
   dir_mode: '0755'
   file_mode: '0644'
   user: root
-  deploy_project: all    ##### 'hotpot', 'gelato' or 'all' ####
-  server_name: opensds
 
-  hotpot:
-    conf: /etc/opensds/opensds.conf
-  host: 127.0.0.1
-  ports:
-    opensds: '50040'
-    dock: '50050'
   dir:
-    work: /opt/opensds-linux-amd64
-    config: /etc/opensds            #leave me alone
-    driver: /etc/opensds/driver     #leave me alone
-    devstack: /opt/opensds-linux-amd64-devstack
+    config: /etc/opensds               #leave me alone
+    driver: /etc/opensds/driver        #leave me alone
     log: /var/log/opensds
     tmp: /tmp/opensds
-  k8s:
-    start: 'source /etc/profile && kubectl create -f deploy/kubernetes'
-    stop: 'source /etc/profile && kubectl delete -f deploy/kubernetes'
+    hotpot: /opt/opensds-linux-amd64
+    devstack: /opt/opensds-linux-amd64-devstack
+    gelato: /opt/opensds-gelato-linux-amd64
+    sushi: /opt/opensds-sushi-linux-amd64
 
-  driver: {}
+  systemd:
+    dir: /usr/lib/systemd/system
+    conf:
+      Type: forking
+      LimitFSIZE: infinity
+      LimitCPU: infinity
+      LimitAS: infinity
+      LimitNOFILE: 64000
+      LimitNPROC: 64000
+      LimitMEMLOCK: infinity
+      TasksMax: infinity
+      TasksAccounting: false

@@ -3,12 +3,11 @@
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds with context %}
 
-  {%- if opensds.deploy_project not in ('gelato',)  %}
+  {%- if opensds.deploy_project not in ('hotpot',) %}
 
-opensds gelato block service container stopped:
-  gelatoer_container.stopped:
-    - name: {{ opensds.gelato.service }}
-    - error_on_absent: False
-    - onlyif: {{ opensds.gelato.container.enabled }}
+include:
+  - opensds.gelato.container.clean
+  - opensds.gelato.daemon.clean
 
   {%- endif %}
+

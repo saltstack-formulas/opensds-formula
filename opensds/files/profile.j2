@@ -1,6 +1,4 @@
 ### opensds/files/profile.j2
 BINHOME={{ sdshome }}
-LANGHOME={{ golanghome }}
-export GOPATH=${PATH}:${LANGHOME}/bin
 export SDSPATH=${BINHOME}/bin
-export PATH=${PATH}:${SDSPATH}:${GOPATH}
+export PATH=${PATH}:${SDSPATH}

@@ -1,116 +1,13 @@
-###  opensd/dock/init.sls
+###  opensds/dock/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from "opensds/map.jinja" import opensds, docker with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
-  {%- if opensds.deploy_project not in ('gelato',)  %}
-    {%- if opensds.dock.block.enabled %}
+    {%- if opensds.deploy_project not in ('gelato',)  %}
 
 include:
-  - opensds.dock.block
+  - opensds.dock.config
+  - opensds.dock.container
+  - opensds.dock.daemon
 
     {%- endif %}
-    {%- if opensds.dock.container.enabled %}
-
-opensds dock container service running:
-  docker_container.running:
-    - name: {{ opensds.dock.service }}
-    - image: {{ opensds.dock.container.image }}:{{ opensds.dock.container.version }}
-    - restart_policy: always
-    - network_mode: host
-    - privileged: true
-         {%- if "volumes" in opensds.dock.container %}
-    - binds: {{ opensds.dock.container.volumes }}
-         {%- endif %}
-         {%- if "ports" in opensds.auth.container %}
-    - ports: {{ opensds.auth.container.ports }}
-         {%- endif %}
-         {%- if "port_bindings" in opensds.auth.container %}
-    - port_bindings: {{ opensds.auth.container.port_bindings }}
-         {%- endif %}
-         {%- if docker.containers.skip_translate %}
-    - skip_translate: {{ docker.containers.skip_translate or '' }}
-         {%- endif %}
-         {%- if docker.containers.force_present %}
-    - force_present: {{ docker.containers.force_present }}
-         {%- endif %}
-         {%- if docker.containers.force_running %}
-    - force_running: {{ docker.containers.force_running }}
-         {%- endif %}
-
-    {%- endif %}
-
-
-### opensds.conf ###
-
-opensds dock ensure opensds dirs exist:
-  file.directory:
-    - names:
-      {%- for k, v in opensds.dir.items() if v not in ('root', '700', '0700',) %}
-      - {{ v }}
-      {%- endfor %}
-    - makedirs: True
-    - force: True
-    - user: {{ opensds.user or 'root' }}
-    - dir_mode: {{ opensds.dir_mode or '0755' }}
-    - recurse:
-      - user
-      - mode
-
-opensds dock ensure opensds config file exists:
-  file.managed:
-    - name: {{ opensds.hotpot.conf }}
-    - makedirs: True
-    - user: {{ opensds.user or 'root' }}
-    - mode: {{ opensds.file_mode or '0644' }}
-    - replace: False
-
-       {% for section, data in opensds.dock.opensdsconf.items() %}
-
-opensds dock ensure opensds config {{ section }} section exists:
-  ini.sections_present:
-    - name: {{ opensds.hotpot.conf }}
-    - sections:
-      - {{ section }}
-
-            {%- for k, v in data.items() %}
-opensds dock ensure opensds config {{ section }} {{ k }} exists:
-  ini.options_present:
-    - name: {{ opensds.hotpot.conf }}
-    - separator: '='
-    - sections:
-        {{ section }}:
-          {{ k }}: {{ v }}
-    - require:
-      - opensds dock ensure opensds config {{ section }} section exists
-            {%- endfor %}
-       {%- endfor %}
-
-
-    {%- if not opensds.dock.container.enabled %}
-
-opensds osdsdock systemd service:
-  file.managed:
-    - name: {{ opensds.dock['systemd']['file'] }}
-    - source: salt://opensds/files/service.jinja
-    - mode: '0644'
-    - template: jinja
-    - makedirs: True
-    - context:
-        svc: osdsdock
-        systemd: {{ opensds.dock.systemd|json }}
-        command: {{ opensds.dir.work }}/bin/osdsdock >{{opensds.dir.log}}/osdsdock.out 2>{{opensds.dir.log}}/osdsdock.err
-  cmd.run:
-    - names:
-      - systemctl daemon-reload
-    - watch:
-      - file: opensds osdsdock systemd service
-  service.running:
-    - name: osdsdock
-    - enable: True
-    - watch:
-      - cmd: opensds osdsdock systemd service
-
-    {%- endif %}
-
-  {%- endif %}

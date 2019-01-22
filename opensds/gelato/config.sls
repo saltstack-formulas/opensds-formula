@@ -1,54 +1,36 @@
 ###  opensds/gelato/config.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds, golang with context %}
+{% from "opensds/map.jinja" import opensds with context %}
 
-  {%- if opensds.deploy_project not in ('hotpot',) %}
+include:
+  - opensds.config
 
-opensds gelato download docker-compose.yaml configuration file:
-  file.managed:
-    - name: {{ opensds.gelato.dir.work }}/docker-compose.yml
-    - source: {{ opensds.gelato.container.compose.url }}
-    - unless: {{ opensds.gelato.provider }} = 'repo'
+  {%- for instance in opensds.gelato.instances %}
 
-opensds gelato modify configuration auth strategy:
-  file.replace:
-    - name: {{ opensds.gelato.container.compose.conf }}
-    - pattern: OS_AUTH_AUTHSTRATEGY=.*$
-    - repl: OS_AUTH_AUTHSTRATEGY={{ opensds.auth.provider }}
-    - backup: '.salt.bak'
+         ########################
+         #### OpenSDS Config ####
+         ########################
+     {%- if instance in opensds.gelato.opensdsconf %}
 
-opensds gelato modify configuration auth url:
-  file.replace:
-    - name: {{ opensds.gelato.container.compose.conf }}
-    - pattern: OS_AUTH_URL=.*$
-    - repl: OS_AUTH_URL=http://{{ opensds.host }}/identity
-    - backup: '.salt.bak'
+opensds gelato config ensure opensds conf {{ instance }} section exists:
+  ini.sections_present:
+    - name: {{ opensds.hotpot.conf }}
+    - sections:
+      - {{ instance }}
 
-opensds gelato modify configuration username:
-  file.replace:
-    - name: {{ opensds.gelato.container.compose.conf }}
-    - pattern: OS_USERNAME=.*
-    - repl: OS_USERNAME={{ opensds.gelato.service }}
-    - backup: '.salt.bak'
+          {%- for k, v in opensds.gelato.opensdsconf[instance|string].items() %}
 
-opensds gelato modify configuration password strategy:
-  file.replace:
-    - name: {{ opensds.gelato.container.compose.conf }}
-    - pattern: OS_PASSWORD=.*
-    - repl: OS_PASSWORD={{ opensds.auth.opensdsconf.keystone_authtoken.password or devstack.local.password }}
-    - backup: '.salt.bak'
+opensds gelato config ensure opensds conf {{ instance }} {{ k }} exists:
+  ini.options_present:
+    - name: {{ opensds.hotpot.conf }}
+    - separator: '='
+    - sections:
+        {{ instance }}:
+          {{ k }}: {{ v }}
+    - require:
+      - ini: opensds gelato config ensure opensds conf {{ instance }} section exists
+          {%- endfor %}
 
-opensds gelato start service run compose up:
-  cmd.run:
-    - name: docker-compose up -d
-    - cwd: {{ opensds.gelato.dir }}
-
-opensds gelato start service wait compose up:
-  cmd.run:
-    - name: sleep 15
-    - timeout: 120
-    - stateful:
-      - test_name: netstat -tuplan | grep 8089 2>/dev/null
-
-  {%- endif %}
+      {%- endif %}
+  {%- endfor %}

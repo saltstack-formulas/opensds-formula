@@ -1,7 +1,10 @@
-### opensds/profile/init.sls
+### opensds/infra/profile/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 {% from "opensds/map.jinja" import opensds, golang with context %}
+
+include:
+  - golang
 
 opensds profile set system profile path:
   file.managed:
@@ -14,4 +17,4 @@ opensds profile set system profile path:
     - onlyif: test -f {{ golang.go_path }}/bin/go
     - context:
       golanghome: {{ golang.go_path }}
-      sdshome: {{ opensds.dir.work }}
+      sdshome: {{ opensds.dir.hotpot }}

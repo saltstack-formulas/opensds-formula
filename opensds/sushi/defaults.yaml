@@ -1,35 +1,23 @@
-###  opensds/sushi/defaults.sls
+### opensds/sushi/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
 #
-
 opensds:
   sushi:
-    provider: release               ## release or repo
-    service: osdsnbp
-    plugin_type: 'hotpot_only'      ## 'csi' or 'flexvolume'
-    dir:
-      work: /opt/opensds-sushi-linux-amd64
-    repo:
-      branch: stable/bali
-      url: https://github.com/opensds/nbp.git
-    container:
-      enabled: False
-      build: False
-      image: None
-      version: latest
-    plugins:
-      container:
-        enabled: False
-        build: False
-        image: None
-        version: latest
-      hotpot_only: {}
-      csi:
-        dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
-        conf: csi-k8s_configmap-opensdsplugin.yaml
-      provisioner:
-        dir: /opt/opensds-sushi-linux-amd64/provisioner/deploy/kubernetes
-        conf: configmap.yaml
-      flexvolume:
-        dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
-        conf:
-        binary: /opt/opensds-sushi-linux-amd64/bin/flexvolume.server.opensds
+    release: 'v0.4.0'
+    plugin_type: provisioner
+    instances:
+      - nbp
+
+    opensdsconf: {}
+
+    daemon:
+      nbp:
+        strategy: release-systemd
+        start: /usr/local/bin/kubectl create -f deploy/kubernetes
+        stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
+        work: /opt/opensds-sushi-linux-amd64
+        repo:
+          url: https://github.com/opensds/nbp.git
+          branch: stable/bali
+          build_cmd: make
+          clean_cmd: make clean

@@ -3,32 +3,33 @@
 #
 opensds:
   dock:
-    service: osdsdock
-    provider: osdsdock
-    container:
-      enabled: True
-      build: False
-      image: opensdsio/opensds-dock
-      version: latest
-      privileged: True
-      volumes:
-        - /etc/opensds/:/etc/opensds
-        - /etc/ceph/:/etc/ceph
+    instances:
+      - osdsdock
+
     opensdsconf:
       osdsdock:
         api_endpoint: '0.0.0.0:50050'
-        log_file: /var/log/opensds/osdsdock.log
+        log_file: /var/log/opensds/osdsdockA.log
         dock_type: provisioner
-        enabled_backends: lvm    ##or ceph or cinder
-    systemd:
-      file: /usr/lib/systemd/system/osdsdock.service
-      conf:
-        Type: forking
-        LimitFSIZE: infinity
-        LimitCPU: infinity
-        LimitAS: infinity
-        LimitNOFILE: 64000
-        LimitNPROC: 64000
-        LimitMEMLOCK: infinity
-        TasksMax: infinity
-        TasksAccounting: false
+        enabled_backend: lvm
+        enabled_backends:
+          - lvm
+          - ceph
+          - cinder
+
+    container:
+      osdsdock:
+        enabled: True
+        build: False
+        build_cmd: None
+        image: opensdsio/opensds-dock
+        version: latest
+        privileged: True
+        volumes:
+          - /etc/opensds/:/etc/opensds
+
+    daemon:
+      osdsdock:
+        strategy: container
+        start: /usr/local/bin/osdsdock
+      

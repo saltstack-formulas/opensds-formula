@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # Global
-HOST_IP={{ devstack.local.host_ip or devstack.local.host_ipv6 or '${HOST_IP:-}' }}
+HOST_IP={{ devstack.local.host_ipv4 or '${HOST_IP:-devstack.local.host_ipv6}' }}
 if [ "$HOST_IP" == "" ]; then
     die $LINENO "Could not determine host ip address. See local.conf for suggestions on setting HOST_IP."
 fi
@@ -33,13 +33,13 @@ OPENSDS_SERVER_NAME={{ opensds.hotpot.service or '${OPENSDS_SERVER_NAME:-opensds
 MULTICLOUD_SERVER_NAME={{ opensds.gelato.service or '${MULTICLOUD_SERVER_NAME:-multicloud}' }}
 
 # devstack keystone configuration
-STACK_GIT_BASE=${STACK_GIT_BASE:-https://git.openstack.org}
+STACK_GIT_BASE={{ devstack.local.git_base or '${STACK_GIT_BASE:-https://git.openstack.org}' }}
 STACK_USER_NAME={{ devstack.local.username or '${STACK_USER_NAME:-stack}' }}
 STACK_PASSWORD={{ devstack.local.password or '${STACK_PASSWORD:-devstack}' }}
 STACK_HOME={{ devstack.dir.dest or '${STACK_HOME:-/opt/stack}' }}
-STACK_BRANCH='${STACK_BRANCH:-stable/rocky}'
 DEV_STACK_DIR=$STACK_HOME/devstack
+STACK_BRANCH={{ devstack.local.git_branch or '${STACK_BRANCH:-stable/rocky}' }}
 
-GOPATH={{ go_path or '${GOPATH:-$HOME/gopath}' }}
+GOPATH={{ golang.go_path or '${GOPATH:-$HOME/gopath}' }}
 OPENSDS_DIR=${GOPATH}/src/github.com/opensds/opensds
 

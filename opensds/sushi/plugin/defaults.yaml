@@ -1,0 +1,29 @@
+### opensds/sushi/plugin/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
+
+opensds:
+  sushi:
+    plugin:
+
+      #### INSTANCES ####
+      instances:
+        - csi
+        - flexvolume
+        - provisioner
+
+      #### OPENSDS CONF ###
+      opensdsconf: {}
+
+      ### PLUGINS ###
+      plugins:
+        csi:
+          dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
+          file: csi-sushi_configmap-opensdsplugin.yaml
+
+        flexvolume:
+          dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
+          file: flexvolume.server.opensds
+
+        provisioner:
+          dir: /opt/opensds-sushi-linux-amd64/provisioner/deploy/kubernetes
+          file: configmap.yaml

@@ -1,4 +1,4 @@
-###  opensds/salt/docker/init.sls
+###  opensds/infra/docker/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
 

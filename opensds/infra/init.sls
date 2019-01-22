@@ -16,7 +16,9 @@ include:
   - memcached
   - mysql.apparmor
   - devstack.user
+  - opensds.infra.conflicts.init
   - devstack.install
+  - opensds.infra.conflicts.clean
 
   {%- if opensds.pkgs %}
 

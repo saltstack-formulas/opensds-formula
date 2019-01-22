@@ -1,21 +1,29 @@
 ###  opensds/gelato/defaults.sls
 #
-
 opensds:
   gelato:
-    provider: 'repo'
-    service: 'multicloud'
-    dir:
-      work: /opt/opensds-gelato-linux-amd64
-    repo:
-      branch: stable/bali
-      url: https://github.com/opensds/multi-cloud.git
+    release: v1
+    service: multi-cloud
+
+    instances:
+      - multi-cloud
+
+    opensdsconf:
+      multi-cloud:
+        endpoint: 127.0.0.1
+        port: 8089
+
     container:
-      enabled: False
-      build: False
-      image: None
-      version: latest
-      compose:  
-        conf: /opt/opensds-gelato-linux-amd64/docker-compose.yml
-        url:  https://raw.githubusercontent.com/opensds/multi-cloud/master/docker-compose.yml
-        hash: 'sha256=bcd3e3cfe0c064f60ffbf1db58bf41a32fcc458bb7c4dcc9bdd395ba1251e2d5'
+      multi-cloud:
+        enabled: False
+        build: False
+
+    daemon:
+      multi-cloud:
+        strategy: keystone-repo-systemd       #or keystone-release-systemd, or keystone-compose-system
+        start: /usr/local/bin/docker-compose up -d
+        work: /usr/local/golang/packages/src/github.com/opensds/multi-cloud
+        repo:
+          url: https://github.com/opensds/multi-cloud.git
+          branch: stable/bali
+          build_cmd: make docker

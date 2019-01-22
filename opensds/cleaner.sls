@@ -8,7 +8,8 @@ include:
   - opensds.dashboard.clean
   - opensds.dock.clean
   - opensds.database.clean
-  - opensds.let.clean
   - opensds.sushi.clean
-  - opensds.profile.clean
+  - opensds.gelato.clean
+  - opensds.hotpot.clean
+  - opensds.backend.clean
   - opensds.infra.clean
