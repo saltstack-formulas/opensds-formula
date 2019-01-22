@@ -22,7 +22,6 @@ opensds:
       multi-cloud:
         strategy: keystone-repo-systemd       #or keystone-release-systemd, or keystone-compose-system
         start: /usr/local/bin/docker-compose up -d
-        work: /usr/local/golang/packages/src/github.com/opensds/multi-cloud
         repo:
           url: https://github.com/opensds/multi-cloud.git
           branch: stable/bali

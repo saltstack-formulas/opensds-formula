@@ -97,9 +97,9 @@ opensds gelato daemon systemd {{ instance }} service started:
     - context:
         svc: {{ instance }}
         systemd: {{ opensds.systemd|json }}
-        start: {{ daemon.start }} {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
+        start: {{ daemon.start }}
         stop: /usr/bin/killall opensds-{{ instance }}
-        workdir: /usr/local
+        workdir: {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/
   cmd.run:
     - names:
       - systemctl daemon-reload
