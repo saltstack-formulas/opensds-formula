@@ -17,8 +17,8 @@ opensds hotpot daemon {{ instance }} systemd service removed:
        - GOPATH: {{ golang.go_path }}
     - output_loglevel: quiet
     - onlyif:
-      - {{ "systemd" in daemon.strategy|lower }}
-      - {{ "repo" in daemon.strategy|lower }}
+      - test -f {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/Makefile
+      - {{ "repo-systemd" in daemon.strategy|lower }}
 
 opensds hotpot daemon {{ instance }} directories removed:
   file.absent:
