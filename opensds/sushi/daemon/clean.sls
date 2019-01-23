@@ -16,7 +16,9 @@ opensds sushi daemon {{ instance }} systemd service removed:
     - env:
        - GOPATH: {{ golang.go_path }}
     - output_loglevel: quiet
-    - onlyif: {{ "repo" in daemon.strategy|lower }}
+    - onlyif:
+      - test -f {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/Makefile
+      - {{ "repo" in daemon.strategy|lower }}
 
 opensds sushi daemon {{ instance }} directories removed:
   file.absent:
