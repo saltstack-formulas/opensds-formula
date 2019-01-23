@@ -121,7 +121,7 @@ opensds:
         password: {{ site.devstack_password }}
     daemon:
       osdsauth:
-        strategy: noauth
+        strategy: keystone   #Verified on Ubuntu salt installer
         endpoint_ipv4: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}
         endpoint_port: {{ site.port_hotpot }}
 
@@ -150,7 +150,7 @@ opensds:
     opensdsconf:
       osdslet:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1"}}:{{ site.port_hotpot }}
-        auth_strategy: keystone
+        auth_strategy: noauth  ## verified on ubuntu salt installer
     container:
       opensds:
         enabled: False
@@ -457,6 +457,8 @@ nginx:
                 - index.htm
           {%- if grains.os_family == 'Debian' %}
                 - index.nginx-debian.html
+          {%- elif grains.os_family in ('Redhat',) %}
+                - available_path: /etc/nginx/sites-available
           {%- endif %}
               - location /{{ site.hotpot_release }}/:
                 - proxy_pass: 'http://{{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1"}}:{{ site.port_hotpot }}/{{ site.hotpot_release }}'

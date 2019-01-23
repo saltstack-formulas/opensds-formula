@@ -45,11 +45,6 @@ RedHat:
     - docker-compose
     - nodejs
     - npm
-  dashboard:
-    container:
-      volumes:
-        - /etc/nginx/conf.d/default.conf:/etc/nginx/sites-available/default
-        - /run/nginx:/run/nginx
   backend:
     block:
       container:
