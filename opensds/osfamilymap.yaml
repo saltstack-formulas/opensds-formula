@@ -48,7 +48,7 @@ RedHat:
   dashboard:
     container:
       volumes:
-        - /etc/nginx/sites-available/default:/etc/nginx/conf.d/default.conf
+        - /etc/nginx/conf.d:/etc/sites-available
         - /run/nginx:/run/nginx
   backend:
     block:
