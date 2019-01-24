@@ -45,6 +45,10 @@ RedHat:
     - docker-compose
     - nodejs
     - npm
+  gelato:
+    daemon:
+      multi-cloud:
+        start: /bin/docker-compose up -d
   backend:
     block:
       container:
