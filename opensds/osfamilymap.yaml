@@ -14,6 +14,7 @@ Debian:
     - docker-compose
     - nodejs
     - npm
+    - thin-provisioning-tools
   systemd:
     dir: /usr/lib/systemd/system
   backend:
@@ -71,6 +72,7 @@ Suse:
     - docker-compose
     - nodejs
     - npm
+    - thin-provisioning-tools
 
 FreeBSD:
   salt:
@@ -82,4 +84,5 @@ FreeBSD:
 Arch:
   pkgs:
     - python2-pip
+    - thin-provisioning-tools
 
