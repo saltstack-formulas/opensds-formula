@@ -4,7 +4,7 @@
 {% from "opensds/map.jinja" import opensds, docker with context %}
 
 include:
-  - opensds.config
+  - opensds.dashboard.config
 
   {%- for instance in opensds.dashboard.instances %}
      {%- if instance in opensds.dashboard.container %}
