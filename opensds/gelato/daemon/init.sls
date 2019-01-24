@@ -39,6 +39,11 @@ opensds gelato daemon build {{ instance }} from repo:
     - force_clone: True
     - force_fetch: True
     - force_reset: True
+    - retry:
+        attempts: 3
+        until: True
+        interval: 60
+        splay: 10
     - require_in:
       - cmd: opensds gelato daemon build {{ instance }} from repo
   cmd.run:
