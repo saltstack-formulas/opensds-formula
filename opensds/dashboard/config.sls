@@ -4,6 +4,7 @@
 {% from "opensds/map.jinja" import opensds with context %}
 
 include:
+  - nginx.ng    ### ensure nginx filesystem config exists
   - opensds.config
 
 opensds dashboard config ensure apache dead:
