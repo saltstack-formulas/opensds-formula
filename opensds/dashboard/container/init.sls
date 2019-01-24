@@ -6,6 +6,7 @@
 include:
   - opensds.dashboard.config
 
+
   {%- for instance in opensds.dashboard.instances %}
      {%- if instance in opensds.dashboard.container %}
         {%- set container = opensds.dashboard.container[ instance|string ] %}
@@ -14,6 +15,16 @@ include:
            ##########################
            #### START CONTAINERS ####
            ##########################
+extend:
+  opensds dashboard config ensure nginx stopped:
+    service.dead:
+      - watch:
+        - docker_container: opensds dashboard container {{ instance }} running
+  opensds dashboard config ensure nginx disabled:
+    service.disabled:
+      - watch:
+        - docker_container: opensds dashboard container {{ instance }} running
+
 
 opensds dashboard container {{ instance }} running:
   docker_container.running:
