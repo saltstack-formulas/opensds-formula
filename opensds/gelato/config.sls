@@ -6,6 +6,20 @@
 include:
   - opensds.config
 
+
+### Check for keystone on port 80 ###
+
+opensds gelato config ensure apache running:
+  service.running:
+    - name: {{ 'httpd' if grains.os_family in ('RedHat',) else 'apache2' }}
+    - onlyif: {{ opensds.hotpot.opensdsconf.osdslet.auth_strategy == 'keystone' }}
+
+opensds gelato config ensure apache enabled:
+  service.enabled:
+    - name: {{ 'httpd' if grains.os_family in ('RedHat',) else 'apache2' }}
+    - onlyif: {{ opensds.hotpot.opensdsconf.osdslet.auth_strategy == 'keystone' }}
+
+
   {%- for instance in opensds.gelato.instances %}
 
          ########################

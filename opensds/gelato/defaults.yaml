@@ -20,8 +20,8 @@ opensds:
 
     daemon:
       multi-cloud:
-        strategy: keystone-repo-systemd       #or keystone-release-systemd, or keystone-compose-system
-        start: /usr/local/bin/docker-compose up -d
+        strategy: keystone-repo-systemd              #or keystone-release-systemd, or keystone-compose-system
+        start: /usr/local/bin/docker-compose up -d   #override in osfamilymap.yaml
         repo:
           url: https://github.com/opensds/multi-cloud.git
           branch: stable/bali

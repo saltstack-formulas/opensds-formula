@@ -7,17 +7,13 @@ include:
   - nginx.ng    ### ensure nginx filesystem config exists
   - opensds.config
 
-opensds dashboard config ensure apache dead:
+opensds dashboard config ensure nginx stopped:
   service.dead:
-    - names:
-      - apache2
-      - nginx
+    - name: nginx
 
-opensds dashboard config ensure apache disabled:
+opensds dashboard config ensure nginx disabled:
   service.disabled:
-    - name:
-      - apache2
-      - nginx
+    - name: nginx
 
   {%- for instance in opensds.dashboard.instances %}
 

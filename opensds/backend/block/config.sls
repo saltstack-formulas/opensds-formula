@@ -12,7 +12,7 @@ include:
   #### - create driver.yaml  ####
   ###############################
 
-  {%- for instance in opensds.backend.block.instances %}
+  {%- for instance in opensds.backend.block.instances.split(',') %}
 
          ########################
          #### OpenSDS Config ####
@@ -25,7 +25,7 @@ opensds backend block ensure opensds config {{ instance }} section exists:
     - sections:
       - {{ instance }}
     - require:
-      - file: opensds ensure opensds conf exists
+      - file: opensds config ensure opensds conf exists
 
           {%- for k, v in opensds.backend.block.opensdsconf[instance|string].items() %}
 
@@ -37,7 +37,7 @@ opensds backend block ensure opensds config {{ instance }} {{ k }} exists:
         {{ instance }}:
           {{ k }}: {{ v }}
     - require:
-      - file: opensds ensure opensds conf exists
+      - file: opensds config ensure opensds conf exists
           {%- endfor %}
 
      {%- endif %}

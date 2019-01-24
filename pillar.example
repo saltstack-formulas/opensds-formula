@@ -10,7 +10,7 @@ opensds:
   ######### BACKENDS ##################
   backend:
     block:
-      instances: {{ site.enabled_backends }}
+      instances: {{ site.enabled_backends|string }}
       container:
         cinder:
           enabled: True
@@ -61,18 +61,11 @@ opensds:
   dock:
     instances:
       - osdsdock
-      - osdsdockB     ##dummy 2nd dock instance
     opensdsconf:
       osdsdock:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:{{ site.port_dock }}
         dock_type: {{ site.dock_type }}
-        enabled_backend: {{ site.enabled_backend }}
-        enabled_backends: {{ site.enabled_backends }}
-      osdsdockB:
-        api_endpoint: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:{{ site.port_dock|int + 1 }}
-        dock_type: {{ site.dock_type }}
-        enabled_backend: {{ site.enabled_backend }}
-        enabled_backends: {{ site.enabled_backends }}
+        enabled_backends: {{ site.enabled_backends|string }}
     container:
       osdsdock:
         image: {{ site.container_dock_img }}
@@ -82,10 +75,6 @@ opensds:
           - {{ site.port_dock }}/udp
         port_bindings:
           - '{{ site.port_dock }}:{{ site.port_dock }}'
-    daemon:
-      osdsdockB:        ##dummy 2nd dock instance
-        strategy: repo-systemd
-        start: /bin/sleep 200000000000000000
 
   ############ GELATO #############
   gelato:
@@ -213,27 +202,27 @@ opensds:
 ###################################
 lvm:
   files:
-    loopbackdir: /tmp/opensds_loopdevs    #Where to create backing files
+    loopbackdir: {{ site.hotpot_path }}/volumegroups    #Where to create backing files
     remove:
-      - /tmp/opensds_loopdevs/cinder-volumes.img
-      - /tmp/opensds_loopdevs/opensds-volumes.img
+      - {{ site.hotpot_path }}/volumegroups/cinder-volumes.img
+      - {{ site.hotpot_path }}/volumegroups/opensds-volumes.img
     create:
       truncate:    #Shrink or extend the size of each FILE to the specified size
-        /tmp/opensds_loopdevs/cinder-volumes.img:
+        {{ site.hotpot_path }}/volumegroups/cinder-volumes.img:
           options:
             size: 100M
       dd:     #copy a file, converting and formatting according to the operands
-        /tmp/opensds_loopdevs/opensds-volumes.img:
+        {{ site.hotpot_path }}/volumegroups/opensds-volumes.img:
           options:
             if: /dev/urandom
             bs: 1024
             count: 20480
       losetup:          #set up and control loop devices
-        /tmp/opensds_loopdevs/cinder-volumes.img:
+        {{ site.hotpot_path }}/volumegroups/cinder-volumes.img:
           options:
             show: True
             find: True
-        /tmp/opensds_loopdevs/opensds-volumes.img:
+        {{ site.hotpot_path }}/volumegroups/opensds-volumes.img:
   pv:
     create:
       /dev/loop0:

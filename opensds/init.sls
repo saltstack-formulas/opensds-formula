@@ -7,6 +7,7 @@ include:
   - opensds.auth
   - opensds.hotpot
   - opensds.sushi
+  - opensds.backend
   - opensds.dock
   - opensds.dashboard
   - opensds.gelato

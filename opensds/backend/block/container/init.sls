@@ -5,6 +5,7 @@
 
 include:
   - opensds.config
+  - opensds.backend.block.container.build
 
   {%- for instance in opensds.backend.block.instances %}
      {%- if instance in opensds.backend.block.container %}

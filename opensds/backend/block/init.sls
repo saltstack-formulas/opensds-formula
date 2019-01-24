@@ -15,7 +15,6 @@ include:
   - iscsi.target
   - opensds.backend.block.config
   - opensds.backend.block.container
-  - opensds.backend.block.container.build
   - opensds.backend.block.daemon
 
    {%- endif %}

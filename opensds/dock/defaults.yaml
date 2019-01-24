@@ -11,11 +11,10 @@ opensds:
         api_endpoint: '0.0.0.0:50050'
         log_file: /var/log/opensds/osdsdockA.log
         dock_type: provisioner
-        enabled_backend: lvm
         enabled_backends:
           - lvm
-          - ceph
-          - cinder
+          # ceph
+          # cinder
 
     container:
       osdsdock:

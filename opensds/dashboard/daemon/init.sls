@@ -15,6 +15,17 @@ include:
           #### OpenSDS dashboard daemon build from repo  ####
           ###################################################
 
+extend:
+  opensds dashboard config ensure nginx stopped:
+    service.dead:
+      - watch:
+        - docker_container: opensds dashboard container {{ instance }} running
+  opensds dashboard config ensure nginx disabled:
+    service.disabled:
+      - watch:
+        - docker_container: opensds dashboard container {{ instance }} running
+
+
 opensds dashboard daemon {{ instance }} install angular cli:
   cmd.run:
     - name: npm install -g @angular/cli
@@ -62,8 +73,7 @@ opensds dashboard daemon build {{ instance }} from repo:
 opensds dashboard daemon {{ instance }} repo copy to hotpot directory:
   service.disabled:
     - name: nginx
-    - watch:
-      - service: opensds dashboard daemon build {{ instance }} from repo
+    - watch: service: opensds dashboard daemon build {{ instance }} from repo
   cmd.run:
     - name: cp -rp {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/* {{ opensds.dir.hotpot }}/
     - onlyif: test -d {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
