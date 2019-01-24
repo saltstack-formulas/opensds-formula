@@ -71,18 +71,19 @@
 #     * TAKE DEFAULTS & MERGE SITE SPECIFIC VALUE
 #     * MAKE ENABLED_BACKENDS LIST A COMMA-DELIM STRING
 ##################################################################
-{%- set enabled_backends = "" %}
-{% from "opensds/files/macros.jinja" import deep_merge with context %}
+{%- set backend_list = [] %}
 {% for instance in opensds.dock.instances %}
-   {%- for backend in opensds.dock.opensdsconf[instance|string]['enabled_backends'] %}
-      {%- set delim = '' if loop.index == 1 else ', ' %}
-      {%- do enabled_backends.join(delim|string + backend|string) %}
+   {%- for provider in opensds.dock.opensdsconf[instance|string]['enabled_backends'].split(',') %}
+      {%- do backend_list.append(provider) %}
    {%- endfor %}
 {%- endfor %}
 
-{%- for backend in enabled_backends|unique %}
-   {%- import_yaml 'opensds/files/drivers/' ~ backend ~ '.yaml' as driver %}
-   {%- if backend in opensds.backend.drivers %}
-       {%- do deep_merge(driver, opensds.backend.drivers[backend]) %}
+{%- set driver = {} %}
+{%- for provider in backend_list|unique %}
+   {%- if provider in opensds.backend.drivers %}
+       {% from "opensds/files/macros.jinja" import deep_merge with context %}
+       {%- import_yaml 'opensds/files/drivers/' ~ provider ~ '.yaml' as provider_yaml %}
+       {%- do deep_merge( provider_yaml, opensds.backend.drivers[ provider ]) %}
+       {%- do driver.update( provider_yaml ) %}
    {%- endif %}
 {%- endfor %}

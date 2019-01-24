@@ -11,14 +11,12 @@ include:
 
 opensds gelato config ensure apache running:
   service.running:
-    - names:
-      - {{ 'httpd' if grains.os_family in ('RedHat',) else 'apache2' }}
+    - name: {{ 'httpd' if grains.os_family in ('RedHat',) else 'apache2' }}
     - onlyif: {{ opensds.hotpot.opensdsconf.osdslet.auth_strategy == 'keystone' }}
 
 opensds gelato config ensure apache enabled:
   service.enabled:
-    - name:
-      - {{ 'httpd' if grains.os_family in ('RedHat',) else 'apache2' }}
+    - name: {{ 'httpd' if grains.os_family in ('RedHat',) else 'apache2' }}
     - onlyif: {{ opensds.hotpot.opensdsconf.osdslet.auth_strategy == 'keystone' }}
 
 
