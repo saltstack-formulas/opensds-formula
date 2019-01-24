@@ -66,15 +66,17 @@
 {%- set docker = salt['grains.filter_by']( docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
 {%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
 
-########################################################
-#    UPDATE OPENSDS DOCK DRIVER YML FILES
-#      TAKE DEFAULTS & MERGE SITE SPECIFIC VALUES
-########################################################
-{%- set enabled_backends = [] %}
+##################################################################
+#    UPDATE DOCK DRIVER YAML FILES WITH ANY SITE SPECIFIC DATA
+#     * TAKE DEFAULTS & MERGE SITE SPECIFIC VALUE
+#     * MAKE ENABLED_BACKENDS LIST A COMMA-DELIM STRING
+##################################################################
+{%- set enabled_backends = "" %}
 {% from "opensds/files/macros.jinja" import deep_merge with context %}
 {% for instance in opensds.dock.instances %}
    {%- for backend in opensds.dock.opensdsconf[instance|string]['enabled_backends'] %}
-      {%- do enabled_backends.append(backend) %}
+      {%- set delim = '' if loop.index == 1 else ', ' %}
+      {%- do enabled_backends.join(delim|string + backend|string) %}
    {%- endfor %}
 {%- endfor %}
 
