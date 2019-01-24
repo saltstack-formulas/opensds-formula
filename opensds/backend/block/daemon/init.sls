@@ -45,11 +45,6 @@ opensds backend block daemon build {{ instance }} from repo:
     - output_loglevel: quiet
     - require_in:
       - service: opensds backend block systemd {{ instance }} service started
-  service.running:
-    - name: nginx
-    - watch:
-      - cmd: opensds backend block daemon build {{ instance }} from repo
-    - enable: True
 
 opensds backend block daemon {{ instance }} repo copy to sushi directory:
   cmd.run:
