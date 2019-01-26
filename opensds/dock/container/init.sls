@@ -22,19 +22,21 @@ opensds dock container ensure docker running:
     {%- if instance in opensds.dock.container %}
       {%- set container = opensds.dock.container[ instance|string ] %}
 
+      {%- if container.enabled %}
+
 opensds dock container {{ instance }} running:
   file.directory:
     - name: {{ opensds.dir.driver }}/container/{{ instance }}
     - makedirs: True
+    - onlyif: {{ container.build }}
   cmd.run:
-    - onlyif: {{ container.enabled and container.build }}
     - name: {{ opensds.dock.container[ instance|string ]['build_cmd'] }}
     - cwd: {{ opensds.dir.driver }}/container/{{ instance }}
     - require:
       - service: opensds dock container ensure docker running
       - file: opensds dock container {{ instance }} running
+    - onlyif: {{ container.build }}
   docker_container.running:
-    - onlyif: {{ container.enabled and not container.build }}
     - name: {{ instance }}
     - image: {{ container['image'] }}:{{ container['version'] }}
     - restart_policy: always
@@ -58,4 +60,5 @@ opensds dock container {{ instance }} running:
       - service: opensds dock container ensure docker running
 
       {%- endif %}
-    {%- endfor %}
+    {%- endif %}
+  {%- endfor %}

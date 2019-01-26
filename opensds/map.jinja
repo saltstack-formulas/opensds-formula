@@ -73,9 +73,11 @@
 ##################################################################
 {%- set backend_list = [] %}
 {% for instance in opensds.dock.instances %}
-   {%- for provider in opensds.dock.opensdsconf[instance|string]['enabled_backends'].split(',') %}
-      {%- do backend_list.append(provider) %}
-   {%- endfor %}
+   {%- if instance in opensds.dock.opensdsconf %}
+      {%- for provider in opensds.dock.opensdsconf[instance|string]['enabled_backends'].split(',') %}
+         {%- do backend_list.append(provider) %}
+      {%- endfor %}
+   {%- endif %}
 {%- endfor %}
 
 {%- set driver = {} %}

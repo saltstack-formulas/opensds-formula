@@ -68,6 +68,7 @@ opensds:
         enabled_backends: {{ site.enabled_backends|string }}
     container:
       osdsdock:
+        enabled: False
         image: {{ site.container_dock_img }}
         version: {{ site.container_dock_version }}
         ports:
@@ -75,6 +76,10 @@ opensds:
           - {{ site.port_dock }}/udp
         port_bindings:
           - '{{ site.port_dock }}:{{ site.port_dock }}'
+    daemon:
+      osdsdock:
+        strategy: release-systemd
+        start: /usr/local/bin/osdsdock
 
   ############ GELATO #############
   gelato:

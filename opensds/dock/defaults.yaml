@@ -29,6 +29,6 @@ opensds:
 
     daemon:
       osdsdock:
-        strategy: container
+        strategy: release-systemd
         start: /usr/local/bin/osdsdock
       
