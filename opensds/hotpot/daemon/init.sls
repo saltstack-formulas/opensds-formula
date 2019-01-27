@@ -33,7 +33,7 @@ opensds hotpot daemon {{ instance }} build from repo:
     - target: {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
     - rev: {{ daemon.repo.branch }}
     - force_checkout: True
-    - force_clone: True
+    - force_clone: False
     - force_fetch: True
     - force_reset: True
     - retry:
@@ -69,7 +69,10 @@ opensds hotpot daemon {{ instance }} release copy to hotpot directory:
 
           {%- endif %}
        {%- endif %}
-       {%- for binary in opensds.hotpot.binaries %}
+
+
+
+       {%- for binary in [opensds.hotpot.binaries, 'osdsdock',] %}
      
 opensds hotpot daemon {{ instance }} repo copy {{ binary }} to usr/local/bin:
   file.copy:

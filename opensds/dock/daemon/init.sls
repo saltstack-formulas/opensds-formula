@@ -23,8 +23,8 @@ opensds dock daemon {{ instance }} repo copy osdsdock to usr/local/bin:
 opensds dock daemon {{ instance }} release copy osdsdock to usr/local/bin:
   file.copy:
     - name: /usr/local/bin
-    - source: {{ opensds.dir.tmp }}/{{ opensds.dir.hotpot }}/bin/osdsdock
-    - onlyif: test -f {{ opensds.dir.tmp }}/{{ opensds.dir.hotpot }}/bin/osdsdock
+    - source: {{ opensds.dir.tmp }}/{{ opensds.dir.hotpot }}/build/out/bin/osdsdock
+    - onlyif: test -f {{ opensds.dir.tmp }}/{{ opensds.dir.hotpot }}/build/out/bin/osdsdock
     - mode: '0755'
     - subdir: True
     - force: True
