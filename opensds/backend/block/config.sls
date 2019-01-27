@@ -12,7 +12,7 @@ include:
   #### - create driver.yaml  ####
   ###############################
 
-  {%- for instance in opensds.backend.block.instances.split(',') %}
+  {%- for instance in opensds.backend.block.instances %}
 
          ########################
          #### OpenSDS Config ####
