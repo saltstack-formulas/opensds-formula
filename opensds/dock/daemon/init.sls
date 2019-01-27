@@ -7,16 +7,16 @@ include:
   - opensds.dock.config
 
   {%- for instance in opensds.dock.instances %}
-    {%- if instance in opensds.dock.daemon and opensds.dock.daemon[ instance|string ] is mapping %}
-       {%- set daemon = opensds.dock.daemon[ instance|string ] %}
-
-          {%- if instance in opensds.dock.container and not opensds.dock.container[ instance|string ]['enabled'] and not opensds.dock.container[ instance|string ]['build'] %}
+    {%- if instance in opensds.dock.daemon %}
+      {%- set daemon = opensds.dock.daemon[instance|string] %}
+      {%- if instance in opensds.dock.container %}
+        {%- if not (opensds.dock.container[instance]['enabled'] or opensds.dock.container[instance]['build'])%}
 
 opensds dock daemon {{ instance }} repo copy osdsdock to usr/local/bin:
   file.copy:
     - name: /usr/local/bin
-    - source: {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/build/out/bin/osdsdock
-    - onlyif: test -f {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/build/out/bin/osdsdock
+    - source: {{ golang.go_path }}/src/github.com/opensds/opensds/bin/osdsdock
+    - onlyif: test -f {{ golang.go_path }}/src/github.com/opensds/opensds/bin/osdsdock
     - force: False
     - subdir: True
 
@@ -47,6 +47,7 @@ opensds dock daemon {{ instance }} systemd service started:
         systemd: {{ opensds.systemd|json }}
         start: {{ daemon.start }}
         stop: /usr/bin/killall opensds-{{ instance }}
+        workdir: /usr/local
   cmd.run:
     - name: systemctl daemon-reload
     - watch:
@@ -58,7 +59,8 @@ opensds dock daemon {{ instance }} systemd service started:
       - cmd: opensds dock daemon {{ instance }} systemd service started
 
           {%- endif %}
-       {%- endif %}
 
+        {%- endif %}
+      {%- endif %}
     {%- endif %}
   {%- endfor %}
