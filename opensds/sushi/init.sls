@@ -1,14 +1,15 @@
 ###  opensds/sushi/init.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from "opensds/map.jinja" import opensds with context %}
+{%- from "opensds/map.jinja" import opensds with context %}
 
-    {%- if opensds.deploy_project not in ('gelato',)  %}
+   {%- if opensds.deploy_project not in ('gelato',)  %}
 
 include:
-  - opensds.config
   - iscsi.initiator
+  - opensds.sushi.release
+  - opensds.sushi.repo
+  - opensds.sushi.config
   - opensds.sushi.plugin
-  - opensds.sushi.daemon
 
-    {%- endif %}
+   {%- endif %}

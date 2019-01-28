@@ -1,8 +1,8 @@
 ### opensds/init.sls
 include:
   {{ '- epel' if grains.os_family in ('RedHat',) else '' }}  
-  - opensds.config
   - opensds.infra
+  - opensds.config
   - opensds.database
   - opensds.auth
   - opensds.hotpot

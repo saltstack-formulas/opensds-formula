@@ -1,8 +1,10 @@
-### opensds/map.jinja ###
+ opensds/map.jinja ###
 ### exported dicts: opensds, driver, docker, firewalld, golang, etcd, ceph ###
 
 #OpenSDS: import formula default dicts
-{% import_yaml "opensds/defaults.yaml" as defaults %}
+{% import_yaml "opensds/yaml/defaults.yaml" as defaults %}
+{% import_yaml "opensds/yaml/osfamilymap.yaml" as osfamilymap %}
+{% import_yaml "opensds/yaml/osmap.yaml" as osmap %}
 {% import_yaml "opensds/database/defaults.yaml" as database %}
 {% import_yaml "opensds/hotpot/defaults.yaml" as hotpot %}
 {% import_yaml "opensds/auth/defaults.yaml" as auth %}
@@ -11,12 +13,10 @@
 {% import_yaml "opensds/backend/block/defaults.yaml" as block %}
 {% import_yaml "opensds/dashboard/defaults.yaml" as dashboard %}
 {% import_yaml "opensds/sushi/defaults.yaml" as sushi %}
-{% import_yaml "opensds/sushi/plugin/defaults.yaml" as plugin %}
+{% import_yaml "opensds/sushi/plugin/defaults.yaml" as pluggy %}
 {% import_yaml "opensds/dock/defaults.yaml" as dock %}
-{% import_yaml "opensds/osfamilymap.yaml" as osfamilymap %}
-{% import_yaml "opensds/osmap.yaml" as osmap %}
 
-#OpenSDS: merge any pillar data with defaults
+#OpenSDS: merge with pillar data
 {%- set opensds = salt['grains.filter_by'](
      defaults, merge=salt['grains.filter_by'](
         database, merge=salt['grains.filter_by'](
@@ -27,7 +27,7 @@
                        block, merge=salt['grains.filter_by'](
                           dashboard, merge=salt['grains.filter_by'](
                              sushi, merge=salt['grains.filter_by'](
-                                plugin, merge=salt['grains.filter_by'](
+                                pluggy, merge=salt['grains.filter_by'](
                                    dock, merge=salt['grains.filter_by'](
                                       osfamilymap, grain='os_family', merge=salt['grains.filter_by'](
                                          osmap, grain='os', merge=salt['pillar.get']('opensds', {}),
@@ -58,34 +58,35 @@
 {% import_yaml "ceph/defaults.yaml" as ceph %}
 {% import_yaml "docker/defaults.yaml" as docker %}
 {% import_yaml "devstack/defaults.yaml" as devstack %}
+{% import_yaml "packages/defaults.yaml" as packages %}
 
-{%- set firewalld = salt['grains.filter_by']( firewalld, merge=salt['pillar.get']('firewalld', {}), base='firewalld') %}
+{%- set firewalld=salt['grains.filter_by'](firewalld, merge=salt['pillar.get']('firewalld',{}),base='firewalld') %}
 {%- set golang = salt['grains.filter_by']( golang, merge=salt['pillar.get']('golang', {}), base='golang') %}
 {%- set etcd = salt['grains.filter_by']( etcd, merge=salt['pillar.get']('etcd', {}), base='etcd') %}
 {%- set ceph = salt['grains.filter_by']( ceph, merge=salt['pillar.get']('ceph', {}), base='ceph') %}
 {%- set docker = salt['grains.filter_by']( docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
-{%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack') %}
+{%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack')%}
+{%- set packages = salt['grains.filter_by']( packages, merge=salt['pillar.get']('packages', {}), base='packages')%}
 
 ##################################################################
-#    UPDATE DOCK DRIVER YAML FILES WITH ANY SITE SPECIFIC DATA
-#     * TAKE DEFAULTS & MERGE SITE SPECIFIC VALUE
-#     * MAKE ENABLED_BACKENDS LIST A COMMA-DELIM STRING
+#    UPDATE DOCK DRIVER YAML FILES:
+#     * TAKE DEFAULTS
+#     * MERGE SITE-SPECIFIC VALUES
 ##################################################################
 {%- set backend_list = [] %}
-{% for instance in opensds.dock.instances %}
-   {%- if instance in opensds.dock.opensdsconf %}
-      {%- for provider in opensds.dock.opensdsconf[instance|string]['enabled_backends'].split(',') %}
-         {%- do backend_list.append(provider) %}
+{% for id in opensds.dock.ids %}
+   {%- if id in opensds.dock.opensdsconf %}
+      {%- for drv in opensds.dock.opensdsconf[id|string]['enabled_backends'].split(',') %}
+         {%- do backend_list.append(drv) %}
       {%- endfor %}
    {%- endif %}
 {%- endfor %}
 
 {%- set driver = {} %}
-{%- for provider in backend_list|unique %}
-   {%- if provider in opensds.backend.drivers %}
-       {% from "opensds/files/macros.jinja" import deep_merge with context %}
-       {%- import_yaml 'opensds/files/drivers/' ~ provider ~ '.yaml' as provider_yaml %}
-       {%- do deep_merge( provider_yaml, opensds.backend.drivers[ provider ]) %}
-       {%- do driver.update( provider_yaml ) %}
+{%- for drv in backend_list|unique %}
+   {%- if drv in opensds.backend.drivers %}
+       {%- import_yaml 'opensds/yaml/drivers/' ~ drv ~ '.yaml' as driver_yaml %}
+       {%- do salt['defaults.merge'](driver_yaml, opensds.backend.drivers[drv], merge_lists=True) %}
+       {%- do driver.update( driver_yaml ) %}
    {%- endif %}
 {%- endfor %}

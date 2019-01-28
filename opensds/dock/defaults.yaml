@@ -1,34 +1,31 @@
 ### opensds/dock/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
-#
+
 opensds:
   dock:
-    instances:
+    ids:
+      - opensds
       - osdsdock
-
+    binaries:
+      opensds:
+        - osdsdock
     opensdsconf:
       osdsdock:
         api_endpoint: '0.0.0.0:50050'
-        log_file: /var/log/opensds/osdsdockA.log
+        log_file: /var/log/opensds/osdsdock.log
         dock_type: provisioner
-        enabled_backends:
-          - lvm
-          # ceph
-          # cinder
-
+        enabled_backends: lvm, cinder
     container:
       osdsdock:
-        enabled: True
-        build: False
-        build_cmd: None
         image: opensdsio/opensds-dock
         version: latest
         privileged: True
         volumes:
           - /etc/opensds/:/etc/opensds
-
     daemon:
+      opensds:
+        startegy: 'binaries'
       osdsdock:
-        strategy: release-systemd
+        strategy: 'config-systemd'
         start: /usr/local/bin/osdsdock
-      
+        stop: /usr/bin/killall osdsdock

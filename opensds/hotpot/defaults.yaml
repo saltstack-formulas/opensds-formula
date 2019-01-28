@@ -1,21 +1,19 @@
 ### opensds/hotpot/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
-#
+
 opensds:
   hotpot:
-    conf: /etc/opensds/opensds.conf
     release: v1beta
     service: opensds
 
-    instances:
+    ids:
       - opensds
       - osdslet
-
     binaries:
-      - osdslet
-      - osdsctl
-      - osdsdock
-
+      opensds:
+        - osdslet
+        - osdsctl
+        - osdsdock
     opensdsconf:
       osdslet:
         api_endpoint: '127.0.0.1:50040'
@@ -23,11 +21,8 @@ opensds:
         log_file: /var/log/opensds/osdslet.log
         socket_order: inc
         auth_strategy: keystone
-
     container:
       opensds:
-        enabled: False
-        build: False
         image: opensdsio/opensds-hotpot
         version: stable/bali
         ports:
@@ -40,12 +35,15 @@ opensds:
 
     daemon:
       opensds:
-        strategy: repo-systemd
+        strategy: repo-config-build-binaries-systemd
         endpoint_ipv4: 127.0.0.1
         endpoint_port: 50040
-        start: /usr/local/bin/osdslet
         repo:
           url: https://github.com/opensds/opensds.git
           branch: stable/bali
           build_cmd: make
+          build_subdir: ''
+          binaries_subdir: '/build/out/bin'
           clean_cmd: make clean
+        start: /usr/local/bin/osdslet
+        stop: /usr/bin/killall osdslet

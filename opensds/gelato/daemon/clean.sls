@@ -1,40 +1,22 @@
 ###  opensds/gelato/daemon/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds with context %}
+{%- from 'opensds/map.jinja' import opensds with context %}
 
+    {%- if opensds.deploy_project not in ('gelato',)  %}
+{%- from 'opensds/files/macros.j2' import daemon_clean with context %}
 
-  {%- for instance in opensds.gelato.instances %}
-    {%- if instance in opensds.gelato.daemon and opensds.gelato.daemon[ instance|string ] is mapping %}
-       {%- set daemon = opensds.gelato.daemon[ instance|string ] %}
+        {%- for id in opensds.gelato.ids %}
+            {%- if 'keystone' in opensds.gelato.daemon[id]|lower %}
+#include:
+#  - devstack.remove
 
-           ###########################################
-           #### OpenSDS gelato keystone service  #####
-           ###########################################
-       {%- if "keystone" in daemon.strategy|lower %}
+            {%- elif 'daemon' in opensds.gelato and id in opensds.gelato.daemon %}
+                {%- if opensds.gelato.daemon[id] is mapping %}
 
-         ## skipping 'include: - devstack.remove'
+{{ daemon_clean('opensds', 'gelato daemon', id, opensds.gelato, opensds.systemd) }}
 
-       {%- endif %}
-
-           #########################################
-           #### OpenSDS gelato systemd services ####
-           #########################################
-       {%- if "systemd" in daemon.strategy|lower %}
-
-opensds gelato daemon {{ instance }} systemd service stopped:
-  service.dead:
-    - name: opensds-{{ instance }}
-  file.absent:
-    - name: {{ opensds.systemd.dir }}/opensds-{{ instance }}.service
-    - watch:
-      - service: opensds gelato daemon {{ instance }} systemd service stopped
-  cmd.run:
-    - names:
-      - systemctl daemon-reload
-    - watch:
-      - file: opensds gelato daemon {{ instance }} systemd service stopped
-
-       {%- endif %}
-    {%- endif %}
-  {%- endfor %}
+                {%- endif %}
+            {%- endif %}
+        {%- endfor %}
+   {%- endif %}

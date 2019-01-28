@@ -4,75 +4,30 @@
 opensds:
   backend:
     block:
-      instances:
-        - sample
+      ids:
         - cinder
-        - ceph
-        - lvm
-        - dorado
-        - fusionstorage
-        - drbd
-
-      opensdsconf:
-        sample:
-          name: sample
-          description: Sample Test
-          driver_name: sample
-        drbd:
-          name: drbd
-          description: DRBD Test
-          driver_name: drbd
-          config_path: /etc/opensds/driver/drbd.yaml
-        cinder:
-          name: cinder
-          description: Cinder Test
-          driver_name: cinder
-          config_path: /etc/opensds/driver/cinder.yaml
-        ceph:
-          name: ceph
-          description: Ceph Test
-          driver_name: ceph
-          config_path: /etc/opensds/driver/ceph.yaml
-        lvm:
-          name: lvm
-          description: LVM Test
-          driver_name: lvm
-          config_path: /etc/opensds/driver/lvm.yaml
-          host_based_replication_driver: DRBD
-        dorado:
-          name: Huawei Dorado
-          description: dorado Test
-          driver_name: dorado
-          config_path: /etc/opensds/driver/huawei_dorado.yaml
-          replication_type: array_based
-        fusionstorage:
-          name: fusionstorage backend
-          description: This is a fusionstorage backend service
-          driver_name: fusionstorage
-          config_path: /etc/opensds/driver/fusionstorage.yaml
-
-      container:
-        cinder:
-          enabled: True
-          build: True
-          #build_cmd: set by opensds/osfamilymap.yaml
-          image: openstack/cinder-blockbox
-          version: latest
-          privileged: True
-
-        ceph:
-          enabled: False
-          build: False
-        lvm:
-          enabled: False
-          build: False
-        dorado:
-          enabled: False
-          build: False
-        fusionstorage:
-          enabled: False
-          build: False
-
-      daemon:
-        cinder:
-          strategy: container
+    container:
+      cinder:
+        image: openstack/cinder-blockbox
+        version: stable/rocky
+        compose:
+          platform: 'debian-cinder:latest'
+          tag: 'debian-cinder:latest'
+          image: 'debian-cinder'
+          imagetag: 'lvm-debian-cinder'
+          dbports: '3307:3306'
+          volumegroup: 'cinder-volumes'
+    daemon:
+      cinder:
+        strategy: repo-container-compose-config-build-systemd
+        repo:
+          url: https://github.com/openstack/cinder.git
+          branch: stable/rocky
+          build_subdir: contrib/block-box
+          build_cmd: make blockbox
+          binaries_subdir: ''
+          clean_cmd: make clean
+        start: /usr/local/bin/docker-compose up -d && sleep 22222222222222222222
+        stop: /usr/local/bin/docker-compose down -d
+    pips:
+      - notario

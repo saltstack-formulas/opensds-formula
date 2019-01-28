@@ -1,32 +1,33 @@
 ### opensds/dashboard/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
-#
+
 opensds:
   dashboard:
-
-    instances:
+    ids:
       - dashboard
-
+    binaries:
+      dashboard:
+        - dashboard
     opensdsconf:
       dashboard:
         endpoint: 127.0.0.1
         port: 50040
-
     container:
       dashboard:
-        enabled: True
-        build: False
         image: opensdsio/dashboard
-        version: latest
+        version: stable/bali
         volumes:
           - /etc/nginx/sites-available/default:/etc/nginx/sites-available/default
           - /run/nginx:/run/nginx
-
     daemon:
       dashboard:
-        strategy: container-systemd     ##or 'repo-systemd'
-        start: /opt/opensds-linux-amd64/bin/dashboard
+        strategy: config-container
         repo:
           url: https://github.com/opensds/opensds-dashboard.git
           branch: stable/bali
-          build_cmd: make
+          build_cmd: make && make docker
+          build_subdir: ''
+          binaries_subdir: '/build/out/bin'
+          clean_cmd: make clean
+        start: /usr/local/bin/dashboard
+        stop: /usr/bin/killall dashboard
