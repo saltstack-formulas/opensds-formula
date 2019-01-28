@@ -33,7 +33,7 @@ opensds hotpot daemon {{ instance }} build from repo:
     - target: {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
     - rev: {{ daemon.repo.branch }}
     - force_checkout: True
-    - force_clone: False
+    - force_clone: True
     - force_fetch: True
     - force_reset: True
     - retry:

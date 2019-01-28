@@ -32,7 +32,7 @@ opensds backend block daemon build {{ instance }} from repo:
     - target: {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
     - rev: {{ 'master' if not "branch" in daemon.repo else daemon.repo.branch }}
     - force_checkout: True
-    - force_clone: False
+    - force_clone: True
     - force_fetch: True
     - force_reset: True
     - retry:
