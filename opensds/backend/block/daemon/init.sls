@@ -78,7 +78,7 @@ opensds backend block daemon {{ instance }} release copy to sushi directory:
 
 opensds backend block systemd {{ instance }} service started:
   file.managed:
-    - name: {{ opensds.dir.hotpot }}/opensds-{{ instance }}.service
+    - name: {{ opensds.systemd.dir }}/opensds-{{ instance }}.service
     - source: salt://opensds/files/service.jinja
     - mode: '0644'
     - template: jinja

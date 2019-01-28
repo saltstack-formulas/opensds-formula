@@ -14,7 +14,7 @@ include:
            ##########################
            #### START CONTAINERS ####
            ##########################
-        {%- if container.enabled and not container.build %}
+        {%- if container.enabled %}
 
 opensds backend block container {{ instance }} running:
   docker_container.running:

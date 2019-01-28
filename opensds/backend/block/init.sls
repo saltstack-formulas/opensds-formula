@@ -14,7 +14,8 @@ include:
   - lvm.lv.create
   - iscsi.target
   - opensds.backend.block.config
-  - opensds.backend.block.container
   - opensds.backend.block.daemon
+  - opensds.backend.block.container.build
+  - opensds.backend.block.container.init
 
    {%- endif %}

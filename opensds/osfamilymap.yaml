@@ -21,10 +21,10 @@ Debian:
     block:
       container:
         cinder:
-          build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
+          build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag openstack/cinder-blockbox
       daemon:
         cinder:
-          start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
+          start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag openstack/cinder-blockbox
 
 RedHat:
   pips:
@@ -54,10 +54,10 @@ RedHat:
     block:
       container:
         cinder:
-          build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
+          build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag openstack/cinder-blockbox
       daemon:
         cinder:
-          start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag cinder
+          start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES="lvm ceph" --tag openstack/cinder-blockbox
 
 Suse:
   pkgs:
