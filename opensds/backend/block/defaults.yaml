@@ -56,9 +56,9 @@ opensds:
           enabled: True
           build: True
           #build_cmd: set by opensds/osfamilymap.yaml
-        image: openstack/cinder-blockbox
-        version: latest
-        privileged: True
+          image: openstack/cinder-blockbox
+          version: latest
+          privileged: True
 
         ceph:
           enabled: False
