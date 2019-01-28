@@ -72,13 +72,14 @@ opensds hotpot daemon {{ instance }} release copy to hotpot directory:
 
 
 
-       {%- for binary in [opensds.hotpot.binaries, 'osdsdock',] %}
+       {%- for binary in opensds.hotpot.binaries %}
      
 opensds hotpot daemon {{ instance }} repo copy {{ binary }} to usr/local/bin:
   file.copy:
     - name: /usr/local/bin
     - source: {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/build/out/bin/{{ binary }}
     - onlyif: test -f {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/build/out/bin/{{ binary }}
+    - mode: '0755'
     - force: False
     - subdir: True
 
