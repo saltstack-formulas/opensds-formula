@@ -10,13 +10,14 @@ include:
   - opensds.sushi.daemon
 
      {%- for instance in opensds.sushi.instances %}
-        {%- if "opensdsconf" in opensds.sushi and instance in opensds.sushi.opensdsconf %}
+        {%- if "plugins" in opensds.sushi and instance in opensds.sushi.plugins %}
+
+          {%- set plugin = opensds.sushi.plugins[ instance|string ] %}
           ##############################
           #### sushi deploy scripts ####
           ##############################
-          {%- set plugin = opensds.sushi.opensdsconf[ instance|string ] %}
-
           {%- if instance in ('csi', 'provisioner',) %}
+
 opensds sushi plugin copy {{ instance }} deploy scripts to workdir:
    file.copy:
     - name: {{ opensds.dir.sushi }}/{{ instance }}/
