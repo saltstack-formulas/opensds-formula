@@ -9,7 +9,7 @@ opensds:
         - cinder
         - ceph
         - lvm
-        - huawei_dorado
+        - dorado
         - fusionstorage
         - drbd
 
@@ -39,11 +39,11 @@ opensds:
           driver_name: lvm
           config_path: /etc/opensds/driver/lvm.yaml
           host_based_replication_driver: DRBD
-        huawei_dorado:
-          name: dorado
+        dorado:
+          name: Huawei Dorado
           description: dorado Test
           driver_name: dorado
-          config_path: /etc/opensds/driver/dorado.yaml
+          config_path: /etc/opensds/driver/huawei_dorado.yaml
           replication_type: array_based
         fusionstorage:
           name: fusionstorage backend
@@ -66,7 +66,7 @@ opensds:
         lvm:
           enabled: False
           build: False
-        huawei_dorado:
+        dorado:
           enabled: False
           build: False
         fusionstorage:
@@ -76,4 +76,3 @@ opensds:
       daemon:
         cinder:
           strategy: container
-          #start: set by opensds/osfamilymap.yaml 

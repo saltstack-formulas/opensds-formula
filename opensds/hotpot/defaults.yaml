@@ -14,6 +14,7 @@ opensds:
     binaries:
       - osdslet
       - osdsctl
+      - osdsdock
 
     opensdsconf:
       osdslet:
