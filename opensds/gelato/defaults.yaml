@@ -30,5 +30,3 @@ opensds:
           build_subdir: ''
           binaries_subdir: ''  ##'/build/out/bin'
           clean_cmd: make clean
-        start: /usr/local/bin/docker-compose up -d && sleep 22222222222222222222
-        stop: /usr/local/bin/docker-compose down -d

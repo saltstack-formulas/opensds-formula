@@ -27,6 +27,7 @@ Debian:
           #start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES='lvm ceph' --tag openstack/cinder-blockbox
 
 RedHat:
+  compose: /bin/docker-compose
   pips:
     - python-brick-cinderclient-ext
     - python-cinderclient 
@@ -43,13 +44,8 @@ RedHat:
     - gcc
     - make
     - dos2unix
-    - docker-compose
     - nodejs
     - npm
-  gelato:
-    daemon:
-      multi-cloud:
-        start: /bin/docker-compose up -d
   backend:
     block:
       container:
