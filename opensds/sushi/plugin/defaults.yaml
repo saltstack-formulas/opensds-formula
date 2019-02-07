@@ -23,9 +23,9 @@ opensds:
       daemon:
         csi:
           strategy: config-systemd
-          start: /usr/local/bin/kubectl create -f deploy/kubernetes && sleep 99999999999999999999
+          start: /usr/local/bin/kubectl create -f deploy/kubernetes
           stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
         provisioner:
           strategy: config-systemd
-          start: /usr/local/bin/kubectl create -f deploy/kubernetes && sleep 99999999999999999999
+          start: /usr/local/bin/kubectl create -f deploy/kubernetes
           stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
