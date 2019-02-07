@@ -206,8 +206,13 @@
     - context:
       svc: {{ id }}
       systemd: {{ systemd|json }}
+         {%- if "compose" in daemon.strategy|lower %}
+      start: {{ opensds.compose }} up
+      stop: {{ opensds.compose }} down
+         {%- else %}
       start: {{ daemon.start }}
       stop: {{ daemon.stop }}
+         {%- endif %}
          {%- if 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
          {%- else %}

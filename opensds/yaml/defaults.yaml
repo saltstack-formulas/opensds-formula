@@ -10,6 +10,7 @@ opensds:
   dir_mode: '0755'
   file_mode: '0644'
   user: root
+  compose: /usr/bin/docker-compose
 
   dir:
     config: /etc/opensds               #leave me alone
