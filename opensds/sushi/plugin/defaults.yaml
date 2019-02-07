@@ -1,29 +1,31 @@
-### opensds/sushi/plugin/defaults.yaml
+### opensds/sushi/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
 
 opensds:
   sushi:
     plugin:
-
-      #### INSTANCES ####
-      instances:
+      ids:
         - csi
         - flexvolume
         - provisioner
-
-      #### OPENSDS CONF ###
-      opensdsconf: {}
-
-      ### PLUGINS ###
-      plugins:
-        csi:
-          dir: /opt/opensds-sushi-linux-amd64/csi/deploy/kubernetes
-          file: csi-sushi_configmap-opensdsplugin.yaml
-
+        - service-broker
+        - cindercompatibleapi
+      custom:
         flexvolume:
           dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
-          file: flexvolume.server.opensds
-
+          file: bin/flexvolume.server.opensds
+      subdirs:
+        - deploy
+        - charts
+        - examples
+        - server/deploy
+        - server/examples
+      daemon:
+        csi:
+          strategy: config-systemd
+          start: /usr/local/bin/kubectl create -f deploy/kubernetes && sleep 99999999999999999999
+          stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
         provisioner:
-          dir: /opt/opensds-sushi-linux-amd64/provisioner/deploy/kubernetes
-          file: configmap.yaml
+          strategy: config-systemd
+          start: /usr/local/bin/kubectl create -f deploy/kubernetes && sleep 99999999999999999999
+          stop: /usr/local/bin/kubectl delete -f deploy/kubernetes

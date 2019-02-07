@@ -1,18 +1,15 @@
 ###  opensds/database/daemon/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds, etcd with context %}
-
-  {%- for instance in opensds.database.instances %}
-
-        ####################################
-        #### OpenSDS Database service  #####
-        ####################################
-     {%- if instance in opensds.database and "etcd" in opensds.database.daemon[instance|string]['strategy']|lower and not etcd.docker.enabled %}
+{%- from 'opensds/map.jinja' import opensds with context %}
 
 include:
+    {%- if 'etcd' in opensds.database.daemon %}
+        {%- if 'container' in opensds.database.daemon.etcd.strategy|lower %}
+  - etcd.docker.stopped
+          {%- else %}
   - etcd.service.stopped
+          {%- endif %}
   - etcd.remove
-
      {%- endif %}
-  {%- endfor %}
+  - opensds.database.config.clean

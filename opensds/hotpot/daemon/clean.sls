@@ -1,37 +1,18 @@
 ###  opensds/hotpot/daemon/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds, golang with context %}
+{%- from 'opensds/map.jinja' import opensds with context %}
 
-  {%- for instance in opensds.hotpot.instances %}
-    {%- if instance in opensds.hotpot.daemon and opensds.hotpot.daemon[ instance|string ] is mapping %}
-        {%- set daemon = opensds.hotpot.daemon[ instance|string ] %}
+    {%- if opensds.deploy_project not in ('gelato',)  %}
+{%- from 'opensds/files/macros.j2' import daemon_clean with context %}
 
-opensds hotpot daemon {{ instance }} systemd service removed:
-  service.dead:
-    - name: opensds-{{ instance }}
-  cmd.run:
-    - name: {{ daemon.repo.clean_cmd }}
-    - cwd: {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
-    - env:
-       - GOPATH: {{ golang.go_path }}
-    - output_loglevel: quiet
-    - onlyif:
-      - test -f {{ golang.go_path }}/src/github.com/opensds/{{ instance }}/Makefile
-      - {{ "repo-systemd" in daemon.strategy|lower }}
+        {%- for id in opensds.hotpot.ids %}
+            {%- if 'daemon' in opensds.hotpot and id in opensds.hotpot.daemon  %}
+                {%- if opensds.hotpot.daemon[id] is mapping %}
 
-opensds hotpot daemon {{ instance }} directories removed:
-  file.absent:
-    - names:
-      - {{ opensds.systemd.dir }}/opensds-{{ instance }}.service
-      - {{ opensds.dir.hotpot }}
-      - {{ opensds.dir.tmp }}/{{ opensds.dir.hotpot }}
-      - {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
-  cmd.run:
-    - names:
-      - systemctl daemon-reload
-    - watch:
-      - file: opensds hotpot daemon {{ instance }} directories removed
+{{ daemon_clean('opensds', 'hotpot daemon', id, opensds.hotpot, opensds.systemd) }}
 
+                {%- endif %}
+            {%- endif %}
+        {%- endfor %}
     {%- endif %}
-  {%- endfor %}

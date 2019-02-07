@@ -1,14 +1,14 @@
 ###  opensds/gelato/init.sls
 # -*- coding: utf-8 -*-
-# vim: ft=sls
-{% from "opensds/map.jinja" import opensds, golang with context %}
+# vim: ft=yaml
+{%- from "opensds/map.jinja" import opensds with context %}
 
-  {%- if opensds.deploy_project not in ('hotpot',) %}
+   {%- if opensds.deploy_project not in ('hotpot',)  %}
 
 include:
+  - opensds.gelato.release
+  - opensds.gelato.repo
   - opensds.gelato.config
-  - opensds.gelato.container
-  - opensds.gelato.container.build
   - opensds.gelato.daemon
 
-  {%- endif %}
+   {%- endif %}

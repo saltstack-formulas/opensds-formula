@@ -1,14 +1,16 @@
-###  opensds/backend/block/init.sls
+###  opensds/backend/block/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
-{% from "opensds/map.jinja" import opensds with context %}
+{%- from "opensds/map.jinja" import opensds with context %}
 
    {%- if opensds.deploy_project not in ('gelato',)  %}
 
 include:
-  - opensds.backend.block.container.clean
   - opensds.backend.block.daemon.clean
-  # iscsi.target.remove        ### https://github.com/saltstack-formulas/iscsi-formula/issues/12
+  - opensds.backend.block.config.clean
+  - opensds.backend.block.release.clean
+  - opensds.backend.block.repo.clean
+  # iscsi.target.remove        #https://github.com/saltstack-formulas/iscsi-formula/issues/12
   - lvm.lv.remove
   - lvm.vg.remove
   - lvm.pv.remove

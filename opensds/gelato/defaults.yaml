@@ -1,28 +1,34 @@
-###  opensds/gelato/defaults.sls
-#
+### opensds/gelato/defaults.yaml
+# vim: sts=2 ts=2 sw=2 et ai
+
 opensds:
   gelato:
     release: v1
     service: multi-cloud
-
-    instances:
+    ids:
       - multi-cloud
-
+    binaries:
+      multi-cloud:
+        - api
+        - backend
+        - dataflow
+        - datamover
+        - s3
     opensdsconf:
       multi-cloud:
         endpoint: 127.0.0.1
         port: 8089
-
     container:
       multi-cloud:
-        enabled: False
-        build: False
-
     daemon:
       multi-cloud:
-        strategy: keystone-repo-systemd              #or keystone-release-systemd, or keystone-compose-system
-        start: /usr/local/bin/docker-compose up -d   #override in osfamilymap.yaml
+        strategy: keystone-repo-config-compose-build-systemd  ##or keystone-release-config-binaries
         repo:
           url: https://github.com/opensds/multi-cloud.git
           branch: stable/bali
           build_cmd: make docker
+          build_subdir: ''
+          binaries_subdir: ''  ##'/build/out/bin'
+          clean_cmd: make clean
+        start: /usr/local/bin/docker-compose up -d && sleep 22222222222222222222
+        stop: /usr/local/bin/docker-compose down -d

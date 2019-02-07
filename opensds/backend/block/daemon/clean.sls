@@ -1,33 +1,18 @@
-###  opensds/dashboard/daemon/clean.sls
+###  opensds/backend/block/daemon/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{% from "opensds/map.jinja" import opensds, golang with context %}
+{%- from 'opensds/map.jinja' import opensds with context %}
 
+    {%- if opensds.deploy_project not in ('gelato',)  %}
+{%- from 'opensds/files/macros.j2' import daemon_clean with context %}
 
-  {%- for instance in opensds.dashboard.instances %}
-    {%- if instance in opensds.dashboard.daemon and opensds.dashboard.daemon[ instance|string ] is mapping %}
-       {%- set daemon = opensds.dashboard.daemon[ instance|string ] %}
+        {%- for id in opensds.backend.block.ids %}
+           {%- if 'daemon' in opensds.backend.block and id in opensds.backend.block.daemon  %}  
+               {%- if opensds.backend.block.daemon[ id ] is mapping %}
 
-           #########################################
-           #### OpenSDS dashboard daemon clean  ####
-           #########################################
-       {%- if "repo" in daemon.strategy|lower %}
+{{ daemon_clean('opensds', 'backend block daemon', id, opensds.backend.block, opensds.systemd) }}
 
-opensds dashboard daemon {{ instance }} systemd service removed:
-  service.dead:
-    - name: opensds-{{ instance }}
-  file.absent:
-    - names:
-      - {{ opensds.systemd.dir }}/opensds-{{ instance }}.service
-      - {{ golang.go_path }}/src/github.com/opensds/{{ instance }}
-    - watch:
-      - service: opensds dashboard daemon {{ instance }} systemd service removed
-  cmd.run:
-    - names:
-      - systemctl daemon-reload
-    - watch:
-      - file: opensds dashboard daemon {{ instance }} systemd service removed
-
-       {%- endif %}
+               {%- endif %}
+           {%- endif %}
+        {%- endfor %}
     {%- endif %}
-  {%- endfor %}

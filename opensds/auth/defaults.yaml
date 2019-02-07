@@ -1,10 +1,9 @@
 ### opensds/auth/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
-#
+
 opensds:
   auth:
-
-    instances:
+    ids:
       - osdsauth
 
     opensdsconf:
@@ -24,6 +23,6 @@ opensds:
 
     daemon:
       osdsauth:
-        strategy: keystone
+        strategy: config-keystone
         endpoint_ipv4: '127.0.0.1'
         endpoint_port: '50040'

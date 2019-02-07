@@ -1,0 +1,412 @@
+### /files/macros.j2
+### Macros generating repeating code ###
+
+#---- - - -- --- ---
+#  installer workflow
+#-- - --- - -- -- --
+{%- macro workflow(name, tag, id, subsys, workdir, systemd, plugin_type=None) %}
+     {%- if 'daemon' in subsys and id in subsys.daemon and subsys.daemon[id] is mapping %}
+        {%- if 'repo' in subsys.daemon[id]['strategy']|lower %}
+            {%- set workdir = golang.go_path+'/src/github.com/opensds' %}
+        {%- endif %}
+        {%- if 'build' in subsys.daemon[id]['strategy']|lower %}
+{{ build_source(name, tag, id, subsys.daemon[id], workdir) }}
+        {%- endif %}
+     {%- endif %}
+     {%- if 'container' in subsys.daemon[id]['strategy'] and 'container' in subsys %}
+         {%- if subsys.container[id] is mapping %}
+{{ container_run(name, tag, id, subsys.container[ id ]) }}
+         {%- endif %}
+     {%- else %}
+        {%- if 'binaries' in subsys.daemon[id]['strategy']|lower and 'binaries' in subsys %}
+{{ cp_binaries(name, tag, id, subsys.daemon[id], subsys['binaries'], workdir, '/usr/local/bin') }}
+        {%- endif %}
+        {%- if 'systemd' in subsys.daemon[id]['strategy']|lower %}
+{{ service_run(name, tag, id, subsys.daemon[id], systemd, workdir, plugin_type) }}
+        {%- endif %}
+     {%- endif %}
+
+{%- endmacro %}
+
+#- -- -- -- ---
+#  daemon clean
+#-- -- -  -- --
+{%- macro daemon_clean(name, tag, id, subsys, systemd) %}
+     {%- if 'daemon' in subsys and id in subsys.daemon  %}
+         {%- set daemon = subsys.daemon[ id ] %}
+         {%- if daemon is mapping %}
+             {%- if 'systemd' in daemon.strategy|lower %}
+{{ service_stopped(name, tag, id, daemon, systemd) }}
+             {%- endif %}
+         {%- elif 'container' in daemon.strategy|lower %}
+{{ container_stopped(name, tag, id, subsys.container) }}
+         {%- endif %}
+     {%- elif 'container' in daemon.strategy|lower and 'container' in subsys %}
+{{ container_stopped(name, tag, id, subsys.container) }}
+     {%- endif %}
+{{ cleanup_files(name, tag, id, subsys) }}
+
+{%- endmacro %}
+
+
+#---- - - -- --- ---#
+#  create directory
+#-- --- --- - -- ---#
+{%- macro create_dir(name, tag, id, dir) %}
+
+            #############################
+            #### create {{id}} directory
+            #############################
+{{ name }} {{ tag }} {{ id }} ensure directory {{ dir }} exists:
+  file.directory:
+    - name: {{ dir }}/{{ id }}
+    - force: True
+    - makedirs: True
+    - user: {{ opensds.user or 'root' }}
+    - dir_mode: {{ opensds.dir_mode or '0755' }}
+    # recurse:     Comment out due to lsattr taking too long
+    # - user
+    # - mode
+
+{%- endmacro %}
+
+#-- -  - -  -- - - ---#
+#  Cleanup filesystem
+#-- -- -  --- - --  --#
+{%- macro cleanup_files(name, tag, id, dir, binaries) %}
+
+            ################################
+            #### cleanup {{id}} files
+            ################################
+{{ name }} {{ tag }} {{ id }} cleanup filesystem:
+  file.absent:
+    - names:
+      - {{ opensds.dir.hotpot }}/{{ id }}
+      - {{ opensds.dir.sushi }}/{{ id }}
+      - {{ opensds.dir.hotpot }}/{{ id }}
+      - {{ opensds.dir.sushi }}/{{ id }}
+      - {{ golang.go_path }}/src/github.com/opensds/{{ id }}
+         {%- if binaries and binaries is iterable %}
+             {%- for b in binaries[id] %}
+      - {{ dir }}/{{ b }}
+             {%- endfor %}
+         {%- endif %}
+         {%- if id in packages.archives.wanted and packages.archives.wanted[ id ] %}
+      - packages.archives.wanted[ id ]['dest']
+         {%- endif %}
+
+{%- endmacro %}
+
+
+#-- -  - -  -- - - ---#
+#  Update config file #
+#-- ---  - -- - --  --#
+{%- macro update_config(name, tag, id, config, file) %}
+       {%- if config and config is mapping %}
+
+            #########################
+            #### add config section #
+            #########################
+{{ name }} {{ tag }} {{ id }} ensure conf section exists:
+  ini.sections_present:
+    - name: {{ file }}
+    - sections:
+      - {{ id }}
+
+              {%- for k, v in config.items() %}
+
+{{ name }} {{ tag }} {{ id }} ensure key {{ k }} exists:
+  ini.options_present:
+    - name: {{ file }}
+    - separator: '='
+    - sections:
+        {{ id }}:
+          {{ k }}: {{ v }}
+              {%- endfor %}
+       {%- endif %}
+
+{%- endmacro %}
+
+
+#-- -- ----  -- - - ---#
+#  Cleanup config file #
+#-- ---- ---- - - -- --#
+{%- macro cleanup_config(name, tag, id,file) %}
+       {%- if id and id is string %}
+
+            ############################
+            #### remove config section #
+            ############################
+{{ name }} {{ tag }} {{ id }} ensure conf section absent:
+  ini.sections_absent:
+    - name: {{ file }}
+    - sections:
+      - {{ id }}
+    - onlyif: test -f {{ file }}
+       {%- endif %}
+
+{%- endmacro %}
+
+
+
+#-- -  - -  -- - - ---#
+#  Download from repo #
+#-- -  - -  -- - -- --#
+{%- macro repo_download(name, tag, id, daemon, dir=None) %}
+       {%- if daemon and daemon is mapping and 'repo' in daemon and daemon.repo is mapping %}
+
+            #############################
+            #### download from git repo #
+            #############################
+{{ name }} {{ tag }} {{ id }} repo download:
+  file.directory:
+    - name: {{ dir }}
+    - makedirs: True
+    - force: True
+    - user: root
+    - dir_mode: 0755
+    # recurse:     Comment out due to lsattr taking too long
+    # - user
+    # - mode
+    - require_in:
+      - git: {{ name }} {{ tag }} {{ id }} repo download
+  git.latest:
+    - name: {{ daemon.repo.url }}
+    - target: {{ dir }}/{{ id }}
+    - rev: {{ 'master' if not 'branch' in daemon.repo else daemon.repo.branch }}
+    - force_checkout: True
+    - force_clone: True
+    - force_fetch: True
+    - force_reset: True
+    - retry:
+        attempts: 3
+        until: True
+        interval: 60
+        splay: 10
+       {%- endif %}
+
+{%- endmacro %}
+
+#-- -  - -  -- - - - --#
+#  Run Systemd service #
+#-- ---- -  -- - - - --#
+{%- macro service_run(name, tag, id, daemon, systemd, dir, plugin_type=None) %}
+       {%- if daemon and daemon is mapping %}
+
+            ######################
+            #### Systemd service #
+            ######################
+{{ name }} {{ tag }} {{ id }} systemd started:
+  file.managed:
+    - name: {{ systemd.dir + '/' + name + '-' + id + '.service' }}
+    - source: salt://{{ name }}/files/daemon.j2
+    - mode: '0644'
+    - template: jinja
+    - makedirs: True
+    - context:
+      svc: {{ id }}
+      systemd: {{ systemd|json }}
+      start: {{ daemon.start }}
+      stop: {{ daemon.stop }}
+         {%- if 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
+      workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
+         {%- else %}
+      workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}
+         {%- endif %}
+  cmd.run:
+    - name: systemctl daemon-reload
+    - watch:
+      - file: {{ name }} {{ tag }} {{ id }} systemd started
+  service.running:
+    - name: {{ name }}-{{ id }}
+    - watch:
+      - cmd: {{ name }} {{ tag }} {{ id }} systemd started
+    - enable: True
+       {%- endif %}
+
+{%- endmacro %}
+
+
+#--- - - --- -- - - -- -#
+#  stop systemd service #
+#--- ---- --- -- - - ---#
+{%- macro service_stopped(name, tag, id, daemon, systemd) %}
+       {%- if container and container is mapping %}
+
+            ######################
+            #### Systemd service #
+            ######################
+{{ name }} {{ tag }} {{ id }} systemd service stopped:
+  service.dead:
+    - name: {{ name }}-{{ id }}
+  file.absent:
+    - names: {{ systemd.dir }}/{{ name }}-{{ id }}.daemon
+    - watch:
+      - service: {{ name }} {{ tag }} {{ id }} systemd service stopped
+  cmd.run:
+    - names: systemctl daemon-reload
+    - watch:
+      - file: {{ name }} {{ tag }} {{ id }} systemd service stopped
+       {%- endif %}
+
+{%- endmacro %}
+
+
+#- --- - - - - -- - - ---#
+#  Run Docker container  #
+#- - -- -- - - -- - - ---#
+{%- macro container_run(name, tag, id, container) %}
+       {%- if container and container is mapping %}
+
+            #######################
+            #### Docker container #
+            #######################
+{{ name }} {{ tag }} {{ id }} container running:
+  service.running:
+    - name: docker
+  docker_container.running:
+    - name: {{ id }}
+    - image: {{ container.image }}:{{ container.version }}
+    - restart_policy: always
+    - network_mode: host
+           {%- if 'volumes' in container %}
+    - binds: {{ container.volumes }}
+           {%- endif %}
+           {%- if 'ports' in container %}
+    - port_bindings: {{ container.ports }}
+           {%- endif %}
+           {%- if docker.containers.skip_translate %}
+    - skip_translate: {{ docker.containers.skip_translate or '' }}
+           {%- endif %}
+           {%- if docker.containers.force_present %}
+    - force_present: {{ docker.containers.force_present }}
+           {%- endif %}
+           {%- if docker.containers.force_running %}
+    - force_running: {{ docker.containers.force_running }}
+           {%- endif %}
+    - require:
+      - service: {{ name }} {{ tag }} {{ id }} container running
+       {%- endif %}
+
+{%- endmacro %}
+
+#- -- - - - - -- - - -- -#
+#  Stop Docker container #
+#---- - -- - - -- - - ---#
+{%- macro container_stopped(name, tag, id, container) %}
+       {%- if container and container is mapping %}
+
+            #######################
+            #### Docker container #
+            #######################
+{{ name }} {{ tag }} {{ id }} container stopped:
+  service.running:
+    - name: docker
+  docker_container.stopped:
+    - name: {{ id }}
+    - error_on_absent: False
+    - require:
+      - service: {{ name }} {{ tag }} {{ id }} container stopped:
+       {%- endif %}
+
+{%- endmacro %}
+
+
+#-- -- --- - - - - - -- --- ---#
+#  Copy source dir to dest dir 
+#- -- - -- - ---- --- -- - -- -#
+{%- macro cp_source(name, tag, id, type, srcdir, dir) %}
+      {%- if srcdir and dir  %}
+
+            ##########################
+            #### Copy srcdir to dest 
+            ##########################
+{{ name }} {{ tag }} {{ id }} {{ type }} copy to {{ dir }}/{{ id }}:
+  cmd.run:
+    - name: cp -rp {{ srcdir }}/{{ id }} {{ dir }}/{{ id }}
+    - onlyif: test -d {{ srcdir }}/{{ id }} && test -d {{ dir }}/{{ id }}
+      {%- endif %}
+
+{%- endmacro %}
+
+
+#-- - - - - - - - ---- -- - - --#
+#  Copy binary from dir to dest
+#--- -- -- - - -  --- - ---- - -#
+{%- macro cp_binaries(name, tag, id, daemon, binaries, dir=opensds.dir.go, dest=opensds.dir.hotpot) %}
+    {%- if id in binaries and binaries[id] is iterable %}
+
+           ######################################
+           #### Copy binaries to /usr/local/bin 
+           ######################################
+       {%- for b in binaries[id] %}
+
+{{ name }} {{ tag }} {{ id }} copy {{ dir }}/{{ id }}/ {{ b }} to {{ dest }}:
+  file.copy:
+    - name: {{ dest }}/
+    - mode: '0755'
+    - force: False
+    - subdir: True
+          {%- if "repo" in daemon and daemon.repo is mapping and "binaries_subdir" in daemon.repo and daemon.repo.binaries_subdir %}
+    - source: {{ dir }}/{{ id }}/{{ daemon.repo.binaries_subdir }}/{{ b }}
+    - onlyif: test -f {{ dir }}/{{ id }}/{{ daemon.repo.binaries_subdir }}/{{ b }}
+          {%- else %}
+    - source: {{ dir }}/{{ id }}/bin/{{ b }}
+    - onlyif: test -f {{ dir }}/{{ id }}/bin/{{ b }}
+          {%- endif %}
+       {%- endfor %}
+    {%- endif %}
+
+{%- endmacro %}
+
+#-- -- - -- - - - - -#
+#  Build from source #
+#- - - - -- ---- - --#
+{%- macro build_source(name, tag, id, daemon, dir=opensds.dir.go) %}
+  {%- if daemon and 'build' in daemon.strategy|lower and 'repo' in daemon and daemon.repo is mapping %}
+
+            ###################
+            #### Build source #
+            ###################
+{{ name }} {{ tag }} {{ id }} software build {{ daemon.repo.build_cmd }}:
+  cmd.run:
+    - name: {{ daemon.repo.build_cmd }}
+    - output_loglevel: quiet
+    - cwd: {{ dir }}/{{ id }}
+    - onlyif: test -d {{ dir }}/{{ id }}
+    - env:
+      - GOPATH: {{ golang.go_path }}
+  {%- endif %}
+{%- endmacro %}
+
+
+#-- --- - ---- - - - - - - - --#
+#  Get items from py/yaml list #
+# - - ---- --- - -- - - - - - -#
+{%- macro getopts(outdict, sls=False) -%}
+  {%- if outdict and 'options' in outdict %}
+     {%- for k, v in outdict.options.items() %}
+       {%- if sls %}
+    - {{ k }}: {{ v }}
+       {%- else %}
+         {{- (' --' ~ k if v == True) or ('' if v == False) or (' --' ~ k ~ ' ' ~ v) -}}
+       {%- endif %}
+      {%- endfor %}
+   {%- endif %}
+
+{%- endmacro %}
+
+#-- -- - -- --- - - --- - - --#
+#  Get list from py/yaml dict #
+#- - -- -- - --- --- --- -- --#
+{%- macro getlist(outlist, sls=False) -%}
+  {%- if outlist and outlist is iterable and outdict is not string %}
+     {%- for v in outlist %}
+       {%- if sls %}
+    - {{ v }}
+       {%- else %}
+         {{- v -}}
+       {%- endif %}
+     {%- endfor %}
+   {%- endif %}
+{%- endmacro %}

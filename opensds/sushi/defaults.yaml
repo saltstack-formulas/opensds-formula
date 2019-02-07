@@ -1,23 +1,16 @@
 ### opensds/sushi/defaults.yaml
 # vim: sts=2 ts=2 sw=2 et ai
-#
+
 opensds:
   sushi:
     release: 'v0.4.0'
     plugin_type: provisioner
-    instances:
+
+    ids:
       - nbp
-
-    opensdsconf: {}
-
     daemon:
       nbp:
-        strategy: release-systemd
-        start: /usr/local/bin/kubectl create -f deploy/kubernetes
-        stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
-        work: /opt/opensds-sushi-linux-amd64
+        strategy: release-config       ##or repo-build-config
         repo:
           url: https://github.com/opensds/nbp.git
           branch: stable/bali
-          build_cmd: make
-          clean_cmd: make clean
