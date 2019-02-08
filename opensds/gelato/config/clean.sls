@@ -1,7 +1,7 @@
 # opensds/gelato/config/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{%- from 'opensds/map.jinja' import opensds with context %}
+{%- from 'opensds/map.jinja' import opensds, golang with context %}
 
     {%- if opensds.deploy_project not in ('hotpot',) %}
 {%- from 'opensds/files/macros.j2' import cleanup_files, cleanup_config with context %}
