@@ -9,6 +9,7 @@ include:
   - opensds.dashboard.release
   - opensds.dashboard.repo
   - opensds.dashboard.config
+  - apache.uninstall    ### where is apache2 coming from? stack.sh?
   - opensds.dashboard.daemon
 
     {%- endif %}
