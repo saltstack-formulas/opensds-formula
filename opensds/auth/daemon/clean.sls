@@ -4,6 +4,7 @@
 {%- from "opensds/map.jinja" import opensds with context %}
 
     {%- if opensds.deploy_project not in ('gelato',)  %}
+{%- from "opensds/map.jinja" import golang, packages with context %}
 
 include:
   # devstack.remove

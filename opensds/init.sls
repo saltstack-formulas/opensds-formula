@@ -1,4 +1,5 @@
 ### opensds/init.sls
+
 include:
   {{ '- epel' if grains.os_family in ('RedHat',) else '' }}  
   - opensds.infra

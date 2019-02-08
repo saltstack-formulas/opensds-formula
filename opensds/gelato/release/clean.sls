@@ -1,7 +1,7 @@
 ###  opensds/gelato/release/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{%- from 'opensds/map.jinja' import opensds with context %}
+{%- from "opensds/map.jinja" import opensds with context %}
 
    {%- if opensds.deploy_project not in ('hotpot',)  %}
        {%- for id in opensds.gelato.ids %}

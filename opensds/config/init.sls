@@ -1,7 +1,7 @@
 ###  opensds/config.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{%- from "opensds/map.jinja" import opensds, golang, devstack with context %}
+{%- from "opensds/map.jinja" import opensds, golang, devstack, packages with context %}
 
 opensds infra base directories created:
   file.directory:

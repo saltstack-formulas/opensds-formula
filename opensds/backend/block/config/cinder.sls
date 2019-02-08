@@ -1,10 +1,10 @@
 # opensds/backend/config/cinder.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{%- from 'opensds/map.jinja' import opensds with context %}
+{%- from "opensds/map.jinja" import opensds with context %}
 
    {%- if opensds.deploy_project not in ('gelato',)  %}
-{%- from 'opensds/map.jinja' import driver with context %}
+{%- from "opensds/map.jinja" import driver with context %}
 
        {%- if 'cinder' in opensds.backend.block.ids %}
            {%- set daemon = opensds.backend.block.daemon['cinder'] %}

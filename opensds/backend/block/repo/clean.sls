@@ -4,7 +4,7 @@
 {%- from "opensds/map.jinja" import opensds with context %}
 
     {%- if opensds.deploy_project not in ('gelato',)  %}
-        {%- for id in opensds.backend block.ids %}
+        {%- for id in opensds.backend.block.ids %}
 
 opensds backend block repo {{ id }} ensure directory removed:
   file.absent:
