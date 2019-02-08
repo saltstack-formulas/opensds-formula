@@ -10,7 +10,7 @@
        {%- for id in opensds.dock.ids %}
            {%- if 'daemon' in opensds.dock and id in opensds.dock.daemon and opensds.dock.daemon[id] is mapping%}
 
-{{ daemon_clean('opensds', 'hotpot daemon', id, opensds.dock, opensds.systemd) }}
+{{ daemon_clean('opensds', 'dock daemon', id, opensds.dock, opensds.systemd) }}
 
            {%- endif %}
        {%- endfor %}

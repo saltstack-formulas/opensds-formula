@@ -31,7 +31,11 @@
 #- -- -- -- ---
 #  daemon clean
 #-- -- -  -- --
-{%- macro daemon_clean(name, tag, id, subsys, systemd) %}
+{%- macro daemon_clean(name, tag, id, subsys, systemd, plugin_type=None) %}
+       {% if plugin_type and id|string != plugin_type|string %}
+          {%- set daemon=None %}
+       {%- endif %}
+
      {%- if 'daemon' in subsys and id in subsys.daemon  %}
          {%- set daemon = subsys.daemon[ id ] %}
          {%- if daemon is mapping %}
@@ -91,7 +95,7 @@
       - {{ dir }}/{{ b }}
              {%- endfor %}
          {%- endif %}
-         {%- if id in packages.archives.wanted and packages.archives.wanted[ id ] %}
+         {%- if packages is defined and id in packages.archives.wanted and packages.archives.wanted[ id ] %}
       - packages.archives.wanted[ id ]['dest']
          {%- endif %}
 
@@ -249,11 +253,11 @@
   service.dead:
     - name: {{ name }}-{{ id }}
   file.absent:
-    - names: {{ systemd.dir }}/{{ name }}-{{ id }}.daemon
+    - name: {{ systemd.dir }}/{{ name }}-{{ id }}.daemon
     - watch:
       - service: {{ name }} {{ tag }} {{ id }} systemd service stopped
   cmd.run:
-    - names: systemctl daemon-reload
+    - name: systemctl daemon-reload
     - watch:
       - file: {{ name }} {{ tag }} {{ id }} systemd service stopped
        {%- endif %}

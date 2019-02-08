@@ -8,9 +8,6 @@
 {%- from 'opensds/files/macros.j2' import cleanup_files, cleanup_config with context %}
 {%- from "opensds/map.jinja" import golang, packages with context %}
 
-include:
-  - opensds.macros
-
         {%- for id in opensds.dock.ids %}
             {%- if "opensdsconf" in opensds.dock and id in opensds.dock.opensdsconf %}
 

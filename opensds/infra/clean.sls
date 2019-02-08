@@ -9,7 +9,6 @@ include:
   - memcached.uninstall
   - devstack.remove
   - opensds.infra.conflicts.clean
-  - golang.remove
   - devstack.remove
 
    {%- if opensds.pkgs %}
