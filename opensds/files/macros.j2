@@ -73,7 +73,7 @@
 #-- -  - -  -- - - ---#
 #  Cleanup filesystem
 #-- -- -  --- - --  --#
-{%- macro cleanup_files(name, tag, id, dir, binaries) %}
+{%- macro cleanup_files(name, tag, id, dir, binaries=None) %}
 
             ################################
             #### cleanup {{id}} files
@@ -85,7 +85,7 @@
       - {{ opensds.dir.sushi }}/{{ id }}
       - {{ opensds.dir.hotpot }}/{{ id }}
       - {{ opensds.dir.sushi }}/{{ id }}
-      - {{ golang.go_path }}/src/github.com/opensds/{{ id }}
+      - /usr/local/golang/packages/src/github.com/opensds/{{ id }}
          {%- if binaries and binaries is iterable %}
              {%- for b in binaries[id] %}
       - {{ dir }}/{{ b }}
@@ -191,6 +191,10 @@
 #  Run Systemd service #
 #-- ---- -  -- - - - --#
 {%- macro service_run(name, tag, id, daemon, systemd, dir, plugin_type=None) %}
+       {% if plugin_type and id|string != plugin_type|string %}
+          {%- set daemon=None %}
+       {%- endif %}
+          
        {%- if daemon and daemon is mapping %}
 
             ######################
@@ -236,7 +240,7 @@
 #  stop systemd service #
 #--- ---- --- -- - - ---#
 {%- macro service_stopped(name, tag, id, daemon, systemd) %}
-       {%- if container and container is mapping %}
+       {%- if "systemd" in daemon.strategy|lower and daemon is mapping %}
 
             ######################
             #### Systemd service #

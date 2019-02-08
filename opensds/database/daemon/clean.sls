@@ -1,7 +1,7 @@
 ###  opensds/database/daemon/clean.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{%- from 'opensds/map.jinja' import opensds with context %}
+{%- from "opensds/map.jinja" import opensds, golang with context %}
 
 include:
     {%- if 'etcd' in opensds.database.daemon %}

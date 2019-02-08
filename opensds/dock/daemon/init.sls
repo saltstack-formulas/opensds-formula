@@ -1,8 +1,8 @@
-{%- from 'opensds/map.jinja' import opensds with context %}
+{%- from "opensds/map.jinja" import opensds with context %}
 
     {%- if opensds.deploy_project not in ('gelato',)  %}
 
-{%- from 'opensds/map.jinja' import packages, docker, golang with context %}
+{%- from "opensds/map.jinja" import packages, docker, golang with context %}
 {%- from 'opensds/files/macros.j2' import create_dir, cp_source, build_source, cp_binaries with context %}
 {%- from 'opensds/files/macros.j2' import workflow, container_run, service_run with context %}
 
