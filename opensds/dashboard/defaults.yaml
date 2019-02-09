@@ -18,7 +18,10 @@ opensds:
         version: stable/bali
         volumes:
           - /etc/nginx/sites-available/default:/etc/nginx/sites-available/default
+          - /etc/nginx/sites-enabled/default:/etc/nginx/sites-enabled/default
           - /run/nginx:/run/nginx
+        env:
+          OPENSDS_HOST_IP: 127.0.0.1
     daemon:
       dashboard:
         strategy: config-container

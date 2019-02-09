@@ -6,6 +6,7 @@ opensds:
     block:
       ids:
         - cinder
+        - lvm
     container:
       cinder:
         image: openstack/cinder-blockbox
@@ -18,8 +19,10 @@ opensds:
           dbports: '3307:3306'
           volumegroup: 'cinder-volumes'
     daemon:
+      lvm:
+        strategy: saltstack-formulas/lvm-formula
       cinder:
-        strategy: repo-container-compose-config-build-systemd
+        strategy: repo-compose-config-build-systemd
         repo:
           url: https://github.com/openstack/cinder.git
           branch: stable/rocky

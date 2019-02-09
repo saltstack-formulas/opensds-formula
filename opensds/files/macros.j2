@@ -158,6 +158,7 @@
 #-- -  - -  -- - -- --#
 {%- macro repo_download(name, tag, id, daemon, dir=None) %}
        {%- if daemon and daemon is mapping and 'repo' in daemon and daemon.repo is mapping %}
+           {%- if "url" in daemon.repo %}
 
             #############################
             #### download from git repo #
@@ -187,6 +188,7 @@
         until: True
         interval: 60
         splay: 10
+           {%- endif %}
        {%- endif %}
 
 {%- endmacro %}
@@ -223,6 +225,9 @@
          {%- endif %}
          {%- if 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
+         {%- elif id|lower == 'provisioner' %}
+         ##### workaround https://github.com/opensds/opensds-installer/issues/110
+      workdir: {{ opensds.dir.sushi }}/nbp/opensds-{{ id }}
          {%- else %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}
          {%- endif %}
@@ -287,6 +292,12 @@
            {%- endif %}
            {%- if 'ports' in container %}
     - port_bindings: {{ container.ports }}
+           {%- endif %}
+           {%- if 'env' in container %}
+    - env:
+               {%- for k,v in container.env.items() %}
+       - {{ k }}: '{{ v }}'
+               {%- endfor %}
            {%- endif %}
            {%- if docker.containers.skip_translate %}
     - skip_translate: {{ docker.containers.skip_translate or '' }}
@@ -361,9 +372,16 @@
     - force: False
     - subdir: True
           {%- if "repo" in daemon and daemon.repo is mapping and "binaries_subdir" in daemon.repo and daemon.repo.binaries_subdir %}
+    - name: {{ dest }}/
     - source: {{ dir }}/{{ id }}/{{ daemon.repo.binaries_subdir }}/{{ b }}
     - onlyif: test -f {{ dir }}/{{ id }}/{{ daemon.repo.binaries_subdir }}/{{ b }}
+          {%- elif id|lower == 'provisioner' %}
+              ### workaround https://github.com/opensds/opensds-installer/issues/110 #####
+    - name: {{ opt.dir/sushi }}/nbp/provisioner/
+    - source: {{ dir }}/{{ id }}/bin/opensds-{{ b }}
+    - onlyif: test -f {{ dir }}/{{ id }}/bin/opensds-{{ b }}
           {%- else %}
+    - name: {{ dest }}/
     - source: {{ dir }}/{{ id }}/bin/{{ b }}
     - onlyif: test -f {{ dir }}/{{ id }}/bin/{{ b }}
           {%- endif %}
@@ -377,9 +395,10 @@
 #- - - - -- ---- - --#
 {%- macro build_source(name, tag, id, daemon, dir=opensds.dir.go) %}
   {%- if daemon and 'build' in daemon.strategy|lower and 'repo' in daemon and daemon.repo is mapping %}
+      {%- if "build_cmd" in daemon.repo %}
 
             ###################
-            #### Build source #
+            #### Build source
             ###################
 {{ name }} {{ tag }} {{ id }} software build {{ daemon.repo.build_cmd }}:
   cmd.run:
@@ -389,6 +408,7 @@
     - onlyif: test -d {{ dir }}/{{ id }}
     - env:
       - GOPATH: {{ golang.go_path }}
+      {%- endif %}
   {%- endif %}
 {%- endmacro %}
 

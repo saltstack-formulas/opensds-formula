@@ -10,10 +10,9 @@ opensds:
     go: {{ site.go_path }}/src/github.com/opensds
 
   ######### BACKENDS ##################
-  {%- set backend_list = site.enabled_backends.split(',') %}
   backend:
     block:
-      ids: {{ backend_list }}
+      ids: {{ site.enabled_backends }}
       container:
         cinder:
           image: {{ site.container_cinder_img }}
@@ -88,7 +87,7 @@ opensds:
       osdsdock:
         api_endpoint: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:{{ site.port_dock }}
         dock_type: {{ site.dock_type }}
-        enabled_backends: {{ site.enabled_backends|string }}
+        enabled_backends: {{ site.enabled_backends }}
     container:
       osdsdock:
         image: {{ site.container_dock_img }}
@@ -193,12 +192,13 @@ opensds:
       dashboard:
          image: {{ site.container_dashboard_img }}
          version: {{ site.container_dashboard_version }}
+         env:
+           OPENSDS_HOST_IP: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}
     daemon:
       dashboard:
         strategy: config-container
         repo:
           branch: stable/bali
-
 
   ############### OPENSDS SUSHI NORTH-BOUND-PLUGINS ################
   sushi:
