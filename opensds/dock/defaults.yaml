@@ -24,8 +24,8 @@ opensds:
           - /etc/opensds/:/etc/opensds
     daemon:
       opensds:
-        strategy: 'binaries'
+        strategy: binaries
       osdsdock:
-        strategy: 'config-systemd'
+        strategy: config-systemd
         start: /usr/local/bin/osdsdock
         stop: /usr/bin/killall osdsdock
