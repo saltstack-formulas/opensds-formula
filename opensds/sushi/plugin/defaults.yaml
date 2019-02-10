@@ -14,6 +14,19 @@ opensds:
         flexvolume:
           dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
           file: bin/flexvolume.server.opensds
+        provisioner:
+          - deploy/configmap.yaml
+          - deploy/pod-provisioner.yaml
+        csi:
+          - server/deploy/kubernetes/csi-attacher-opensdsplugin.yaml     
+          - server/deploy/kubernetes/csi-nodeplugin-opensdsplugin.yaml   
+          - server/deploy/kubernetes/csi-provisioner-rbac.yaml
+          - server/deploy/kubernetes/csi-attacher-rbac.yaml
+          - server/deploy/kubernetes/csi-nodeplugin-rbac.yaml
+          - server/deploy/kubernetes/csi-snapshotter-opensdsplugin.yaml
+          - server/deploy/kubernetes/csi-configmap-opensdsplugin.yaml
+          - server/deploy/kubernetes/csi-provisioner-opensdsplugin.yaml  
+          - server/deploy/kubernetes/csi-snapshotter-rbac.yaml
       subdirs:
         - deploy
         - charts
@@ -27,5 +40,5 @@ opensds:
           stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
         provisioner:
           strategy: config-systemd
-          start: /usr/local/bin/kubectl create -f deploy/kubernetes
-          stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
+          start: /usr/local/bin/kubectl create -f deploy/
+          stop: /usr/local/bin/kubectl delete -f deploy/
