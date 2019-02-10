@@ -17,8 +17,10 @@ opensds:
         image: opensdsio/dashboard
         version: stable/bali
         volumes:
-          - /etc/nginx/sites-available/default:/etc/nginx/sites-available/default
+          - /etc/nginx/sites-available/default:/etc/nginx/conf.d/default.conf
           - /run/nginx:/run/nginx
+        env:
+          OPENSDS_HOST_IP: 127.0.0.1
     daemon:
       dashboard:
         strategy: config-container

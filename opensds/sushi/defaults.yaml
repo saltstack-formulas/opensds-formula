@@ -5,12 +5,11 @@ opensds:
   sushi:
     release: 'v0.4.0'
     plugin_type: provisioner
-
     ids:
       - nbp
     daemon:
       nbp:
-        strategy: release-config       ##or repo-build-config
+        strategy: repo-config-systemd
         repo:
           url: https://github.com/opensds/nbp.git
           branch: stable/bali

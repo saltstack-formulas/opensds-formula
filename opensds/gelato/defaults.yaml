@@ -22,7 +22,7 @@ opensds:
       multi-cloud:
     daemon:
       multi-cloud:
-        strategy: keystone-repo-config-compose-build-systemd  ##or keystone-release-config-binaries
+        strategy: keystone-repo-config-compose-build-systemd
         repo:
           url: https://github.com/opensds/multi-cloud.git
           branch: stable/bali

@@ -15,4 +15,4 @@ opensds:
       etcd:
     daemon:
       database:
-        strategy: etcd-formula/container
+        strategy: config-etcd-formula/container

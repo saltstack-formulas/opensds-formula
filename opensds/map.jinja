@@ -1,4 +1,4 @@
- opensds/map.jinja ###
+###  opensds/map.jinja ###
 ### exported dicts: opensds, driver, docker, firewalld, golang, etcd, ceph ###
 
 #OpenSDS: import formula default dicts
@@ -23,8 +23,8 @@
            hotpot, merge=salt['grains.filter_by'](
               auth, merge=salt['grains.filter_by'](
                  gelato, merge=salt['grains.filter_by'](
-                    backend, merge=salt['grains.filter_by'](
-                       block, merge=salt['grains.filter_by'](
+                    block, merge=salt['grains.filter_by'](
+                       backend, merge=salt['grains.filter_by'](
                           dashboard, merge=salt['grains.filter_by'](
                              sushi, merge=salt['grains.filter_by'](
                                 pluggy, merge=salt['grains.filter_by'](
@@ -73,18 +73,9 @@
 #     * TAKE DEFAULTS
 #     * MERGE SITE-SPECIFIC VALUES
 ##################################################################
-{%- set backend_list = [] %}
-{% for id in opensds.dock.ids %}
-   {%- if id in opensds.dock.opensdsconf %}
-      {%- for drv in opensds.dock.opensdsconf[id|string]['enabled_backends'].split(',') %}
-         {%- do backend_list.append(drv) %}
-      {%- endfor %}
-   {%- endif %}
-{%- endfor %}
-
 {%- set driver = {} %}
-{%- for drv in backend_list|unique %}
-   {%- if drv in opensds.backend.drivers %}
+{%- for drv in opensds.dock.opensdsconf['osdsdock']['enabled_backends'] %}
+   {%- if drv in opensds.backend.drivers and salt['file.file_exists']('opensds/yaml/drivers' ~ drv ~ '.yaml') %}
        {%- import_yaml 'opensds/yaml/drivers/' ~ drv ~ '.yaml' as driver_yaml %}
        {%- do salt['defaults.merge'](driver_yaml, opensds.backend.drivers[drv], merge_lists=True) %}
        {%- do driver.update( driver_yaml ) %}

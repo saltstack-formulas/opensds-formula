@@ -14,7 +14,7 @@ opensds:
         api_endpoint: '0.0.0.0:50050'
         log_file: /var/log/opensds/osdsdock.log
         dock_type: provisioner
-        enabled_backends: lvm, cinder
+        enabled_backends: ['lvm', 'cinder',]
     container:
       osdsdock:
         image: opensdsio/opensds-dock
@@ -24,8 +24,8 @@ opensds:
           - /etc/opensds/:/etc/opensds
     daemon:
       opensds:
-        startegy: 'binaries'
+        strategy: binaries
       osdsdock:
-        strategy: 'config-systemd'
+        strategy: config-systemd
         start: /usr/local/bin/osdsdock
         stop: /usr/bin/killall osdsdock
