@@ -223,11 +223,11 @@
       start: {{ daemon.start }}
       stop: {{ daemon.stop }}
          {%- endif %}
-         {%- if 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
-      workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
-         {%- elif id|lower == 'provisioner' %}
+         {%- if id|lower == 'provisioner' %}
          ##### workaround https://github.com/opensds/opensds-installer/issues/110
       workdir: {{ opensds.dir.sushi }}/nbp/opensds-{{ id }}
+         {%- elif 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
+      workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
          {%- else %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}
          {%- endif %}
@@ -371,15 +371,15 @@
     - mode: '0755'
     - force: False
     - subdir: True
-          {%- if "repo" in daemon and daemon.repo is mapping and "binaries_subdir" in daemon.repo and daemon.repo.binaries_subdir %}
+          {%- if id|lower == 'provisioner' %}
+              ### workaround https://github.com/opensds/opensds-installer/issues/110 #####
+    - name: {{ opt.dir/sushi }}/nbp/provisioner/
+    - source: {{ dir }}/{{ id }}/opensds-{{ b }}
+    - onlyif: test -f {{ dir }}/{{ id }}/bin/opensds-{{ b }}
+          {%- elif "repo" in daemon and daemon.repo is mapping and "binaries_subdir" in daemon.repo and daemon.repo.binaries_subdir %}
     - name: {{ dest }}/
     - source: {{ dir }}/{{ id }}/{{ daemon.repo.binaries_subdir }}/{{ b }}
     - onlyif: test -f {{ dir }}/{{ id }}/{{ daemon.repo.binaries_subdir }}/{{ b }}
-          {%- elif id|lower == 'provisioner' %}
-              ### workaround https://github.com/opensds/opensds-installer/issues/110 #####
-    - name: {{ opt.dir/sushi }}/nbp/provisioner/
-    - source: {{ dir }}/{{ id }}/bin/opensds-{{ b }}
-    - onlyif: test -f {{ dir }}/{{ id }}/bin/opensds-{{ b }}
           {%- else %}
     - name: {{ dest }}/
     - source: {{ dir }}/{{ id }}/bin/{{ b }}
