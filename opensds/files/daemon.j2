@@ -1,6 +1,7 @@
 #########################################################
 # File managed by Salt. Changes risk being overwritten.
 #########################################################
+{%- from 'opensds/files/macros.j2' import getlist with context %}
 [Unit]
 Description=OpenSDS {{ svc }} service
 After=network.target docker.target
@@ -8,13 +9,21 @@ Documentation=https://opensds.io
 
 [Service]
 WorkingDirectory={{ workdir }}
-User=root
-Group=root
-#EnvironmentFile=-/etc/sysconfig/{{ svc }}
+{%- if before is defined and before %}
+Before={{ getlist(before) }}
+{%- endif %}
+{%- if environ is defined and environ %}
+    {%- for k,v in environ.items() %}
+Environment='{{ k|upper }}={{ v }}'
+    {%- endfor %}
+{%- endif %}
 ExecStart={{ start }}
 ExecStop={{ stop }}
-PermissionsStartOnly=true
 PIDFile=/var/run/{{ svc }}.pid
+PermissionsStartOnly=true
+User=root
+Group=root
+###EnvironmentFile=-/etc/sysconfig/{{ svc }}
 
 # file size
 LimitFSIZE={{ systemd['conf']['LimitFSIZE'] }}

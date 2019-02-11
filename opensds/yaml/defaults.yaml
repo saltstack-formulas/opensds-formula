@@ -12,6 +12,11 @@ opensds:
   user: root
   compose: /usr/bin/docker-compose
 
+  environ:
+    opensds_endpoint: '127.0.0.1:50040'
+    opensds_auth_strategy: 'keystone'
+    csi_endpoint: '127.0.0.1:50040'
+
   dir:
     config: /etc/opensds               #leave me alone
     driver: /etc/opensds/driver        #leave me alone
