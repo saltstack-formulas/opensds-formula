@@ -224,7 +224,7 @@
       start: {{ daemon.start }}
       stop: {{ daemon.stop }}
          {%- endif %}
-         {%- if id|lower == 'provisioner' %}
+         {%- if id|lower in ('provisioner', 'cinder',) %}
          ##### workaround https://github.com/opensds/opensds-installer/issues/110
       workdir: {{ opensds.dir.sushi }}/nbp/{{ id }}
          {%- elif 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
