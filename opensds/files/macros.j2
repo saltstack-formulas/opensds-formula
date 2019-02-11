@@ -157,8 +157,7 @@
 #  Download from repo #
 #-- -  - -  -- - -- --#
 {%- macro repo_download(name, tag, id, daemon, dir=None) %}
-       {%- if daemon and daemon is mapping and 'repo' in daemon and daemon.repo is mapping %}
-           {%- if "url" in daemon.repo %}
+       {%- if "url" in daemon.repo %}
 
             #############################
             #### download from git repo #
@@ -188,7 +187,6 @@
         until: True
         interval: 60
         splay: 10
-           {%- endif %}
        {%- endif %}
 
 {%- endmacro %}
