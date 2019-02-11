@@ -7,7 +7,10 @@
 {%- macro workflow(name, tag, id, subsys, workdir, systemd, plugin_type=None) %}
      {%- if 'daemon' in subsys and id in subsys.daemon and subsys.daemon[id] is mapping %}
         {%- if 'repo' in subsys.daemon[id]['strategy']|lower %}
-            {%- set workdir = golang.go_path+'/src/github.com/opensds' %}
+            {# you may want to expand this over time #}
+            {%- if  id not in ('cinder',) %}
+                {%- set workdir = golang.go_path+'/src/github.com/opensds' %}
+            {%- endif %}
         {%- endif %}
         {%- if 'build' in subsys.daemon[id]['strategy']|lower %}
 {{ build_source(name, tag, id, subsys.daemon[id], workdir) }}
@@ -157,7 +160,7 @@
 #  Download from repo #
 #-- -  - -  -- - -- --#
 {%- macro repo_download(name, tag, id, daemon, dir=None) %}
-       {%- if "url" in daemon.repo %}
+       {%- if daemon and daemon is mapping and 'repo' in daemon and daemon.repo and "url" in daemon.repo %}
 
             #############################
             #### download from git repo #
