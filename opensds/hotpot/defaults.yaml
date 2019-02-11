@@ -45,3 +45,9 @@ opensds:
           clean_cmd: make clean
         start: /usr/local/bin/osdslet
         stop: /usr/bin/killall osdslet
+        before:
+          - opensds-csi
+          - opensds-provisioner
+          - opensds-osdsdock
+          - opensds-cinder
+          - opensds-dashboard

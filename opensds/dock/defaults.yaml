@@ -29,3 +29,8 @@ opensds:
         strategy: config-systemd
         start: /usr/local/bin/osdsdock
         stop: /usr/bin/killall osdsdock
+        before:
+          - opensds-csi
+          - opensds-provisioner
+          - opensds-cinder
+          - opensds-dashboard

@@ -54,34 +54,53 @@ opensds sushi plugin config {{ id }} copy {{ custom.file }} to {{ opensds.dir.su
                       ##############################
                       {%- for file in custom  %}
 
-opensds sushi plugin config {{ id }} set endpoint in external {{ file }} file:
+opensds sushi plugin config {{ id }} set opensdsendpoint in external {{ file }} file:
   file.replace:
     - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
     - pattern: '^  opensdsendpoint.*$'
     - repl: '  opensdsendpoint: {{ opensds.auth.daemon.osdsauth.endpoint_ipv4 }}:{{ opensds.auth.daemon.osdsauth.endpoint_port }}'
-    - not_found_content: '  opensdsendpoint: {{ opensds.auth.daemon.osdsauth.endpoint_ipv4 }}:{{ opensds.auth.daemon.osdsauth.endpoint_port }}'
-    - append_if_not_found: False
-    - backup: True
     - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
 
-opensds sushi plugin config {{ id }} set auth strategy in external {{ file }} file:
+opensds sushi plugin config {{ id }} set opensdsauthstrategy in external {{ file }} file:
   file.replace:
     - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
     - pattern: '^  opensdsauthstrategy.*$'
-    - repl: '  opensdsauthstrategy: {{ opensds.auth.daemon.osdsauth.strategy }}'
-    - not_found_content: '  opensdsauthstrategy: {{ opensds.auth.daemon.osdsauth.strategy }}'
-    - append_if_not_found: False
-    - backup: True
+    - repl: '  opensdsauthstrategy: {{ opensds.hotpot.opensdsconf.osdslet.auth_strategy }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
 
-opensds sushi plugin config {{ id }} set auth url in external {{ file }} file:
+opensds sushi plugin config {{ id }} set osauthurl in external {{ file }} file:
   file.replace:
     - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
     - pattern: '^  osauthurl.*$'
-    - repl: '  osauthurl: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.auth_url }}'
-    - not_found_content: '  osauthurl: {{opensds.auth.opensdsconf.osdsauth.keystone_authtoken.auth_url}}'
-    - append_if_not_found: False
-    - backup: True
+    - repl: '  osauthurl: {{ opensds.auth.opensdsconf.keystone_authtoken.auth_url }}'
+    - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+
+opensds sushi plugin config {{ id }} set osusername in external {{ file }} file:
+  file.replace:
+    - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+    - pattern: '^  osusername.*$'
+    - repl: '  osusername: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.username }}'
+    - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+
+opensds sushi plugin config {{ id }} set ospassword in external {{ file }} file:
+  file.replace:
+    - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+    - pattern: '^  ospassword.*$'
+    - repl: '  ospassword: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.password }}'
+    - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+
+opensds sushi plugin config {{ id }} set osprojectname in external {{ file }} file:
+  file.replace:
+    - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+    - pattern: '^  osprojectname.*$'
+    - repl: '  osprojectname: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.project_name }}'
+    - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+
+opensds sushi plugin config {{ id }} set osuserdomainid in external {{ file }} file:
+  file.replace:
+    - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
+    - pattern: '^  osuserdomainid.*$'
+    - repl: '  osuserdomainid: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.user_domain_name }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
 
                       {%- endfor %}

@@ -16,17 +16,8 @@ opensds:
           file: bin/flexvolume.server.opensds
         provisioner:
           - deploy/configmap.yaml
-          - deploy/pod-provisioner.yaml
         csi:
-          - server/deploy/kubernetes/csi-attacher-opensdsplugin.yaml     
-          - server/deploy/kubernetes/csi-nodeplugin-opensdsplugin.yaml   
-          - server/deploy/kubernetes/csi-provisioner-rbac.yaml
-          - server/deploy/kubernetes/csi-attacher-rbac.yaml
-          - server/deploy/kubernetes/csi-nodeplugin-rbac.yaml
-          - server/deploy/kubernetes/csi-snapshotter-opensdsplugin.yaml
-          - server/deploy/kubernetes/csi-configmap-opensdsplugin.yaml
-          - server/deploy/kubernetes/csi-provisioner-opensdsplugin.yaml  
-          - server/deploy/kubernetes/csi-snapshotter-rbac.yaml
+          - deploy/kubernetes/csi-configmap-opensdsplugin.yaml
       subdirs:
         - deploy
         - charts

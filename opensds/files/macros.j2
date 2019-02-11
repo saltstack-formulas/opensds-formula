@@ -215,6 +215,7 @@
     - makedirs: True
     - context:
       svc: {{ id }}
+      environ: {{ opensds.environ }}
       systemd: {{ systemd|json }}
          {%- if "compose" in daemon.strategy|lower %}
       start: {{ opensds.compose }} up
@@ -230,6 +231,9 @@
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
          {%- else %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}
+         {%- endif %}
+         {%- if 'before' in daemon and daemon.before is iterable and daemon.before is not string %}
+      before: {{ daemon.before }}
          {%- endif %}
   cmd.run:
     - name: systemctl daemon-reload
