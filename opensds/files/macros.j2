@@ -182,7 +182,7 @@
     - target: {{ dir }}/{{ id }}
     - rev: {{ 'master' if not 'branch' in daemon.repo else daemon.repo.branch }}
     - force_checkout: True
-    - force_clone: True
+    - force_clone: {{ opensds.force_clone }}
     - force_fetch: True
     - force_reset: True
     - retry:
@@ -229,7 +229,7 @@
          ##### workaround https://github.com/opensds/opensds-installer/issues/110
       workdir: {{ opensds.dir.sushi }}/nbp/{{ id }}
          {%- elif id|lower in ('cinder',) %}
-      workdir: {{ opensds.dir.sushi }}/{{ id }}
+      workdir: {{ opensds.dir.sushi }}/{{ id }}/{{ daemon.repo.build_subdir }}
          {%- elif 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
          {%- else %}
@@ -411,11 +411,17 @@
   cmd.run:
     - name: {{ daemon.repo.build_cmd }}
     - output_loglevel: quiet
+        {%- if "build_subdir" in daemon.repo and daemon.repo.build_subdir %}
+    - cwd: {{ dir }}/{{ id }}/{{ daemon.repo.build_subdir }}
+    - onlyif: test -d {{ dir }}/{{ id }}/{{ daemon.repo.build_subdir }}
+        {%- else %}
     - cwd: {{ dir }}/{{ id }}
     - onlyif: test -d {{ dir }}/{{ id }}
+        {%- endif %}
     - env:
       - GOPATH: {{ golang.go_path }}
       {%- endif %}
+
   {%- endif %}
 {%- endmacro %}
 
