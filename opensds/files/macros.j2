@@ -445,13 +445,13 @@
 #-- -- - -- --- - - --- - - --#
 #  Get list from py/yaml dict #
 #- - -- -- - --- --- --- -- --#
-{%- macro getlist(outlist, sls=False, space=None) -%}
+{%- macro getlist(outlist, sls=False, separator=None) -%}
   {%- if outlist and outlist is iterable and outdict is not string %}
      {%- for v in outlist %}
        {%- if sls %}
     - {{ v }}
-       {%- elif space %}
-         {{- v + ' ' -}}
+       {%- elif separator %}
+         {{- v + separator -}}
        {%- else %}
          {{- v -}}
        {%- endif %}

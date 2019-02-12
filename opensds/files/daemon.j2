@@ -4,14 +4,14 @@
 {%- from 'opensds/files/macros.j2' import getlist with context %}
 [Unit]
 Description=OpenSDS {{ svc }} service
+{%- if before is defined and before %}
+Before={{ getlist(before, False, '.service ') }}
+{%- endif %}
 After=network.target docker.target
 Documentation=https://opensds.io
 
 [Service]
 WorkingDirectory={{ workdir }}
-{%- if before is defined and before %}
-Before={{ getlist(before, False, True) }}
-{%- endif %}
 {%- if environ is defined and environ %}
     {%- for k,v in environ.items() %}
 Environment='{{ k|upper }}={{ v }}'
