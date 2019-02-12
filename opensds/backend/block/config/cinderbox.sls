@@ -4,17 +4,15 @@
 {%- from "opensds/map.jinja" import opensds with context %}
 
    {%- if opensds.deploy_project not in ('gelato',)  %}
-       {%- if 'compose' in daemon.strategy|lower and 'cinder' in opensds.backend.block.container %}
-           {%- set container = opensds.backend.block.container['cinder'] %}
-       {%- endif %}
-{%- from "opensds/map.jinja" import driver with context %}
-{%- from 'opensds/files/macros.j2' import getlist with context %}
+       {%- if 'cinder' in opensds.backend.block.ids and 'daemon' in opensds.backend.block %}
+           {%- set daemon = opensds.backend.block.daemon['cinder'] %}
+           {%- if 'compose' in daemon.strategy|lower and 'cinder' in opensds.backend.block.container %}
+               {%- set container = opensds.backend.block.container['cinder'] %}
+           {%- endif %}
 
            ###################
            # Custom makefiles
            ###################
-       {%- if 'cinder' in opensds.backend.block.ids and 'daemon' in opensds.backend.block %}
-           {%- set daemon = opensds.backend.block.daemon['cinder'] %}
 
 opensds backend block config cinder Makefile set platform:
   file.replace:
@@ -82,7 +80,7 @@ opensds backend block config cinder {{ file }} modify default volumes_dir:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
     - pattern: 'volumes_dir.*'
-    - repl: 'volumes_dir = {{ site.hotpot_path }}/volumegroups/'
+    - repl: 'volumes_dir = {{ opensds.dir.hotpot }}/volumegroups/'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 
                        {%- if "keystone" in file %}
@@ -119,40 +117,47 @@ opensds backend block config cinder {{ file }} set username:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^username.*$'
-    - repl: 'username = {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.username }}'
+    - repl: 'username = {{ opensds.backend.drivers.cinder.authOptions.username }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
 opensds backend block config cinder {{ file }} set password:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^password.*$'
-    - repl: 'password = {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.password }}'
+    - repl: 'password = {{ opensds.backend.drivers.cinder.authOptions.password }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
 opensds backend block config cinder {{ file }} set project_domain_name:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^project_domain_name.*$'
-    - repl: 'project_domain_name = {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.project_name }}'
+    - repl: 'project_domain_name = {{ opensds.backend.drivers.cinder.authOptions.domainId }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
 opensds backend block config cinder {{ file }} set user_domain_name:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^user_domain_name.*$'
-    - repl: 'user_domain_name = {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.user_domain_name }}'
+    - repl: 'user_domain_name = {{ opensds.backend.drivers.cinder.authOptions.domainName }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
 opensds backend block config cinder {{ file }} set project_name:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^project_name.*$'
-    - repl: 'project_name = {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.project_name }}'
+    - repl: 'project_name = {{ opensds.backend.drivers.cinder.authOptions.projectName }}'
+    - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
+
+opensds backend block config cinder {{ file }} set connection:
+  file.replace:
+    - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
+    - pattern: '^connection.*$'
+    - repl: 'connection = mysql:{{ opensds.database.opensdsconf.database.credential }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
                        {%- endif %}
                    {%- endfor %}
                {%- endif %}
            {%- endif %}
-      {%- endfor %}
+      {%- endif %}
   {%- endif %}

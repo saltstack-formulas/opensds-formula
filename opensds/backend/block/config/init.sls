@@ -6,6 +6,6 @@
     {%- if opensds.deploy_project not in ('gelato',)  %}
 
 include:
-  - opensds.backend.block.config.cinder
+  - opensds.backend.block.config.cinderbox
 
     {%- endif %}
