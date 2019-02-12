@@ -74,7 +74,7 @@
 #     * MERGE SITE-SPECIFIC VALUES
 ##################################################################
 {%- set driver = {} %}
-{%- for drv in opensds.dock.opensdsconf['osdsdock']['enabled_backends'] %}
+{%- for drv in opensds.dock.opensdsconf['osdsdock']['enabled_backends'].split(', ') %}
    {%- if drv in opensds.backend.drivers and salt['file.file_exists']('opensds/yaml/drivers' ~ drv ~ '.yaml') %}
        {%- import_yaml 'opensds/yaml/drivers/' ~ drv ~ '.yaml' as driver_yaml %}
        {%- do salt['defaults.merge'](driver_yaml, opensds.backend.drivers[drv], merge_lists=True) %}
