@@ -2,6 +2,7 @@
 
 include:
   - opensds.infra
+  - opensds.keystone
   - opensds.config
   - opensds.database
   - opensds.auth

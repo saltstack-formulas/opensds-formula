@@ -7,9 +7,6 @@ include:
   # golang.remove         ## need remove state
   - docker.remove
   # memcached.uninstall
-  - devstack.remove
-  - opensds.infra.conflicts.clean
-  - devstack.remove
 
    {%- if opensds.pkgs %}
 

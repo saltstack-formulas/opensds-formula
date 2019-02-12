@@ -36,6 +36,11 @@ Runs all the other states in the formula. This state is used by the ``OpenSDS-in
 
 Deploy os profile (PATHS) and environmental dependencies (devstack, packages, docker) via salt.
 
+``opensds.keystone``
+-----------------
+
+Deploy devstack with keystone configuration for hotpot and gelato.
+
 ``opensds.hotpot``
 -----------------
 

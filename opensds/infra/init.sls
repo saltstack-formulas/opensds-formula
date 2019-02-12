@@ -14,10 +14,6 @@ include:
   - docker
   - memcached
   - mysql.apparmor
-  - devstack.user
-  - opensds.infra.conflicts.init
-  - devstack.install
-  - opensds.infra.conflicts.clean
 
     {%- if opensds.pkgs and opensds.pkgs is iterable and opensds.pkgs is not string %}
         {%- for p in opensds.pkgs %}
