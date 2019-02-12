@@ -15,6 +15,7 @@ Debian:
     - nodejs
     - npm
     - thin-provisioning-tools
+    - libffi-dev
   systemd:
     dir: /usr/lib/systemd/system
   backend:
@@ -46,6 +47,7 @@ RedHat:
     - dos2unix
     - nodejs
     - npm
+    - libffi-devel 
   backend:
     block:
       container:
@@ -69,6 +71,7 @@ Suse:
     - nodejs
     - npm
     - thin-provisioning-tools
+    - libffi-devel 
 
 FreeBSD:
   salt:
