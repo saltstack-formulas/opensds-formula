@@ -73,7 +73,7 @@ opensds:
       cinder:
         authOptions:
           #noAuth: true
-          endpoint: 127.0.0.1/identity
+          endpoint: http://127.0.0.1/identity
           #cinderEndpoint: '127.0.0.1:8776/v2'
           domainId: 'Default'
           domainName: 'Default'
