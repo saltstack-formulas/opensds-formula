@@ -73,7 +73,7 @@ opensds backend block config cinder {{ file }} modify default enabled_backends:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
     - pattern: 'enabled_backends.*'
-    - repl: 'enabled_backends = {{ opensds.backend.block.enabled_backends }}
+    - repl: 'enabled_backends = {{ opensds.dock.opensdsconf.osdsdock.enabled_backends }}
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 
 #opensds backend block config cinder {{ file }} modify default volumes_dir:

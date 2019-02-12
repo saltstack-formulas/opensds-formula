@@ -3,7 +3,7 @@
 # vim: ft=sls
 {%- from "opensds/map.jinja" import opensds with context %}
 
-    {%- if opensds.deploy_project not in ('gelato',)  %}
+  {%- if opensds.deploy_project not in ('gelato',)  %}
 
 {%- from "opensds/map.jinja" import docker, packages, golang with context %}
 {%- from 'opensds/files/macros.j2' import cp_source, build_source, cp_binaries with context %}
@@ -12,7 +12,12 @@
 include:
   - opensds.backend.block.config
 
-      {%- for id in opensds.backend.block.ids %}
+      {%- if opensds.backend.block.ids is iterable and opensds.backend.block.ids is string %}
+          {%- set backends = opensds.backend.block.ids.split(', ') %}
+      {%- else %}
+          {%- set backends = opensds.backend.block.ids %}
+      {%- endif %}
+      {%- for id in backends %}
           {%- if 'daemon' in opensds.backend.block and id in opensds.backend.block.daemon  %}
               {%- if opensds.backend.block.daemon[ id ] is mapping %}
 
@@ -21,4 +26,4 @@ include:
               {%- endif %}
           {%- endif %}
       {%- endfor %}
-   {%- endif %}
+  {%- endif %}
