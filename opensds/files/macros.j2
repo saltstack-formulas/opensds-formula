@@ -7,7 +7,10 @@
 {%- macro workflow(name, tag, id, subsys, workdir, systemd, plugin_type=None) %}
      {%- if 'daemon' in subsys and id in subsys.daemon and subsys.daemon[id] is mapping %}
         {%- if 'repo' in subsys.daemon[id]['strategy']|lower %}
-            {%- set workdir = golang.go_path+'/src/github.com/opensds' %}
+            {# you may want to expand this over time #}
+            {%- if  id not in ('cinder',) %}
+                {%- set workdir = golang.go_path+'/src/github.com/opensds' %}
+            {%- endif %}
         {%- endif %}
         {%- if 'build' in subsys.daemon[id]['strategy']|lower %}
 {{ build_source(name, tag, id, subsys.daemon[id], workdir) }}
@@ -157,8 +160,7 @@
 #  Download from repo #
 #-- -  - -  -- - -- --#
 {%- macro repo_download(name, tag, id, daemon, dir=None) %}
-       {%- if daemon and daemon is mapping and 'repo' in daemon and daemon.repo is mapping %}
-           {%- if "url" in daemon.repo %}
+       {%- if daemon and daemon is mapping and 'repo' in daemon and daemon.repo and "url" in daemon.repo %}
 
             #############################
             #### download from git repo #
@@ -180,7 +182,7 @@
     - target: {{ dir }}/{{ id }}
     - rev: {{ 'master' if not 'branch' in daemon.repo else daemon.repo.branch }}
     - force_checkout: True
-    - force_clone: True
+    - force_clone: {{ opensds.force_clone }}
     - force_fetch: True
     - force_reset: True
     - retry:
@@ -188,7 +190,6 @@
         until: True
         interval: 60
         splay: 10
-           {%- endif %}
        {%- endif %}
 
 {%- endmacro %}
@@ -228,7 +229,7 @@
          ##### workaround https://github.com/opensds/opensds-installer/issues/110
       workdir: {{ opensds.dir.sushi }}/nbp/{{ id }}
          {%- elif id|lower in ('cinder',) %}
-      workdir: {{ opensds.dir.sushi }}/{{ id }}
+      workdir: {{ opensds.dir.sushi }}/{{ id }}/{{ daemon.repo.build_subdir }}
          {%- elif 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
          {%- else %}
@@ -410,11 +411,17 @@
   cmd.run:
     - name: {{ daemon.repo.build_cmd }}
     - output_loglevel: quiet
+        {%- if "build_subdir" in daemon.repo and daemon.repo.build_subdir %}
+    - cwd: {{ dir }}/{{ id }}/{{ daemon.repo.build_subdir }}
+    - onlyif: test -d {{ dir }}/{{ id }}/{{ daemon.repo.build_subdir }}
+        {%- else %}
     - cwd: {{ dir }}/{{ id }}
     - onlyif: test -d {{ dir }}/{{ id }}
+        {%- endif %}
     - env:
       - GOPATH: {{ golang.go_path }}
       {%- endif %}
+
   {%- endif %}
 {%- endmacro %}
 

@@ -7,28 +7,34 @@ opensds:
       ids:
         - cinder
         - lvm
-    container:
-      cinder:
-        image: openstack/cinder-blockbox
-        version: stable/rocky
-        compose:
-          platform: 'debian-cinder:latest'
-          tag: 'debian-cinder:latest'
-          image: 'debian-cinder'
-          imagetag: 'lvm-debian-cinder'
-          dbports: '3307:3306'
-          volumegroup: 'cinder-volumes'
-    daemon:
-      lvm:
-        strategy: saltstack-formulas/lvm-formula
-      cinder:
-        strategy: repo-compose-config-build-systemd
-        repo:
-          url: https://github.com/openstack/cinder.git
-          branch: stable/rocky
-          build_subdir: contrib/block-box
-          build_cmd: make blockbox
-          binaries_subdir: ''
-          clean_cmd: make clean
-    pips:
-      - notario
+      custom:
+        cinder:
+          - etc/cinder.conf
+          # etc/cinder.conf.solidfire
+          # etc/cinder.conf.sf
+          - etc/cinder.conf.keystone
+      container:
+        cinder:
+          image: openstack/cinder-blockbox
+          version: stable/rocky
+          compose:
+            platform: 'debian-cinder:latest'
+            tag: 'debian-cinder:latest'
+            image: 'debian-cinder'
+            imagetag: 'lvm-debian-cinder'
+            dbports: '3307:3306'
+            volumegroup: 'cinder-volumes'
+      daemon:
+        lvm:
+          strategy: saltstack-formulas/lvm-formula
+        cinder:
+          strategy: repo-compose-config-build-systemd
+          repo:
+            url: https://github.com/openstack/cinder.git
+            branch: stable/rocky
+            build_subdir: contrib/block-box
+            build_cmd: make blockbox
+            binaries_subdir: ''
+            clean_cmd: make clean
+      pips:
+        - notario

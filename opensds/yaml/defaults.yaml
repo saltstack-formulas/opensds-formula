@@ -11,6 +11,7 @@ opensds:
   file_mode: '0644'
   user: root
   compose: /usr/bin/docker-compose
+  force_clone: True
 
   environ:
     opensds_endpoint: '127.0.0.1:50040'
