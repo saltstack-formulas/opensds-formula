@@ -76,14 +76,14 @@ opensds backend block config cinder {{ file }} modify default enabled_backends:
     - repl: 'enabled_backends = lvm'   {#getlist(opensds.backend.block.enabled_backends)#}
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 
-opensds backend block config cinder {{ file }} modify default volumes_dir:
-  file.replace:
-    - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
-    - pattern: 'volumes_dir.*'
-    - repl: 'volumes_dir = {{ opensds.dir.hotpot }}/volumegroups/'
-    - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
+#opensds backend block config cinder {{ file }} modify default volumes_dir:
+#  file.replace:
+#    - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
+#    - pattern: 'volumes_dir.*'
+#    - repl: 'volumes_dir = {{ opensds.dir.hotpot }}/volumegroups/'
+#    - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 
-                       {%- if "keystone" in file %}
+                       {%- if "DISABLED DISABLED keystone" in file %}
 
 opensds backend block config cinder {{ file }} set opensdsendpoint:
   file.replace:
