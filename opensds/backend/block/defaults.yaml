@@ -7,6 +7,12 @@ opensds:
       ids:
         - cinder
         - lvm
+      custom:
+        cinder:
+          - etc/cinder.conf
+          # etc/cinder.conf.solidfire
+          # etc/cinder.conf.sf
+          - etc/cinder.conf.keystone
       container:
         cinder:
           image: openstack/cinder-blockbox
