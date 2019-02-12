@@ -7,6 +7,8 @@
 
 include:
   - opensds.dashboard.daemon.clean
+  - apache.uninstall      ### manages port 80
+  # nginx.service         ### https://github.com/saltstack-formulas/nginx-formula/issues/214
   - opensds.dashboard.release.clean
   - opensds.dashboard.repo.clean
   - opensds.dashboard.config.clean

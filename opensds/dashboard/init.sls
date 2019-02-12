@@ -9,7 +9,8 @@ include:
   - opensds.dashboard.release
   - opensds.dashboard.repo
   - opensds.dashboard.config
-  - apache.uninstall    ### must be installed by stack.sh?
+  - apache           ### manages port 80
+  - nginx.service    ### manages port 8088 (daemon or container)
   - opensds.dashboard.daemon
 
     {%- endif %}
