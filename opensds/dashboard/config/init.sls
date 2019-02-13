@@ -10,7 +10,6 @@
 
 include:
   - opensds.config
-  - opensds.dashboard.config.nginx
 
        {%- for id in opensds.dashboard.ids %}
            {%- if 'opensdsconf' in opensds.dashboard and id in opensds.dashboard.opensdsconf %}

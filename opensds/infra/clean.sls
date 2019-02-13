@@ -7,6 +7,8 @@ include:
   # golang.remove         ## need remove state
   - docker.remove
   # memcached.uninstall
+  - apache.uninstall      ### manages port 80
+  # nginx.ng.clean        ### https://github.com/saltstack-formulas/nginx-formula/issues/214
 
    {%- if opensds.pkgs %}
 

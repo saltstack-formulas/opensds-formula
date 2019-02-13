@@ -9,8 +9,6 @@ include:
   - opensds.dashboard.release
   - opensds.dashboard.repo
   - opensds.dashboard.config
-  - apache      ### manages port 80
-  - nginx.ng    ### manages port 8088 (daemon or container)
   - opensds.dashboard.daemon
 
     {%- endif %}

@@ -14,6 +14,8 @@ include:
   - docker
   - memcached
   - mysql.apparmor
+  - apache      ### manages port 80
+  - nginx.ng    ### manages port 8088 (daemon or container)
 
     {%- if opensds.pkgs and opensds.pkgs is iterable and opensds.pkgs is not string %}
         {%- for p in opensds.pkgs %}
