@@ -16,14 +16,14 @@ include:
             {%- if 'daemon' in opensds.dashboard and id in opensds.dashboard.daemon  %}
                 {%- if opensds.dashboard.daemon[ id ]|lower is mapping %}
 
-                    {%- if 'container' in opensds.dashboard.daemon[ id ]|lower %}
+                    {%- if 'container' in opensds.dashboard.daemon[ id ]['strategy']|lower %}
 opensds dashboard daemon {{ id }} ensure nginx stopped and disabled:
   service.dead:
     - name: nginx
     - enable: False
                     {%- endif %}
 
-                    {%- if 'build' in opensds.dashboard.daemon[ id ]|lower %}
+                    {%- if 'build' in opensds.dashboard.daemon[ id ]['strategy']|lower %}
 opensds dashboard config install angular cli:
   cmd.run:
     - name: 'npm install -g @angular/cli'
