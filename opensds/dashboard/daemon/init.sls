@@ -14,7 +14,7 @@ include:
 
         {%- for id in opensds.dashboard.ids %}
             {%- if 'daemon' in opensds.dashboard and id in opensds.dashboard.daemon  %}
-                {%- if opensds.dashboard.daemon[ id ]|lower is mapping %}
+                {%- if opensds.dashboard.daemon[ id ] is mapping %}
 
                     {%- if 'container' in opensds.dashboard.daemon[ id ]['strategy']|lower %}
 opensds dashboard daemon {{ id }} ensure nginx stopped and disabled:
