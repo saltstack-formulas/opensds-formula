@@ -21,7 +21,9 @@ opensds dashboard daemon {{ id }} ensure nginx stopped and disabled:
   service.dead:
     - name: nginx
     - enable: False
-                    {%- elif 'build' in opensds.dashboard.daemon[ id ]|lower %}
+                    {%- endif %}
+
+                    {%- if 'build' in opensds.dashboard.daemon[ id ]|lower %}
 opensds dashboard config install angular cli:
   cmd.run:
     - name: 'npm install -g @angular/cli'
@@ -30,6 +32,7 @@ opensds dashboard config install angular cli:
     - onlyif:
       - npm --version 2>/dev/null
       - {{ id|lower == 'dashboard' }}
+   - unless: {{ 'container' in opensds.dashboard.daemon[ id ]|lower }}
                     {%- endif %}
 
 {{ workflow('opensds', 'dashboard daemon', id, opensds.dashboard, opensds.dir.dashboard, opensds.systemd) }}
