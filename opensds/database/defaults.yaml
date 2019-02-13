@@ -9,7 +9,7 @@ opensds:
     opensdsconf:
       database:
         driver: etcd
-        endpoint: 'http://127.0.0.1:2379,http://127.0.0.1:2380'
+        endpoint: '127.0.0.1:2379,http://127.0.0.1:2380'
         credential: 'opensds:password@127.0.0.1:3306/dbname'
     container:
       etcd:
