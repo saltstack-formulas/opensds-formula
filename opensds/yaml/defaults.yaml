@@ -23,7 +23,7 @@ opensds:
     driver: /etc/opensds/driver        #leave me alone
     log: /var/log/opensds
     tmp: /tmp/opensds
-    devstack: /opt/opensds-linux-amd64-devstack
+    devstack: /opt/opensds-devstack-linux-amd64
     hotpot: /opt/opensds-linux-amd64
     sushi: /opt/opensds-sushi-linux-amd64
     gelato: /opt/opensds-gelato-linux-amd64
