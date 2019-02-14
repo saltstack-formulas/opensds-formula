@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # Global
-HOST_IP={{ devstack.local.host_ipv4 or '${HOST_IP:-devstack.local.host_ipv6}' }}
+HOST_IP=${HOST_IP:-{{ devstack.local.host_ipv4 or devstack.local.host_ipv6 or '127.0.0.1' }}
 if [ "$HOST_IP" == "" ]; then
     die $LINENO "Could not determine host ip address. See local.conf for suggestions on setting HOST_IP."
 fi
@@ -40,5 +40,5 @@ STACK_HOME="${STACK_HOME:-{{ '/opt/stack' if 'dest' not in devstack.dir else dev
 DEV_STACK_DIR="${STACK_HOME}/devstack"
 STACK_BRANCH="${STACK_BRANCH:-{{ 'stable/rocky' if 'git_branch' not in devstack.local else devstack.local.git_branch }}}"
 
-GOPATH="${GOPATH:- {{ '${HOME}/gopath' if 'go_path' not in golang else golang.go_path }}}"
+GOPATH="${GOPATH:-{{ '${HOME}/gopath' if 'go_path' not in golang else golang.go_path }}}"
 OPENSDS_DIR="${GOPATH}/src/github.com/opensds/opensds"
