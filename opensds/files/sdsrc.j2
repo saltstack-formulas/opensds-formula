@@ -34,8 +34,8 @@ MULTICLOUD_SERVER_NAME={{ opensds.gelato.service or '${MULTICLOUD_SERVER_NAME:-m
 
 # devstack keystone configuration
 STACK_GIT_BASE={{ devstack.local.git_base or '${STACK_GIT_BASE:-https://git.openstack.org}' }}
-STACK_USER_NAME={{ devstack.local.username or '${STACK_USER_NAME:-stack}' }}
-STACK_PASSWORD={{ devstack.local.password or '${STACK_PASSWORD:-devstack}' }}
+STACK_USER_NAME={{ devstack.local.stack_user or '${STACK_USER_NAME:-stack}' }}
+STACK_PASSWORD={{ devstack.local.os_password or '${STACK_PASSWORD:-devstack}' }}
 STACK_HOME={{ devstack.dir.dest or '${STACK_HOME:-/opt/stack}' }}
 DEV_STACK_DIR=$STACK_HOME/devstack
 STACK_BRANCH={{ devstack.local.git_branch or '${STACK_BRANCH:-stable/rocky}' }}

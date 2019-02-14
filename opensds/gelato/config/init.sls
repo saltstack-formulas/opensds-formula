@@ -49,7 +49,7 @@ opensds gelato config {{ id }} change default password:
   file.replace:
     - name: {{ opensds.dir.gelato }}/{{ id }}/docker-compose.yml
     - pattern: OS_PASSWORD=.*
-    - repl: OS_PASSWORD={{ devstack.local.password }}
+    - repl: OS_PASSWORD={{ devstack.local.os_password }}
     - backup: '.salt.bak'
 
             {%- endif %}

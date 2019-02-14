@@ -34,7 +34,7 @@ Runs all the other states in the formula. This state is used by the ``OpenSDS-in
 ``opensds.infra``
 -----------------
 
-Deploy os profile (PATHS) and environmental dependencies (devstack, packages, docker) via salt.
+Deploy os profile (PATHS) and environmental dependencies (packages, nginx, docker, etc) via salt.
 
 ``opensds.keystone``
 -----------------
