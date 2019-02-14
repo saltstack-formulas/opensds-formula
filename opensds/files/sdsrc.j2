@@ -15,31 +15,30 @@
 # limitations under the License.
 
 # Global
-HOST_IP={{ devstack.local.host_ipv4 or '${HOST_IP:-devstack.local.host_ipv6}' }}
+HOST_IP=${HOST_IP:-{{ devstack.local.host_ipv4 or devstack.local.host_ipv6 or '127.0.0.1' }}
 if [ "$HOST_IP" == "" ]; then
     die $LINENO "Could not determine host ip address. See local.conf for suggestions on setting HOST_IP."
 fi
 
 # OpenSDS configuration.
-OPENSDS_VERSION={{ opensds.hotpot.release or '${OPENSDS_VERSION:-v1beta}' }}
+OPENSDS_VERSION="${OPENSDS_VERSION:-{{'v1beta' if 'release' not in opensds.hotpot else opensds.hotpot.release}}}"
 
 # Multi-cloud
-MULTICLOUD_VERSION={{ opensds.gelato.release or '${MULTICLOUD_VERSION:-v1}' }}
+MULTICLOUD_VERSION="${MULTICLOUD_VERSION:-{{'v1' if 'release' not in opensds.gelato else opensds.gelato.release}}}"
 
 # OpenSDS service name in keystone.
-OPENSDS_SERVER_NAME={{ opensds.hotpot.service or '${OPENSDS_SERVER_NAME:-opensds}' }}
+OPENSDS_SERVER_NAME="${OPENSDS_SERVER_NAME:-{{'opensds' if 'service' not in opensds.hotpot else opensds.hotpot.service}}"
 
 # Multi-Cloud service name in keystone
-MULTICLOUD_SERVER_NAME={{ opensds.gelato.service or '${MULTICLOUD_SERVER_NAME:-multicloud}' }}
+MULTICLOUD_SERVER_NAME="${MULTICLOUD_SERVER_NAME:-{{ 'multicloud' if 'service' not in opensds.gelato else opensds.gelato.service }}}"
 
 # devstack keystone configuration
-STACK_GIT_BASE={{ devstack.local.git_base or '${STACK_GIT_BASE:-https://git.openstack.org}' }}
-STACK_USER_NAME={{ devstack.local.username or '${STACK_USER_NAME:-stack}' }}
-STACK_PASSWORD={{ devstack.local.password or '${STACK_PASSWORD:-devstack}' }}
-STACK_HOME={{ devstack.dir.dest or '${STACK_HOME:-/opt/stack}' }}
-DEV_STACK_DIR=$STACK_HOME/devstack
-STACK_BRANCH={{ devstack.local.git_branch or '${STACK_BRANCH:-stable/rocky}' }}
+STACK_GIT_BASE="${STACK_GIT_BASE:-{{'https://git.openstack.org' if 'git_base' not in devstack.local else devstack.local.git_base }}}"
+STACK_USERNAME="${STACK_USERNAME:-{{'stack' if 'stack_user' not in devstack.local else devstack.local.stack_user}}}"
+STACK_PASSWORD="${STACK_PASSWORD:-{{'devstack' if 'os_password' not in devstack.local else devstack.local.os_password}}}"
+STACK_HOME="${STACK_HOME:-{{ '/opt/stack' if 'dest' not in devstack.dir else devstack.dir.dest }}}"
+DEV_STACK_DIR="${STACK_HOME}/devstack"
+STACK_BRANCH="${STACK_BRANCH:-{{ 'stable/rocky' if 'git_branch' not in devstack.local else devstack.local.git_branch }}}"
 
-GOPATH={{ golang.go_path or '${GOPATH:-$HOME/gopath}' }}
-OPENSDS_DIR=${GOPATH}/src/github.com/opensds/opensds
-
+GOPATH="${GOPATH:-{{ '${HOME}/gopath' if 'go_path' not in golang else golang.go_path }}}"
+OPENSDS_DIR="${GOPATH}/src/github.com/opensds/opensds"
