@@ -35,7 +35,7 @@ MULTICLOUD_SERVER_NAME="${MULTICLOUD_SERVER_NAME:-{{ 'multicloud' if 'service' n
 # devstack keystone configuration
 STACK_GIT_BASE="${STACK_GIT_BASE:-{{'https://git.openstack.org' if 'git_base' not in devstack.local else devstack.local.git_base }}}"
 STACK_USERNAME="${STACK_USERNAME:-{{'stack' if 'stack_user' not in devstack.local else devstack.local.stack_user}}}"
-STACK_PASSWORD="${STACK_PASSWORD:-{{'devstack' if 'os_passwora'd not in devstack.local else devstack.local.os_password}}}"
+STACK_PASSWORD="${STACK_PASSWORD:-{{'devstack' if 'os_password' not in devstack.local else devstack.local.os_password}}}"
 STACK_HOME="${STACK_HOME:-{{ '/opt/stack' if 'dest' not in devstack.dir else devstack.dir.dest }}}"
 DEV_STACK_DIR="${STACK_HOME}/devstack"
 STACK_BRANCH="${STACK_BRANCH:-{{ 'stable/rocky' if 'git_branch' not in devstack.local else devstack.local.git_branch }}}"
