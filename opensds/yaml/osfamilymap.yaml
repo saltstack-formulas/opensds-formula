@@ -22,10 +22,8 @@ Debian:
     block:
       container:
         cinder:
-          #build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES='lvm ceph' --tag openstack/cinder-blockbox
-      daemon:
-        cinder:
-          #start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg PROJECT=cinder --build-arg PROFILES='lvm ceph' --tag openstack/cinder-blockbox
+          makefile:
+            platform: 'debian:stretch'
 
 RedHat:
   compose: /bin/docker-compose
@@ -52,10 +50,8 @@ RedHat:
     block:
       container:
         cinder:
-          #build_cmd: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES='lvm ceph' --tag openstack/cinder-blockbox
-      daemon:
-        cinder:
-          #start: /usr/bin/docker build https://git.openstack.org/openstack/loci.git --build-arg FROM=centos:7 --build-arg PROJECT=cinder --build-arg PROFILES='lvm ceph' --tag openstack/cinder-blockbox
+          makefile:
+            platform: 'centos:7'
 
 Suse:
   pkgs:

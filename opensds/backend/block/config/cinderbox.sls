@@ -18,7 +18,7 @@ opensds backend block config cinder Makefile set platform:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
     - pattern: 'PLATFORM ?= debian:stretch'
-    - repl: 'PLATFORM ?= {{ container.compose.platform }}'
+    - repl: 'PLATFORM ?= {{ container.makefile.platform }}'
     - backup: '.salt.bak.original'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
 
@@ -26,7 +26,7 @@ opensds backend block config cinder Makefile set image tag:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
     - pattern: 'TAG ?= debian-cinder:latest'
-    - repl: 'TAG ?= {{ container.compose.tag }}'
+    - repl: 'TAG ?= {{ container.makefile.tag }}'
     - backup: '.salt.bak'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
 
@@ -65,7 +65,7 @@ opensds backend block config cinder {{ file }} modify default volumegroup:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
     - pattern: 'volume_group = cinder-volumes '
-    - repl: 'volume_group = {{ container.compose.volumegroup }} '
+    - repl: 'volume_group = {{ container.conf.volumegroup }} '
     - backup: '.salt2.bak'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 

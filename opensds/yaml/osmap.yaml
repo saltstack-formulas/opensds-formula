@@ -2,4 +2,10 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
-Default:
+Ubuntu:
+  backend:
+    block:
+      container:
+        cinder:
+          makefile:
+            platform: 'ubuntu:xenial'
