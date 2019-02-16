@@ -7,7 +7,6 @@ Debian:
     - python-pip
     - librados-dev
     - librbd-dev
-    - git
     - gcc
     - make
     - dos2unix
@@ -39,7 +38,6 @@ RedHat:
     - docker-compose
     - device-mapper-persistent-data
     - python-setuptools
-    - git
     - gcc
     - make
     - dos2unix
@@ -60,7 +58,6 @@ Suse:
     - librados-dev
     - librbd-dev
     - python-setuptools
-    - git
     - gcc
     - make
     - dos2unix

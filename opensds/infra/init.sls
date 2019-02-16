@@ -24,8 +24,12 @@ opensds infra pkgs install {{ p }}:
     - name: {{ p }}
         {%- endfor %}
     {%- endif %}
-    {%- if grains.os in ('CentOS', 'RHEL',) %}
-opensds infra use git2 on EPEL:
+
+    {%- if grains.os in ('CentOS', ) %}
+opensds infra use git2 on EL:
+  pkg.installed:
+    - sources:
+      - ius-release: https://centos7.iuscommunity.org/ius-release.rpm
   cmd.run:
     - name: yum swap git git2u
   {%- endif %}
