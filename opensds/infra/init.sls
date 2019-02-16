@@ -31,5 +31,5 @@ opensds infra use git2 on EL:
     - sources:
       - ius-release: https://centos7.iuscommunity.org/ius-release.rpm
   cmd.run:
-    - name: yum swap git git2u
+    - name: yum swap git git2u -y
   {%- endif %}
