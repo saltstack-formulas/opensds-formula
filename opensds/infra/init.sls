@@ -24,3 +24,8 @@ opensds infra pkgs install {{ p }}:
     - name: {{ p }}
         {%- endfor %}
     {%- endif %}
+    {%- if grains.os in ('CentOS', 'RHEL',) %}
+opensds infra use git2 on EPEL:
+  cmd.run:
+    - name: yum swap git git2u
+  {%- endif %}

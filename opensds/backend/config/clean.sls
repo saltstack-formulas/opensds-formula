@@ -14,10 +14,6 @@
 {{ cleanup_config('opensds', 'backend config', id, opensds.conf) }}
 {{ cleanup_files('opensds', 'backend', id, opensds.backend) }}
 
-opensds backend config {{ id }} remove driver file:
-  file.absent:
-    - name: {{ opensds.dir.driver }}/{{ id }}.yaml
-
             {%- endif %}
         {%- endfor %}
     {%- endif %}

@@ -6,4 +6,7 @@ include:
   - devstack.user
   - opensds.keystone.conflicts.init
   - devstack.install
+  {%- if grains.os_family == 'RedHat' %}
+  - devstack.install       {# workaround https://github.com/saltstack-formulas/devstack-formula/issues/13 #}
+  {%- endif %}
   - opensds.keystone.conflicts.clean

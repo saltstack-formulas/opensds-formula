@@ -10,5 +10,6 @@ include:
   - opensds.dock.release.clean
   - opensds.dock.repo.clean
   - opensds.dock.config.clean
+  - opensds.dock.drivers.clean
 
     {%- endif %}

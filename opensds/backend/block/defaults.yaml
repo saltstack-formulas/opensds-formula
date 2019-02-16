@@ -17,12 +17,13 @@ opensds:
         cinder:
           image: openstack/cinder-blockbox
           version: stable/rocky
-          compose:
-            platform: 'debian-cinder:latest'
+          makefile:                    #### platform, tag
             tag: 'debian-cinder:latest'
+          compose:                     #### image, dbports
             image: 'debian-cinder'
             imagetag: 'lvm-debian-cinder'
             dbports: '3307:3306'
+          conf:
             volumegroup: 'cinder-volumes'
       daemon:
         lvm:
