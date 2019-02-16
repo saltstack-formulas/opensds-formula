@@ -20,21 +20,5 @@ include:
 
                 {%- endif %}
             {%- endif %}
-
-                ##################
-                ####  driver.conf 
-                ##################
-opensds backend config {{ id }} generate driver file:
-  file.managed:
-    - name: {{ opensds.dir.driver }}/{{ id }}.yaml
-    - source: salt://opensds/yaml/drivers/template.jinja
-    - template: jinja
-    - user: {{ opensds.user or 'root' }}
-    - mode: {{ opensds.file_mode }}
-    - context:
-      driver: {{ driver }}
-    - require:
-      - file: opensds config ensure opensds conf exists
-
         {%- endfor %}
     {%- endif %}

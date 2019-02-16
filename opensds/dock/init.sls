@@ -9,6 +9,7 @@ include:
   - opensds.dock.release
   - opensds.dock.repo
   - opensds.dock.config
+  - opensds.dock.drivers
   - opensds.dock.daemon
 
     {%- endif %}

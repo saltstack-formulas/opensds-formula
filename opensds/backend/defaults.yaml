@@ -8,7 +8,7 @@ opensds:
       - cinder
       - ceph
       - lvm
-      - dorado
+      # dorado
       - fusionstorage
       - drbd
 
