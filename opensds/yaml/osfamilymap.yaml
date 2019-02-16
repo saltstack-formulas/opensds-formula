@@ -38,6 +38,7 @@ RedHat:
     - docker-compose
     - device-mapper-persistent-data
     - python-setuptools
+    - lvm2
     - gcc
     - make
     - dos2unix
