@@ -9,3 +9,7 @@ Ubuntu:
         cinder:
           makefile:
             platform: 'ubuntu:xenial'
+
+CentOS:
+  pkgs:
+    - https://centos7.iuscommunity.org/ius-release.rpm
