@@ -17,7 +17,7 @@
 opensds backend block config cinder Makefile set platform:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
-    - pattern: 'PLATFORM.*$'
+    - pattern: 'PLATFORM.*\?=.*$'
     - repl: 'PLATFORM ?= {{ container.makefile.platform }}'
     - backup: '.salt.bak.original'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
@@ -25,7 +25,7 @@ opensds backend block config cinder Makefile set platform:
 opensds backend block config cinder Makefile set image tag:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
-    - pattern: 'TAG .*$'
+    - pattern: 'TAG.*\?=.*$'
     - repl: 'TAG ?= {{ container.makefile.tag }}'
     - backup: '.salt.bak'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
