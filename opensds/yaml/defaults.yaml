@@ -17,6 +17,7 @@ opensds:
     opensds_endpoint: '127.0.0.1:50040'
     opensds_auth_strategy: 'keystone'
     csi_endpoint: '127.0.0.1:50040'
+    docker_opts: "--dns 8.8.8.8 --dns 8.8.4.4"
 
   dir:
     config: /etc/opensds               #leave me alone

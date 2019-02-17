@@ -12,6 +12,7 @@ opensds:
     opensds_endpoint: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}:{{ site.port_hotpot }}
     opensds_auth_strategy: {{ site.auth_strategy }}
     csi_endpoint: {{ site.host_ipv4 or site.host_ipv6 or '127.0.0.1' }}:{{ site.port_csi }}
+    docker_opts: "--dns {{ site.dns_host1 or '8.8.8.8' }} --dns {{ site.dns_host2 or '64.6.64.6' }}"
 
   ######### BACKENDS ##################
   backend:
