@@ -380,7 +380,7 @@
     - subdir: True
           {%- if id|lower == 'provisioner' %}
               ### workaround https://github.com/opensds/opensds-installer/issues/110 #####
-    - name: {{ opt.dir/sushi }}/nbp/provisioner/
+    - name: {{ opt.dir.sushi }}/nbp/provisioner/
     - source: {{ dir }}/{{ id }}/opensds-{{ b }}
     - onlyif: test -f {{ dir }}/{{ id }}/bin/opensds-{{ b }}
           {%- elif "repo" in daemon and daemon.repo is mapping and "binaries_subdir" in daemon.repo and daemon.repo.binaries_subdir %}

@@ -4,8 +4,6 @@
 {%- from "opensds/map.jinja" import opensds with context %}
 
     {%- if opensds.deploy_project not in ('gelato',) %}
-
-{%- from "opensds/map.jinja" import driver with context %}
 {%- from 'opensds/files/macros.j2' import update_config with context %}
 
 include:
