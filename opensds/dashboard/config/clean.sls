@@ -12,7 +12,7 @@
             {%- if "opensdsconf" in opensds.dashboard and id in opensds.dashboard.opensdsconf %}
 
 {{ cleanup_config('opensds', 'dashboard config', id, opensds.conf) }}
-{{ cleanup_files('opensds', 'dashboard config', id, opensds.dashboard) }}
+{{ cleanup_files('opensds', 'dashboard config', id, opensds.dir.dashboard) }}
 
             {%- endif %}
         {%- endfor %}

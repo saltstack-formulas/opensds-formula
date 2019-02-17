@@ -12,7 +12,7 @@ include:
       {%- for id in opensds.dock.ids %}
         {% if 'daemon' in opensds.dock and id in opensds.dock.daemon and opensds.dock.daemon[id] is mapping %}
 
-{{ workflow('opensds', 'dock daemon', id, opensds.dock, opensds.dir.hotpot, opensds.systemd) }}
+{{ workflow('opensds', 'dock daemon', id, opensds.dock, opensds.dir.hotpot, opensds) }}
 
         {%- endif %}
       {%- endfor %}

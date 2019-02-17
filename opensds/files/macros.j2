@@ -4,7 +4,7 @@
 #---- - - -- --- ---
 #  installer workflow
 #-- - --- - -- -- --
-{%- macro workflow(name, tag, id, subsys, workdir, systemd, plugin_type=None) %}
+{%- macro workflow(name, tag, id, subsys, workdir, self, plugin_type=None) %}
      {%- if 'daemon' in subsys and id in subsys.daemon and subsys.daemon[id] is mapping %}
         {%- if 'repo' in subsys.daemon[id]['strategy']|lower %}
             {# you may want to expand this over time #}
@@ -25,7 +25,7 @@
 {{ cp_binaries(name, tag, id, subsys.daemon[id], subsys['binaries'], workdir, '/usr/local/bin') }}
         {%- endif %}
         {%- if 'systemd' in subsys.daemon[id]['strategy']|lower %}
-{{ service_run(name, tag, id, subsys.daemon[id], systemd, workdir, plugin_type) }}
+{{ service_run(name, tag, id, subsys.daemon[id], self, workdir, plugin_type) }}
         {%- endif %}
      {%- endif %}
 
@@ -34,7 +34,7 @@
 #- -- -- -- ---
 #  daemon clean
 #-- -- -  -- --
-{%- macro daemon_clean(name, tag, id, subsys, systemd, plugin_type=None) %}
+{%- macro daemon_clean(name, tag, id, subsys, self, plugin_type=None) %}
        {% if plugin_type and id|string != plugin_type|string %}
           {%- set daemon=None %}
        {%- endif %}
@@ -43,7 +43,7 @@
          {%- set daemon = subsys.daemon[ id ] %}
          {%- if daemon is mapping %}
              {%- if 'systemd' in daemon.strategy|lower %}
-{{ service_stopped(name, tag, id, daemon, systemd) }}
+{{ service_stopped(name, tag, id, daemon, self) }}
              {%- endif %}
          {%- elif 'container' in daemon.strategy|lower %}
 {{ container_stopped(name, tag, id, subsys.container) }}
@@ -51,7 +51,7 @@
      {%- elif 'container' in daemon.strategy|lower and 'container' in subsys %}
 {{ container_stopped(name, tag, id, subsys.container) }}
      {%- endif %}
-{{ cleanup_files(name, tag, id, subsys) }}
+{{ cleanup_files(name, tag, id) }}
 
 {%- endmacro %}
 
@@ -59,7 +59,7 @@
 #---- - - -- --- ---#
 #  create directory
 #-- --- --- - -- ---#
-{%- macro create_dir(name, tag, id, dir) %}
+{%- macro create_dir(name, tag, id, dir, user=None, mode=None) %}
 
             #############################
             #### create {{id}} directory
@@ -69,9 +69,9 @@
     - name: {{ dir }}/{{ id }}
     - force: True
     - makedirs: True
-    - user: {{ opensds.user or 'root' }}
-    - dir_mode: {{ opensds.dir_mode or '0755' }}
-    # recurse:     Comment out due to lsattr taking too long
+    - user: {{ user or 'root' }}
+    - dir_mode: {{ mode or '0755' }}
+    # recurse:     ##commented out due to lsattr taking too long
     # - user
     # - mode
 
@@ -80,7 +80,7 @@
 #-- -  - -  -- - - ---#
 #  Cleanup filesystem
 #-- -- -  --- - --  --#
-{%- macro cleanup_files(name, tag, id, dir, binaries=None) %}
+{%- macro cleanup_files(name, tag, id, dir=None, binaries=None) %}
 
             ################################
             #### cleanup {{id}} files
@@ -88,11 +88,10 @@
 {{ name }} {{ tag }} {{ id }} cleanup filesystem:
   file.absent:
     - names:
-      - {{ opensds.dir.hotpot }}/{{ id }}
-      - {{ opensds.dir.sushi }}/{{ id }}
-      - {{ opensds.dir.hotpot }}/{{ id }}
-      - {{ opensds.dir.sushi }}/{{ id }}
       - /usr/local/golang/packages/src/github.com/opensds/{{ id }}
+            {%- if dir %}
+      - {{ dir }}
+            {%- endif %}
          {%- if binaries and binaries is iterable %}
              {%- for b in binaries[id] %}
       - {{ dir }}/{{ b }}
@@ -182,7 +181,7 @@
     - target: {{ dir }}/{{ id }}
     - rev: {{ 'master' if not 'branch' in daemon.repo else daemon.repo.branch }}
     - force_checkout: True
-    - force_clone: {{ opensds.force_clone }}
+    - force_clone: True
     - force_fetch: True
     - force_reset: True
     - retry:
@@ -197,7 +196,7 @@
 #-- -  - -  -- - - - --#
 #  Run Systemd service #
 #-- ---- -  -- - - - --#
-{%- macro service_run(name, tag, id, daemon, systemd, dir, plugin_type=None) %}
+{%- macro service_run(name, tag, id, daemon, self, dir, plugin_type=None) %}
        {% if plugin_type and id|string != plugin_type|string %}
           {%- set daemon=None %}
        {%- endif %}
@@ -209,27 +208,27 @@
             ######################
 {{ name }} {{ tag }} {{ id }} systemd started:
   file.managed:
-    - name: {{ systemd.dir + '/' + name + '-' + id + '.service' }}
+    - name: {{ self.systemd.dir + '/' + name + '-' + id + '.service' }}
     - source: salt://{{ name }}/files/daemon.j2
     - mode: '0644'
     - template: jinja
     - makedirs: True
     - context:
       svc: {{ id }}
-      environ: {{ opensds.environ }}
-      systemd: {{ systemd|json }}
+      environ: {{ self.environ }}
+      systemd: {{ self.systemd|json }}
          {%- if "compose" in daemon.strategy|lower %}
-      start: {{ opensds.compose }} up
-      stop: {{ opensds.compose }} down
+      start: {{ self.compose }} up
+      stop: {{ self.compose }} down
          {%- else %}
       start: {{ daemon.start }}
       stop: {{ daemon.stop }}
          {%- endif %}
          {%- if id|lower in ('provisioner',) %}
          ##### workaround https://github.com/opensds/opensds-installer/issues/110
-      workdir: {{ opensds.dir.sushi }}/nbp/{{ id }}
+      workdir: {{ self.dir.sushi }}/nbp/{{ id }}
          {%- elif id|lower in ('cinder',) %}
-      workdir: {{ opensds.dir.sushi }}/{{ id }}/{{ daemon.repo.build_subdir }}
+      workdir: {{ self.dir.sushi }}/{{ id }}/{{ daemon.repo.build_subdir }}
          {%- elif 'repo' in daemon and daemon.repo is mapping and 'binaries_subdir' in daemon.repo and daemon.repo.binaries_subdir %}
       workdir: {{ dir }}/{{ '' if not plugin_type else plugin_type }}/{{ 'opensds' if id == 'osdsdock' else id }}/{{ daemon.repo.binaries_subdir }}
          {%- else %}
@@ -255,7 +254,7 @@
 #--- - - --- -- - - -- -#
 #  stop systemd service #
 #--- ---- --- -- - - ---#
-{%- macro service_stopped(name, tag, id, daemon, systemd) %}
+{%- macro service_stopped(name, tag, id, daemon, self) %}
        {%- if "systemd" in daemon.strategy|lower and daemon is mapping %}
 
             ######################
@@ -265,7 +264,7 @@
   service.dead:
     - name: {{ name }}-{{ id }}
   file.absent:
-    - name: {{ systemd.dir }}/{{ name }}-{{ id }}.daemon
+    - name: {{ self.systemd.dir }}/{{ name }}-{{ id }}.daemon
     - watch:
       - service: {{ name }} {{ tag }} {{ id }} systemd service stopped
   cmd.run:
@@ -364,8 +363,8 @@
 #-- - - - - - - - ---- -- - - --#
 #  Copy binary from dir to dest
 #--- -- -- - - -  --- - ---- - -#
-{%- macro cp_binaries(name, tag, id, daemon, binaries, dir=opensds.dir.go, dest=opensds.dir.hotpot) %}
-    {%- if id in binaries and binaries[id] is iterable %}
+{%- macro cp_binaries(name, tag, id, daemon, binaries, dir=None, dest=None) %}
+    {%- if dir and dest and id in binaries and binaries[id] is iterable %}
 
            ######################################
            #### Copy binaries to /usr/local/bin 
@@ -400,8 +399,8 @@
 #-- -- - -- - - - - -#
 #  Build from source #
 #- - - - -- ---- - --#
-{%- macro build_source(name, tag, id, daemon, dir=opensds.dir.go) %}
-  {%- if daemon and 'build' in daemon.strategy|lower and 'repo' in daemon and daemon.repo is mapping %}
+{%- macro build_source(name, tag, id, daemon, dir=None) %}
+  {%- if dir and daemon and 'build' in daemon.strategy|lower and 'repo' in daemon and daemon.repo is mapping %}
       {%- if "build_cmd" in daemon.repo %}
 
             ###################

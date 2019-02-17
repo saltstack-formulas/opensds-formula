@@ -17,7 +17,7 @@ include:
            {%- if 'daemon' in opensds.gelato and id in opensds.gelato.daemon %}
                {%- if opensds.gelato.daemon[ id ] is mapping %}
 
-{{ workflow('opensds', 'gelato daemon', id, opensds.gelato, opensds.dir.gelato, opensds.systemd) }}
+{{ workflow('opensds', 'gelato daemon', id, opensds.gelato, opensds.dir.gelato, opensds) }}
 
                {%- endif %}
            {%- endif %}

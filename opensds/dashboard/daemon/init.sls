@@ -35,7 +35,7 @@ opensds dashboard config install angular cli:
    - unless: {{ 'container' in opensds.dashboard.daemon[ id ]|lower }}
                     {%- endif %}
 
-{{ workflow('opensds', 'dashboard daemon', id, opensds.dashboard, opensds.dir.dashboard, opensds.systemd) }}
+{{ workflow('opensds', 'dashboard daemon', id, opensds.dashboard, opensds.dir.dashboard, opensds) }}
 
                 {%- endif %}
             {%- endif %}
