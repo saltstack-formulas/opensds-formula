@@ -8,7 +8,7 @@
      {%- if 'daemon' in subsys and id in subsys.daemon and subsys.daemon[id] is mapping %}
         {%- if 'repo' in subsys.daemon[id]['strategy']|lower %}
             {# you may want to expand this over time #}
-            {%- if  id not in ('cinder',) %}
+            {%- if id not in ('cinder',) %}
                 {%- set workdir = golang.go_path + '/src/github.com/opensds' %}
             {%- endif %}
         {%- endif %}
@@ -302,7 +302,7 @@
            {%- if 'env' in container %}
     - env:
                {%- for k,v in container.env.items() %}
-       - {{ k }}: '{{ v }}'
+       - {{ k }}: "{{ v }}"
                {%- endfor %}
            {%- endif %}
            {%- if docker.containers.skip_translate %}
@@ -420,7 +420,7 @@
         {%- if self.environ and self.environ is mapping  %}
     - env:
             {%- for k,v in self.environ.items() %}
-      - {{ k|upper }}: '"{{ v }}"'
+      - {{ k|upper }}: {{ v }}
             {%- endfor %}
         {%- endif %}
       {%- endif %}

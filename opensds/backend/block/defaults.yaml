@@ -34,7 +34,7 @@ opensds:
             url: https://github.com/openstack/cinder.git
             branch: stable/rocky
             build_subdir: contrib/block-box
-            build_cmd: DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"' make blockbox
+            build_cmd: make blockbox
             binaries_subdir: ''
             clean_cmd: make clean
       pips:
