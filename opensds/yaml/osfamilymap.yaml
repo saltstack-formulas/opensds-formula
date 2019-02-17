@@ -45,6 +45,7 @@ RedHat:
     - nodejs
     - npm
     - libffi-devel 
+    - bind-utils
     # https://centos7.iuscommunity.org/ius-release.rpm
   backend:
     block:

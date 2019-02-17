@@ -12,7 +12,7 @@
             {%- if "opensdsconf" in opensds.dock and id in opensds.dock.opensdsconf %}
 
 {{ cleanup_config('opensds', 'dock config', id, opensds.conf)}}
-{{ cleanup_files('opensds', 'dock config', id, opensds.dock) }}
+{{ cleanup_files('opensds', 'dock config', id, None, ['osdsdock',]) }}
 
             {%- endif %}
         {%- endfor %}

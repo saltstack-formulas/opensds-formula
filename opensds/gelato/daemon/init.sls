@@ -17,7 +17,14 @@ include:
            {%- if 'daemon' in opensds.gelato and id in opensds.gelato.daemon %}
                {%- if opensds.gelato.daemon[ id ] is mapping %}
 
-{{ workflow('opensds', 'gelato daemon', id, opensds.gelato, opensds.dir.gelato, opensds.systemd) }}
+               {%- if id == 'multi-cloud' and grains.os_family in ('RedHat',) %}
+opensds gelato daemon {{ id }} workaround Failed-to-program-FILTER-chain:
+  cmd.run:
+    - name: systemctl restart docker
+               {%- endif %}
+
+
+{{ workflow('opensds', 'gelato daemon', id, opensds.gelato, opensds.dir.gelato, opensds, golang) }}
 
                {%- endif %}
            {%- endif %}

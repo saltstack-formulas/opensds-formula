@@ -12,7 +12,7 @@
             {%- if "opensdsconf" in opensds.hotpot and id in opensds.hotpot.opensdsconf and opensds.hotpot.opensdsconf[id] is mapping %}
 
 {{ cleanup_config('opensds', 'hotpot config', id, opensds.conf) }}
-{{ cleanup_files('opensds', 'hotpot config', id, opensds.hotpot) }}
+{{ cleanup_files('opensds', 'hotpot config', id, opensds.dir.hotpot) }}
 
             {%- endif %}
         {%- endfor %}

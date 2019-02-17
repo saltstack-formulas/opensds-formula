@@ -12,7 +12,7 @@
             {%- if "opensdsconf" in opensds.gelato and id in opensds.gelato.opensdsconf %}
 
 {{ cleanup_config('opensds', 'gelato config', id, opensds.conf)}}
-{{ cleanup_files('opensds', 'gelato config', id, opensds.gelato) }}
+{{ cleanup_files('opensds', 'gelato config', id, opensds.dir.gelato) }}
 
             {%- endif %}
         {%- endfor %}

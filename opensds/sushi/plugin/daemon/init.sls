@@ -13,7 +13,7 @@
             {%- if 'daemon' in opensds.sushi.plugin and id in opensds.sushi.plugin.daemon  %}
                 {%- if opensds.sushi.plugin.daemon[id] is mapping %}
 
-{{ workflow('opensds','sushi plugin daemon', id, opensds.sushi.plugin, opensds.dir.sushi+'/nbp', opensds.systemd, opensds.sushi.plugin_type|string)}}
+{{ workflow('opensds','sushi plugin daemon', id, opensds.sushi.plugin, opensds.dir.sushi+'/nbp', opensds, golang, opensds.sushi.plugin_type|string)}}
 
                 {%- endif %}
             {%- endif %}

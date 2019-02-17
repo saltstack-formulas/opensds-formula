@@ -19,5 +19,6 @@ include:
                 {%- endif %}
             {%- endif %}
         {%- endfor %}
-{{ create_dir('opensds','dock config', '', opensds.dir.hotpot + '/volumegroups') }}
+
+{{ create_dir('opensds','dock config', 'volumegroups', opensds.dir.hotpot) }}
     {%- endif %}

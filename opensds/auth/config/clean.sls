@@ -11,7 +11,7 @@
             {%- if "opensdsconf" in opensds.auth and id in opensds.auth.opensdsconf %}
 
 {{ cleanup_config('opensds', 'auth config', id, opensds.conf)}}
-{{ cleanup_files('opensds', 'auth config', id, opensds.auth) }}
+{{ cleanup_files('opensds', 'auth config', id) }}
 
             {%- endif %}
         {%- endfor %}

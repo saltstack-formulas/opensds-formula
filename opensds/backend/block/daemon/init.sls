@@ -21,7 +21,16 @@ include:
           {%- if 'daemon' in opensds.backend.block and id in opensds.backend.block.daemon  %}
               {%- if opensds.backend.block.daemon[ id ] is mapping %}
 
-{{ workflow('opensds', 'backend block daemon', id, opensds.backend.block, opensds.dir.sushi, opensds.systemd) }}
+    {%- if id == 'cinder' and  grains.os in ('CentOS', ) %}
+opensds infra use git2 on EL:
+  pkg.installed:
+    - sources:
+      - ius-release: https://centos7.iuscommunity.org/ius-release.rpm
+  cmd.run:
+    - name: yum swap git git2u -y
+  {%- endif %}
+
+{{ workflow('opensds', 'backend block daemon', id, opensds.backend.block, opensds.dir.sushi, opensds, golang) }}
 
               {%- endif %}
           {%- endif %}
