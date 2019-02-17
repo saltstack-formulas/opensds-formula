@@ -21,7 +21,7 @@ include:
           {%- if 'daemon' in opensds.backend.block and id in opensds.backend.block.daemon  %}
               {%- if opensds.backend.block.daemon[ id ] is mapping %}
 
-    {%- if grains.os in ('CentOS', ) %}
+    {%- if id == 'cinder' and  grains.os in ('CentOS', ) %}
 opensds infra use git2 on EL:
   pkg.installed:
     - sources:
@@ -30,7 +30,7 @@ opensds infra use git2 on EL:
     - name: yum swap git git2u -y
   {%- endif %}
 
-{{ workflow('opensds', 'backend block daemon', id, opensds.backend.block, opensds.dir.sushi, opensds) }}
+{{ workflow('opensds', 'backend block daemon', id, opensds.backend.block, opensds.dir.sushi, opensds, golang) }}
 
               {%- endif %}
           {%- endif %}

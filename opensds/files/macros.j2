@@ -4,16 +4,16 @@
 #---- - - -- --- ---
 #  installer workflow
 #-- - --- - -- -- --
-{%- macro workflow(name, tag, id, subsys, workdir, self, plugin_type=None) %}
+{%- macro workflow(name, tag, id, subsys, workdir, self, golang, plugin_type=None) %}
      {%- if 'daemon' in subsys and id in subsys.daemon and subsys.daemon[id] is mapping %}
         {%- if 'repo' in subsys.daemon[id]['strategy']|lower %}
             {# you may want to expand this over time #}
             {%- if  id not in ('cinder',) %}
-                {%- set workdir = golang.go_path+'/src/github.com/opensds' %}
+                {%- set workdir = golang.go_path + '/src/github.com/opensds' %}
             {%- endif %}
         {%- endif %}
         {%- if 'build' in subsys.daemon[id]['strategy']|lower %}
-{{ build_source(name, tag, id, subsys.daemon[id], workdir) }}
+{{ build_source(name, tag, id, subsys.daemon[id], golang, workdir) }}
         {%- endif %}
      {%- endif %}
      {%- if 'container' in subsys.daemon[id]['strategy'] and 'container' in subsys %}
@@ -59,18 +59,18 @@
 #---- - - -- --- ---#
 #  create directory
 #-- --- --- - -- ---#
-{%- macro create_dir(name, tag, id, dir, user=None, mode=None) %}
+{%- macro create_dir(name, tag, id, dir, user='root', mode='0755') %}
 
             #############################
             #### create {{id}} directory
             #############################
-{{ name }} {{ tag }} {{ id }} ensure directory {{ dir }} exists:
+{{ name }} {{ tag }} {{ id }} ensure directory {{ dir }}/{{ id }} exists:
   file.directory:
     - name: {{ dir }}/{{ id }}
     - force: True
     - makedirs: True
-    - user: {{ user or 'root' }}
-    - dir_mode: {{ mode or '0755' }}
+    - user: {{ user }}
+    - dir_mode: {{ mode }}
     # recurse:     ##commented out due to lsattr taking too long
     # - user
     # - mode
@@ -399,7 +399,7 @@
 #-- -- - -- - - - - -#
 #  Build from source #
 #- - - - -- ---- - --#
-{%- macro build_source(name, tag, id, daemon, dir=None) %}
+{%- macro build_source(name, tag, id, daemon, golang, dir=None) %}
   {%- if dir and daemon and 'build' in daemon.strategy|lower and 'repo' in daemon and daemon.repo is mapping %}
       {%- if "build_cmd" in daemon.repo %}
 
