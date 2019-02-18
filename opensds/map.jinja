@@ -59,6 +59,7 @@
 {% import_yaml "docker/defaults.yaml" as docker %}
 {% import_yaml "devstack/defaults.yaml" as devstack %}
 {% import_yaml "packages/defaults.yaml" as packages %}
+{%- set resolver = {} %}
 
 {%- set firewalld=salt['grains.filter_by'](firewalld, merge=salt['pillar.get']('firewalld',{}),base='firewalld') %}
 {%- set golang = salt['grains.filter_by']( golang, merge=salt['pillar.get']('golang', {}), base='golang') %}
@@ -67,4 +68,5 @@
 {%- set docker = salt['grains.filter_by']( docker, merge=salt['pillar.get']('docker', {}), base='docker') %}
 {%- set devstack = salt['grains.filter_by']( devstack, merge=salt['pillar.get']('devstack', {}), base='devstack')%}
 {%- set packages = salt['grains.filter_by']( packages, merge=salt['pillar.get']('packages', {}), base='packages')%}
+{%- set resolver = salt['grains.filter_by']( resolver, merge=salt['pillar.get']('resolver', {}), base='resolver')%}
 

@@ -8,12 +8,12 @@
      {%- if 'daemon' in subsys and id in subsys.daemon and subsys.daemon[id] is mapping %}
         {%- if 'repo' in subsys.daemon[id]['strategy']|lower %}
             {# you may want to expand this over time #}
-            {%- if  id not in ('cinder',) %}
+            {%- if id not in ('cinder',) %}
                 {%- set workdir = golang.go_path + '/src/github.com/opensds' %}
             {%- endif %}
         {%- endif %}
         {%- if 'build' in subsys.daemon[id]['strategy']|lower %}
-{{ build_source(name, tag, id, subsys.daemon[id], golang, workdir) }}
+{{ build_source(name, tag, id, subsys.daemon[id], self, workdir) }}
         {%- endif %}
      {%- endif %}
      {%- if 'container' in subsys.daemon[id]['strategy'] and 'container' in subsys %}
@@ -302,7 +302,7 @@
            {%- if 'env' in container %}
     - env:
                {%- for k,v in container.env.items() %}
-       - {{ k }}: '{{ v }}'
+       - {{ k }}: "{{ v }}"
                {%- endfor %}
            {%- endif %}
            {%- if docker.containers.skip_translate %}
@@ -399,7 +399,7 @@
 #-- -- - -- - - - - -#
 #  Build from source #
 #- - - - -- ---- - --#
-{%- macro build_source(name, tag, id, daemon, golang, dir=None) %}
+{%- macro build_source(name, tag, id, daemon, self, dir=None) %}
   {%- if dir and daemon and 'build' in daemon.strategy|lower and 'repo' in daemon and daemon.repo is mapping %}
       {%- if "build_cmd" in daemon.repo %}
 
@@ -417,8 +417,12 @@
     - cwd: {{ dir }}/{{ id }}
     - onlyif: test -d {{ dir }}/{{ id }}
         {%- endif %}
+        {%- if self.environ and self.environ is mapping  %}
     - env:
-      - GOPATH: {{ golang.go_path }}
+            {%- for k,v in self.environ.items() %}
+      - {{ k|upper }}: {{ v }}
+            {%- endfor %}
+        {%- endif %}
       {%- endif %}
 
   {%- endif %}

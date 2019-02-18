@@ -14,7 +14,7 @@ Documentation=https://opensds.io
 WorkingDirectory={{ workdir }}
 {%- if environ is defined and environ %}
     {%- for k,v in environ.items() %}
-Environment='{{ k|upper }}={{ v }}'
+Environment='{{ k|upper }}="{{ v }}"'
     {%- endfor %}
 {%- endif %}
 ExecStart={{ start }}

@@ -1,7 +1,7 @@
 ### opensds/backend/config/cinderbox.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
-{%- from "opensds/map.jinja" import opensds with context %}
+{%- from "opensds/map.jinja" import opensds, resolver with context %}
 
    {%- if opensds.deploy_project not in ('gelato',)  %}
        {%- if 'cinder' in opensds.backend.block.ids and 'daemon' in opensds.backend.block %}
@@ -9,6 +9,27 @@
            {%- if 'compose' in daemon.strategy|lower and 'cinder' in opensds.backend.block.container %}
                {%- set container = opensds.backend.block.container['cinder'] %}
            {%- endif %}
+
+           ###################
+           # Docker daemon
+           ###################
+           {%- if grains.os_family == 'RedHat' %}
+opensds backend block config docker daemon set dns:
+  file.managed:
+    - name: /etc/docker/daemon.json
+    - source: salt://opensds/files/docker.json.j2
+    - makedirs: True
+    - template: jinja
+    - user: {{ opensds.user or 'root' }}
+    - mode: {{ opensds.file_mode or '0644' }}
+    - context:
+      dns_host1: {{ resolver.nameservers[0] }}
+      dns_host2: {{ resolver.nameservers[1] }}
+      ipdomain: {{ resolver.domain }}
+  cmd.run:
+    - name: systemctl restart docker || service restart docker
+           {%- endif %}
+    
 
            ###################
            # Custom makefiles
