@@ -56,18 +56,24 @@ RedHat:
 
 Suse:
   pkgs:
-    - python-pip
-    - librados-dev
-    - librbd-dev
-    - python-setuptools
+    - python2-pip
+    - librados2
+    - librbd1
     - gcc
     - make
-    - dos2unix
     - docker-compose
-    - nodejs
-    - npm
+    - nodejs8
+    - npm8
     - thin-provisioning-tools
-    - libffi-devel 
+    - libffi7
+    - python2-setuptools
+  backend:
+    block:
+      container:
+        cinder:
+          makefile:
+            platform: 'centos:7'
+
 
 FreeBSD:
   salt:

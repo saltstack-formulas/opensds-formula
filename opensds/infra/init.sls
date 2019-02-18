@@ -5,8 +5,8 @@
 
 include:
   {{ '- epel' if grains.os_family in ('RedHat',) else '' }}
-  - packages.pips
   - packages.pkgs
+  - packages.pips
   - packages.archives
   - golang
   - timezone
