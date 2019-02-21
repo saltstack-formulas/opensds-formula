@@ -56,7 +56,7 @@ RedHat:
 
 Suse:
   pkgs:
-    - python2-pip
+    - python3-pip
     - librados2
     - librbd1
     - gcc
@@ -66,7 +66,7 @@ Suse:
     - npm8
     - thin-provisioning-tools
     - libffi7
-    - python2-setuptools
+    - python3-setuptools
   backend:
     block:
       container:
