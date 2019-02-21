@@ -58,6 +58,7 @@ Suse:
   pkgs:
     - python3-pip
     - librados2
+    - librados2-devel
     - librbd1
     - gcc
     - make
