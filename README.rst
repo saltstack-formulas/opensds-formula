@@ -2,10 +2,11 @@
 opensds-formula
 ================
 
-Deploy official releases of OpenSDS (www.opensds.io) using Salt Infrastructure as Code.  See OpenSDS salt-installer project at <https://github.com/opensds/opensds-installer/salt>
+Deploy official releases of OpenSDS (www.opensds.io) using Salt Infrastructure as Code on CENTOS-7, UBUNTU-18, and OPENSUSE-15.
 
 This is an experimental solution using repeatable patterns to deploy cloud-native stack using infrastructure as code.
 
+Used by the OpenSDS salt-installer/salt project at <https://github.com/opensds/opensds-installer>
 
 .. notes::
 
@@ -29,7 +30,7 @@ Available META states
 ``opensds``
 ------------
 
-Runs all the other states in the formula. This state is used by the ``OpenSDS-installer/salt`` module.
+Runs all the other states in the formula. Used by the ``OpenSDS-installer/salt`` module.
 
 ``opensds.infra``
 -----------------
@@ -40,6 +41,11 @@ Deploy os profile (PATHS) and environmental dependencies (packages, nginx, docke
 -----------------
 
 Deploy devstack with keystone configuration for hotpot and gelato.
+
+``opensds.config``
+-----------------
+
+Deploy opensds configuration file
 
 ``opensds.hotpot``
 -----------------
