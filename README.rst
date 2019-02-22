@@ -2,7 +2,7 @@
 opensds-formula
 ================
 
-Deploy official releases of OpenSDS (www.opensds.io) using Salt Infrastructure as Code on CENTOS-7, UBUNTU-18, and OPENSUSE-15.
+Deploy official releases of OpenSDS (www.opensds.io) using Salt on CENTOS-7, UBUNTU-18, and OPENSUSE-15.
 
 This is an experimental solution using repeatable patterns to deploy cloud-native stack using infrastructure as code.
 
