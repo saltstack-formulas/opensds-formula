@@ -12,7 +12,4 @@ include:
   - opensds.hotpot.clean
   - opensds.backend.clean
   - opensds.infra.clean
-
-opensds cleaner profile absent:
-  file.absent:
-    - name: /etc/profile.d/opensds.sh
+  - opensds.freespace

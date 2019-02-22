@@ -82,6 +82,11 @@ Deploy multi-cloud service.
 
 Deploy Dashboard service.
 
+``opensds.freespace``
+-----------------
+
+Free some disk space
+
 
 Site-specific Data Collection
 ================
@@ -154,5 +159,4 @@ The following ``pillar.example`` extract is suggested::
              - resolver-formula
              - nginx-formula
              - mysql-formula
-             - mongodb-formula
 
