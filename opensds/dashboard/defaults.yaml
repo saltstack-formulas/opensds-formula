@@ -17,7 +17,7 @@ opensds:
         image: opensdsio/dashboard
         version: stable/bali
         volumes:
-          - /etc/nginx/sites-available/default:/etc/nginx/conf.d/default.conf
+          # /etc/nginx/sites-available/default:/etc/nginx/conf.d/default.conf  ##Not for Debian os_family
           - /etc/nginx/sites-available/default:/etc/nginx/sites-available/default
           - /run/nginx:/run/nginx
         env:
