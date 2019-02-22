@@ -6,7 +6,9 @@
    {%- if opensds.deploy_project not in ('gelato',)  %}
 
 include:
+      {%- if grains.os_family not in ('Suse',) %}
   - ceph.repo
+      {%- endif %}
   - lvm.install
   - lvm.files.create
   - lvm.pv.create
