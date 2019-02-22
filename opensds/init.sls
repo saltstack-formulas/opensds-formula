@@ -12,8 +12,4 @@ include:
   - opensds.dock
   - opensds.dashboard
   - opensds.gelato
-
-opensds init auto-remove debian packages:
-  cmd.run:
-    - name: apt autoremove -y
-    - onlyif: {{ grains.os_family == 'Debian' }}
+  - opensds.freespace

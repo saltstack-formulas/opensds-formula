@@ -4,7 +4,7 @@
 {%- from "opensds/map.jinja" import opensds with context %}
 
 include:
-  # golang.remove         ## need remove state
+  - golang.clean
   - docker.remove
   # memcached.uninstall
   - apache.uninstall      ### manages port 80
@@ -17,3 +17,7 @@ opensds infra required packages purged:
     - names: {{ opensds.pkgs }}
 
   {%- endif %}
+
+opensds infra profile absent:
+  file.absent:
+    - name: /etc/profile.d/opensds.sh
