@@ -13,21 +13,23 @@
 # limitations under the License.
 
 authOptions:
-  #noAuth: true
+  noAuth: true
   endpoint: "http://127.0.0.1/identity"
-  #cinderEndpoint: "http://127.0.0.1:8776/v2"
-  #domainId: "Default"
+  cinderEndpoint: "http://127.0.0.1:8776/v2"
+  domainId: "Default"
   domainName: "Default"
-  #username: ""
-  #password: ""
-  username: "admin"
-  password: "admin"
-  tenantName: "admin"
-  #tenantId: "myproject"
+  username: ""
+  password: ""
+  # Whether to encrypt the password. If enabled, the value of the password must be ciphertext.
+  EnableEncrypted: false
+  # Encryption and decryption tool. Default value is aes. The decryption tool can only decrypt the corresponding ciphertext.
+  PwdEncrypter: "aes"
+  tenantId: "myproject"
+  tenantName: "myproject"
 pool:
-  pool1:
+  "cinder-lvm@lvm#lvm":
     storageType: block
-    availabilityZone: nova-01
+    availabilityZone: default
     extras:
       dataStorage:
         provisioningPolicy: Thin
@@ -39,17 +41,3 @@ pool:
       advanced:
         diskType: SSD
         latency: 3ms
-  pool2:
-    storageType: block
-    availabilityZone: nova-01
-    extras:
-      dataStorage:
-        provisioningPolicy: Thin
-        isSpaceEfficient: false
-      ioConnectivity:
-        accessProtocol: iscsi
-        maxIOPS: 3000000
-        maxBWS: 300
-      advanced:
-        diskType: SSD
-        latency: 500ms
