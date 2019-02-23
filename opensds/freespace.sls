@@ -12,15 +12,15 @@ opensds freespace auto-prune docker:
   service.running:
     - name: docker
     - enable: True
-    - require_in:
-      - cmd: opensds freespace auto-prune docker
-  cmd.run:
-    - names:
+    # require_in:
+    # - cmd: opensds freespace auto-prune docker
+  #md.run:
+    # names:
       # echo $DOCKER_PASS | docker login -u$DOCKER_USER --password-stdin $DOCKER_HOST
-      - docker system prune -a -f
+      # docker system prune -a -f
       # docker rm -v $(docker ps -a -q -f status=exited)
       # docker rmi -f  $(docker images -f "dangling=true" -q)
-      - docker volume ls -qf dangling=true | xargs -r docker volume rm
+      # docker volume ls -qf dangling=true | xargs -r docker volume rm
 
 opensds freespace cleanup tmp dir:
   file.absent:
