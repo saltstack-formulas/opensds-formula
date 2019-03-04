@@ -468,8 +468,8 @@ resolver:
   #- {{ site.ipdomain or 'example.com' }}
   options:
     - rotate
-    - timeout:1
-    - attempts:5
+    #- timeout:1    #see https://pyyaml.org/wiki/YAMLColonInFlowContext
+    #- attempts:5   #see https://pyyaml.org/wiki/YAMLColonInFlowContext
 
 nginx:
   ng:
