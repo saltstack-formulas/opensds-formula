@@ -11,7 +11,16 @@
 
 include:
   - opensds.gelato.config
+        {%- if "keystone" in opensds.hotpot.opensdsconf.osdslet.auth_strategy|lower %}
+
   - devstack.cli
+        {%- else %}
+
+opensds gelato daemon init skipping keystone:
+  test.show_notification:
+    - text: |
+        Skipping keystone because `auth_strategy: noauth` (or something else) was configured!
+        {%- endif %}
 
         {%- for id in opensds.gelato.ids %}
            {%- if 'daemon' in opensds.gelato and id in opensds.gelato.daemon %}
