@@ -7,7 +7,6 @@
 {%- from "opensds/map.jinja" import golang, packages with context %}
 
 include:
-  # devstack.remove
   - opensds.auth.config.clean
 
     {%- endif %}
