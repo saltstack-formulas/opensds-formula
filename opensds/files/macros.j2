@@ -305,14 +305,9 @@
        - {{ k }}: "{{ v }}"
                {%- endfor %}
            {%- endif %}
-           {%- if docker.containers.skip_translate %}
-    - skip_translate: {{ docker.containers.skip_translate or '' }}
-           {%- endif %}
-           {%- if docker.containers.force_present %}
-    - force_present: {{ docker.containers.force_present }}
-           {%- endif %}
-           {%- if docker.containers.force_running %}
-    - force_running: {{ docker.containers.force_running }}
+           {%- if docker is defined and "containers" in docker %}
+    - skip_translate: {{ None if not docker.containers.skip_translate else docker.containers.skip_translate }}
+    - force: {{ False if not docker.containers.force_running else docker.containers.force_running }}
            {%- endif %}
     - require:
       - service: {{ name }} {{ tag }} {{ id }} container running
