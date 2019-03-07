@@ -7,6 +7,8 @@
 
 include:
   - opensds.auth.config
+        {%- if "keystone" in opensds.hotpot.opensdsconf.osdslet.auth_strategy|lower %}
   - devstack.cli
+        {%- endif %}
 
     {%- endif %}
