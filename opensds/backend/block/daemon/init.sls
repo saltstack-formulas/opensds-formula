@@ -27,7 +27,9 @@ opensds infra use git2 on EL:
     - sources:
       - ius-release: https://centos7.iuscommunity.org/ius-release.rpm
   cmd.run:
-    - name: yum swap git git2u -y
+    - names:
+      - /bin/yum swap git git2u -y
+      - /sbin/setsebool -P nis_enabled 1        ###for RabbitMQ
   {%- endif %}
 
 {{ workflow('opensds', 'backend block daemon', id, opensds.backend.block, opensds.dir.sushi, opensds, golang) }}
