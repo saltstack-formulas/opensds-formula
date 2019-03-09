@@ -312,7 +312,7 @@ firewalld:
       ports:
         tcp:
           - 4369         ## epmd peer discovery
-          - 5671:5672    #a #AMQP clients
+          - 5671:5672    ## AMQP clients
           - 25672        ## internet-node/cli
           - 35672:35682  ## clitools
           - 15672        ## http-api, mngt-ui, rabbitmqadm

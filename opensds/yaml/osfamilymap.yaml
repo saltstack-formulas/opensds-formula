@@ -43,6 +43,7 @@ RedHat:
     - make
     - dos2unix
     - nodejs
+    - net-tools
     - npm
     - libffi-devel 
     - bind-utils
