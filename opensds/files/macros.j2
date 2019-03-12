@@ -93,7 +93,7 @@
       - {{ dir }}
             {%- endif %}
          {%- if binaries and binaries is iterable %}
-             {%- for b in binaries[id] %}
+             {%- for b in binaries %}
       - {{ dir }}/{{ b }}
              {%- endfor %}
          {%- endif %}
@@ -264,7 +264,13 @@
   service.dead:
     - name: {{ name }}-{{ id }}
   file.absent:
-    - name: {{ self.systemd.dir }}/{{ name }}-{{ id }}.daemon
+    - names:
+        {%- if "systemd" in self and self.systemd %}
+      - {{ self.systemd.dir }}/{{ name }}-{{ id }}.daemon
+        {%- else %}
+      - /usr/lib/systemd/systemd/{{ name }}-{{ id }}.daemon
+      - /lib/systemd/systemd/{{ name }}-{{ id }}.daemon
+        {%- endif %}
     - watch:
       - service: {{ name }} {{ tag }} {{ id }} systemd service stopped
   cmd.run:
