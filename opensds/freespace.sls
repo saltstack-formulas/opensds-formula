@@ -15,14 +15,18 @@ opensds freespace auto-prune docker:
     - onlyif: docker --version >/dev/null 2>&1
     - require_in:
       - cmd: opensds freespace auto-prune docker
-  cmd.run:
-    - names:
-      # echo $DOCKER_PASS | docker login -u$DOCKER_USER --password-stdin $DOCKER_HOST
-      - docker system prune -a -f
-      # docker rm -v $(docker ps -a -q -f status=exited)
-      # docker rmi -f  $(docker images -f "dangling=true" -q)
-      - docker volume ls -qf dangling=true | xargs -r docker volume rm
-    - onlyif: docker --version >/dev/null 2>&1
+
+  #####################################################################
+  ##### Commented out due to https://github.com/docker/compose/issues/5745#issuecomment-370048997
+  ##cmd.run:
+  ##  - names:
+  ##    echo $DOCKER_PASS | docker login -u$DOCKER_USER --password-stdin $DOCKER_HOST
+  ##    docker system prune -a -f  ### do not run! See https://github.com/docker/compose/issues/5745#issuecomment-370048997
+  ##    docker rm -v $(docker ps -a -q -f status=exited)
+  ##    docker rmi -f  $(docker images -f "dangling=true" -q)
+  ##    docker volume ls -qf dangling=true | xargs -r docker volume rm
+  ##  onlyif: docker --version >/dev/null 2>&1
+  ###################################################################
 
 opensds freespace cleanup tmp dir:
   file.absent:
