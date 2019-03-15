@@ -47,7 +47,7 @@ RedHat:
     - npm
     - libffi-devel 
     - bind-utils
-    - kdump
+    # kdump
     # https://centos7.iuscommunity.org/ius-release.rpm
   backend:
     block:
