@@ -13,9 +13,6 @@ opensds freespace auto-prune docker:
     - name: docker
     - enable: True
     - onlyif: docker --version >/dev/null 2>&1
-    - require_in:
-      - cmd: opensds freespace auto-prune docker
-
   #####################################################################
   ##### Commented out due to https://github.com/docker/compose/issues/5745#issuecomment-370048997
   ##cmd.run:
@@ -31,6 +28,5 @@ opensds freespace auto-prune docker:
 opensds freespace cleanup tmp dir:
   file.absent:
     - names:
-      - /tmp/devstack
       - /tmp/go?.??.linux-amd64.tar.gz
       - /tmp/saltstack-packages-formula-archives
