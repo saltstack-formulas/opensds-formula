@@ -5,21 +5,21 @@ opensds:
   auth:
     ids:
       - osdsauth
+      - keystone_authtoken
 
     opensdsconf:
-      osdsauth:
-        keystone_authtoken:
-          memcached_servers: '127.0.0.1:11211'
-          auth_uri: 'http://127.0.0.1/identity'
-          auth_url: 'http://127.0.0.1/identity'
-          signing_dir: /var/cache/opensds
-          cafile: /opt/stack/data/ca-bundle.pem
-          project_domain_name: Default
-          project_name: service
-          user_domain_name: Default
-          auth_type: password
-          username: opensds
-          password: 'opensds@123'
+      keystone_authtoken:
+        memcached_servers: '127.0.0.1:11211'
+        auth_uri: 'http://127.0.0.1/identity'
+        auth_url: 'http://127.0.0.1/identity'
+        signing_dir: /var/cache/opensds
+        cafile: /opt/stack/data/ca-bundle.pem
+        project_domain_name: Default
+        project_name: service
+        user_domain_name: Default
+        auth_type: password
+        username: opensds
+        password: 'opensds@123'
 
     daemon:
       osdsauth:
