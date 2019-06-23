@@ -159,4 +159,7 @@ The following ``pillar.example`` extract is suggested::
              - resolver-formula
              - nginx-formula
              - mysql-formula
+             - prometheus-formula
+             - grafana-formula
+             - sysstat-formula
 
