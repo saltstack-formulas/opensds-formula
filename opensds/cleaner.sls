@@ -11,5 +11,6 @@ include:
   - opensds.gelato.clean
   - opensds.hotpot.clean
   - opensds.backend.clean
+  - opensds.telemetry.clean
   - opensds.infra.clean
   - opensds.freespace
