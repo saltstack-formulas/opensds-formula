@@ -37,6 +37,11 @@ Runs all the other states in the formula. Used by the ``OpenSDS-installer/salt``
 
 Deploy os profile (PATHS) and environmental dependencies (packages, nginx, docker, etc) via salt.
 
+``opensds.telemetry``
+-----------------
+
+Deploy prometheus and grafana via salt.
+
 ``opensds.keystone``
 -----------------
 
@@ -159,4 +164,4 @@ The following ``pillar.example`` extract is suggested::
              - resolver-formula
              - nginx-formula
              - mysql-formula
-
+.
