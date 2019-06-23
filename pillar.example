@@ -760,3 +760,6 @@ salt_formulas:
      - mongodb-formula
      - node-formula
      - apache-formula
+     - prometheus-formula
+     - grafana-formula
+     - sysstat-formula
