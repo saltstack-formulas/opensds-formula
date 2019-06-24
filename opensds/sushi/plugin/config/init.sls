@@ -79,28 +79,28 @@ opensds sushi plugin config {{ id }} set osusername in external {{ file }} file:
   file.replace:
     - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
     - pattern: '^  osusername.*$'
-    - repl: '  osusername: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.username }}'
+    - repl: '  osusername: {{ opensds.auth.opensdsconf.keystone_authtoken.username }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
 
 opensds sushi plugin config {{ id }} set ospassword in external {{ file }} file:
   file.replace:
     - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
     - pattern: '^  ospassword.*$'
-    - repl: '  ospassword: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.password }}'
+    - repl: '  ospassword: {{ opensds.auth.opensdsconf.keystone_authtoken.password }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
 
 opensds sushi plugin config {{ id }} set osprojectname in external {{ file }} file:
   file.replace:
     - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
     - pattern: '^  osprojectname.*$'
-    - repl: '  osprojectname: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.project_name }}'
+    - repl: '  osprojectname: {{ opensds.auth.opensdsconf.keystone_authtoken.project_name }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
 
 opensds sushi plugin config {{ id }} set osuserdomainid in external {{ file }} file:
   file.replace:
     - name: {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
     - pattern: '^  osuserdomainid.*$'
-    - repl: '  osuserdomainid: {{ opensds.auth.opensdsconf.osdsauth.keystone_authtoken.user_domain_name }}'
+    - repl: '  osuserdomainid: {{ opensds.auth.opensdsconf.keystone_authtoken.user_domain_name }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/nbp/{{ id }}/{{ file }}
 
                       {%- endfor %}
