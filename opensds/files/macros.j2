@@ -215,7 +215,7 @@
     - makedirs: True
     - context:
       svc: {{ id }}
-      environ: {{ self.environ }}
+      environ: {{ self.environ|json }}
       systemd: {{ self.systemd|json }}
          {%- if "compose" in daemon.strategy|lower %}
       start: {{ self.compose }} up

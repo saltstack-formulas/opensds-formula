@@ -24,7 +24,7 @@ opensds backend driver {{ id }} generate driver file:
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode }}
     - context:
-      driver: {{ driver }}
+      driver: {{ driver|json }}
 
           {#- endif #}
       {%- endif %}

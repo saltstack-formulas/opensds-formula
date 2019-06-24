@@ -40,9 +40,9 @@ opensds config sdsrc file generated:
     - user: {{ opensds.user or 'root' }}
     - mode: {{ opensds.file_mode or '0644' }}
     - context:
-      golang: {{ golang }}
-      devstack: {{ devstack }}
-      opensds: {{ opensds }}
+      golang: {{ golang|json }}
+      devstack: {{ devstack|json }}
+      opensds: {{ opensds|json }}
 
 ### profile
 opensds infra system profile present:
