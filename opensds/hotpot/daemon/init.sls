@@ -12,11 +12,11 @@
 include:
   - opensds.hotpot.config
 
-    {%- for id in opensds.hotpot.ids %}
-      {% if 'daemon' in opensds.hotpot and id in opensds.hotpot.daemon and opensds.hotpot.daemon[id] is mapping %}
+      {%- for id in opensds.hotpot.ids %}
+          {% if 'daemon' in opensds.hotpot and id in opensds.hotpot.daemon and opensds.hotpot.daemon[id] is mapping %}
 
 {{ workflow('opensds', 'hotpot daemon', id, opensds.hotpot, opensds.dir.hotpot, opensds, golang) }}
 
-            {%- endif %}
-        {%- endfor %}
-    {%- endif %}
+          {%- endif %}
+      {%- endfor %}
+  {%- endif %}
