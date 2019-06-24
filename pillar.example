@@ -389,7 +389,8 @@ firewalld:
           - 11211                 ## memcached
           - 3260                  ## tgt
           - 5672                  ## docker-proxy
-          - 33060:33070           ## cinder
+          - 33060:33070           ## cinder ?
+          - 3306:3307             ## mysql
           - 8776                  ## cinder-api
           - 35357                 ## openstack
   zones:
