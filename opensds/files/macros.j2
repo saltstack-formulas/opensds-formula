@@ -43,13 +43,13 @@
          {%- set daemon = subsys.daemon[ id ] %}
          {%- if daemon is mapping %}
              {%- if 'systemd' in daemon.strategy|lower %}
-{{ service_stopped(name, tag, id, daemon, self) }}
+{{ service_stopped(name, tag, id, daemon, self|json) }}
              {%- endif %}
          {%- elif 'container' in daemon.strategy|lower %}
-{{ container_stopped(name, tag, id, subsys.container) }}
+{{ container_stopped(name, tag, id, subsys.container|json) }}
          {%- endif %}
      {%- elif 'container' in daemon.strategy|lower and 'container' in subsys %}
-{{ container_stopped(name, tag, id, subsys.container) }}
+{{ container_stopped(name, tag, id, subsys.container|json) }}
      {%- endif %}
 {{ cleanup_files(name, tag, id) }}
 
@@ -215,7 +215,7 @@
     - makedirs: True
     - context:
       svc: {{ id }}
-      environ: {{ self.environ }}
+      environ: {{ self.environ|json }}
       systemd: {{ self.systemd|json }}
          {%- if "compose" in daemon.strategy|lower %}
       start: {{ self.compose }} up
@@ -300,10 +300,10 @@
     - restart_policy: always
     - network_mode: host
            {%- if 'volumes' in container %}
-    - binds: {{ container.volumes }}
+    - binds: {{ container.volumes|json }}
            {%- endif %}
            {%- if 'ports' in container %}
-    - port_bindings: {{ container.ports }}
+    - port_bindings: {{ container.ports|json }}
            {%- endif %}
            {%- if 'env' in container %}
     - env:
