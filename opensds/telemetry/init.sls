@@ -4,5 +4,6 @@
 {%- from "opensds/map.jinja" import opensds with context %}
 
 include:
+  - sysstat
   - prometheus
   - grafana
