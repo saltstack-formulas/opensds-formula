@@ -6,3 +6,4 @@
 include:
   - prometheus.clean
   - grafana.clean
+  - sysstat.clean
