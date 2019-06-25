@@ -2,9 +2,8 @@
 opensds-formula
 ================
 
-Deploy official releases of OpenSDS (www.opensds.io) using Salt on CENTOS-7, UBUNTU-18, and OPENSUSE-15. This is an experimental solution using repeatable patterns to deploy cloud-native stack using infrastructure as code. Please use Salt 2018.3.4 or earlier while potential impacts from a NON-BACKWARD-COMPATIBLE-CHANGE-TO-YAML-RENDERER_ are reviewed. This formula compliments the OpenSDS-Installer_ project.
+Deploy official releases of OpenSDS (www.opensds.io) using Salt on CENTOS-7, UBUNTU-18, and OPENSUSE-15. This is an experimental solution using repeatable patterns to deploy cloud-native stack using infrastructure as code.  This formula compliments the OpenSDS-Installer_ project.
 
-.. _NON-BACKWARD-COMPATIBLE-CHANGE-TO-YAML-RENDERER: https://docs.saltstack.com/en/develop/topics/releases/2019.2.0.html#non-backward-compatible-change-to-yaml-renderer
 .. _OpenSDS-Installer: https://github.com/opensds/opensds-installer
 
 
