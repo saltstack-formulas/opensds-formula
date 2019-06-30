@@ -1,21 +1,5 @@
-{%- macro section(outdict, spaces=0) -%}
-  {%- for key, value in outdict.items() -%}
-{{ block(key, value, spaces) }}
-  {%- endfor %}
-{%- endmacro -%}
+###################################################
+# File managed by Salt. Changes may be overwritten.
+###################################################
 
-{%- macro block(key, value, spaces=0) -%}
-  {%- set shift = spaces * ' ' -%}
-{%- if value is mapping %}
-{{shift}}{{ key }}{{ ':' -}}
-{{ section(value, spaces+2) }}
-{%- elif value is string or value is number %}
-{{ shift }}{{ key }}{{ ': ' }}{{ value -}}
-{%- elif value is iterable and value is not string %}
-{%- for v in value %}
-{{ shift }}{{ shift }}{{ v -}}
-{%- endfor %}
-{%- endif %}
-{%- endmacro -%}
-
-{{ section(driver) }}
+{{ driver|yaml(False) }}
