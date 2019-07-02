@@ -424,6 +424,11 @@
       - {{ k|upper }}: {{ v }}
             {%- endfor %}
         {%- endif %}
+    - retry:
+        attempts: 3
+        until: True
+        interval: 60
+        splay: 10
       {%- endif %}
 
   {%- endif %}
