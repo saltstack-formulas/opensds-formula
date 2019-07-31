@@ -2,6 +2,12 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
+Arch:
+  pkgs:
+    - python-pip
+    - python2-pip     ##see https://github.com/saltstack/salt/issues/48632
+    - thin-provisioning-tools
+
 Debian:
   pkgs:
     - python-pip
@@ -77,15 +83,9 @@ Suse:
           makefile:
             platform: 'centos:7'
 
-
 FreeBSD:
   salt:
     basedir:
       states: /usr/local/salt/base
       pillars: /usr/local/salt/pillar
       formula: /usr/local/salt/formula
-
-Arch:
-  pkgs:
-    - python2-pip
-    - thin-provisioning-tools
