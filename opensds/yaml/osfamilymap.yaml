@@ -23,12 +23,6 @@ Debian:
     - libffi-dev
   systemd:
     dir: /usr/lib/systemd/system
-  backend:
-    block:
-      container:
-        cinder:
-          makefile:
-            platform: 'debian:stretch'
 
 RedHat:
   compose: /bin/docker-compose

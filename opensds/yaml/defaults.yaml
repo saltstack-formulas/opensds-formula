@@ -49,3 +49,10 @@ opensds:
       LimitMEMLOCK: infinity
       TasksMax: infinity
       TasksAccounting: false
+
+  backend:
+    block:
+      container:
+        cinder:
+          makefile:
+            platform: 'debian:stretch'
