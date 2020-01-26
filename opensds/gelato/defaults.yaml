@@ -4,7 +4,7 @@
 opensds:
   gelato:
     release: v1
-    service: opensds
+    service: multicloud    # or opensds ?
     ids:
       - multi-cloud
     binaries:
