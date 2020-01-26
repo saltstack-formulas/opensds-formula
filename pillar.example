@@ -671,7 +671,7 @@ packages:
       - mariadb-server
       - mariadb-backup
       - mariadb-errmsg
-     {%- elif grains.os == "Ubuntu" %}
+     {%- elif grains.os == "Ubuntu" %}  {# what about debian os? #}
       - libmysqlclient-dev
       - libmysqlclient20
       - mysql-client-5.7
@@ -680,6 +680,9 @@ packages:
       - mysql-server
       - mysql-server-5.7
       - mysql-server-core-5.7
+     {%- endif %}
+     {%- if grains.os_family == "Debian" %}
+      - libradosstriper-dev
      {%- endif %}
   archives:
     wanted:
