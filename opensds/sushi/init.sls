@@ -7,6 +7,7 @@
 
 include:
   - iscsi.initiator
+  - kubernetes.kubectl
   - opensds.sushi.release
   - opensds.sushi.repo
   - opensds.sushi.config
