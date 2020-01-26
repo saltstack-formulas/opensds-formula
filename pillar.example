@@ -50,6 +50,16 @@ opensds:
           password: {{ site.devstack_password }}
           tenantName: {{ site.hotpot_service }}
 
+      nfs:
+        tgtBindIp: {{ site.tgtBindIp }}
+
+      netapp_ontap_san:
+        version: 1
+        username: {{ site.hotpot_service }}
+        password: {{ site.devstack_password }}
+        managementLIF: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}
+        dataLIF: {{ site.host_ipv4 or site.host_ipv6 or "127.0.0.1" }}
+        
       lvm:
         tgtBindIp: {{ site.tgtBindIp }}
         pool:

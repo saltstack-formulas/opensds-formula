@@ -6,14 +6,10 @@ opensds:
     plugin:
       ids:
         - csi
-        - flexvolume
         - provisioner
         - service-broker
         - cindercompatibleapi
       custom:
-        flexvolume:
-          dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/opensds.io~opensds
-          file: bin/flexvolume.server.opensds
         provisioner:
           - deploy/configmap.yaml
         csi:
