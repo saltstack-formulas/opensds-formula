@@ -663,7 +663,7 @@ packages:
       - tox
       - click
   pkgs:
-    wanted: []  ## populated by opensds-formula in map.jinja
+    #wanted: populated by map.jinja
     unwanted:
       - unattended-upgrades
      {%- if grains.os_family in ('RedHat',) %}
