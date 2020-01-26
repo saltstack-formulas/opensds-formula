@@ -1,4 +1,4 @@
-# Copyright (c) 2018 Huawei Technologies Co., Ltd. All Rights Reserved.
+# Copyright 2019 The OpenSDS Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,31 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-authOptions:
-  noAuth: true
-  endpoint: "http://127.0.0.1/identity"
-  cinderEndpoint: "http://127.0.0.1:8776/v2"
-  domainId: "Default"
-  domainName: "Default"
-  username: ""
-  password: ""
-  # Whether to encrypt the password. If enabled, the value of the password must be ciphertext.
-  EnableEncrypted: false
-  # Encryption and decryption tool. Default value is aes. The decryption tool can only decrypt the corresponding ciphertext.
-  PwdEncrypter: "aes"
-  tenantId: "myproject"
-  tenantName: "myproject"
+tgtBindIp: 127.0.0.1 # change tgtBindIp to your real host ip, run 'ifconfig' to check
+tgtConfDir: /etc/tgt/conf.d
 pool:
-  "cinder-lvm@lvm#lvm":
-    storageType: block
+  opensds-nfs:
+    storageType: file
     availabilityZone: default
     extras:
       dataStorage:
         provisioningPolicy: Thin
         compression: false
         deduplication: false
+        storageAccessCapability:
+          - Read
+          - Write
+          - Execute
       ioConnectivity:
-        accessProtocol: iscsi
+        accessProtocol: nfs
         maxIOPS: 7000000
         minIOPS: 1000000
         maxBWS: 600
@@ -44,4 +36,4 @@ pool:
         latency: 100
       advanced:
         diskType: SSD
-        latency: 3ms
+        latency: 5ms

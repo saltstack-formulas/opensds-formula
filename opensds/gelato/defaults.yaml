@@ -4,7 +4,7 @@
 opensds:
   gelato:
     release: v1
-    service: multi-cloud
+    service: multicloud    # or opensds ?
     ids:
       - multi-cloud
     binaries:
@@ -14,6 +14,8 @@ opensds:
         - dataflow
         - datamover
         - s3
+        - examples
+        - tidb_data
     opensdsconf:
       multi-cloud:
         endpoint: 127.0.0.1

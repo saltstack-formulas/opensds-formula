@@ -11,6 +11,8 @@ opensds:
       # dorado
       - fusionstorage
       - drbd
+      - nfs
+      - netapp_ontap_san
 
     opensdsconf:
       sample:
@@ -49,12 +51,32 @@ opensds:
         description: This is a fusionstorage backend service
         driver_name: fusionstorage
         config_path: /etc/opensds/driver/fusionstorage.yaml
+      nfs:
+        name: nfs backend
+        description: This is a nfs backend service
+        driver_name: nfs
+        config_path: /etc/opensds/driver/nfs.yaml
+      netapp netapp_ontap_san:
+        name: netapp ontap backend
+        description: This is a netapp ontap san backend service
+        driver_name: netapp ontap san
+        config_path: /etc/opensds/driver/netapp_ontap_san.yaml
      
     drivers:
       lvm:
         tgtBindIp: '127.0.0.1'
       ceph:
         configFile: /etc/ceph/ceph.conf
+      netapp_ontap_san:
+        username: "username"
+        password: "password"
+        storageDriverName: "ontap-san"
+        managementLIF: "127.0.0.1"
+        dataLIF: "127.0.0.1"
+        svm: "vserver"
+        igroupName: "opensds"
+      nfs:
+        tgtBindIp: '127.0.0.1'
       fusionstorage:
         authOptions:
           fmIp: 192.168.0.200

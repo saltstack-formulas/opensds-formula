@@ -14,7 +14,7 @@ opensds:
         api_endpoint: '0.0.0.0:50050'
         log_file: /var/log/opensds/osdsdock.log
         dock_type: provisioner
-        enabled_backends: 'lvm, cinder, ceph'
+        enabled_backends: 'lvm, cinder, ceph, nfs, netapp_ontap_san'
     container:
       osdsdock:
         image: opensdsio/opensds-dock

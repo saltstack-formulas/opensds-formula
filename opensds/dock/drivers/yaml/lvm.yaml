@@ -22,12 +22,16 @@ pool:
       dataStorage:
         #DataStorageLineOfService 1.1.0, possibly extended by OpenSDS
         provisioningPolicy: Thin
-        isSpaceEfficient: false
+        compression: false
+        deduplication: false
       ioConnectivity:
         #IOConnectivityLineOfService 1.1.0, possibly extended by openSDS
         accessProtocol: iscsi
         maxIOPS: 7000000
+        minIOPS: 1000000
         maxBWS: 600
+        minBWS: 100
+        latency: 100
       advanced:
         #storage profile custom parameters, probably recommended by Vendor, and controlled by Admin
         diskType: SSD
