@@ -17,18 +17,19 @@ opensds:
         provisioner:
           - deploy/configmap.yaml
         csi:
-          - deploy/kubernetes/csi-configmap-opensdsplugin.yaml
+          - deploy/kubernetes/block/csi-configmap-opensdsplugin.yaml
+          - deploy/kubernetes/file/csi-configmap-opensdsplugin.yaml
       subdirs:
         - deploy
         - charts
         - examples
-        - server/deploy
-        - server/examples
+        # server/deploy
+        # server/examples
       daemon:
         csi:
           strategy: config-systemd
-          start: /usr/local/bin/kubectl create -f deploy/kubernetes
-          stop: /usr/local/bin/kubectl delete -f deploy/kubernetes
+          start: /usr/local/bin/kubectl create -f deploy/kubernetes/file; /usr/local/bin/kubectl create -f deploy/kubernetes/block
+          stop: /usr/local/bin/kubectl delete -f deploy/kubernetes/block; /usr/local/bin/kubectl delete -f deploy/kubernetes/file
         provisioner:
           strategy: config-systemd
           start: /usr/local/bin/kubectl create -f deploy/
