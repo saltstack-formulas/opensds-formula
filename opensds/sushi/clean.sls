@@ -11,5 +11,6 @@ include:
   - opensds.sushi.release.clean
   - opensds.sushi.repo.clean
   # iscsi.initiator.remove     ### https://github.com/saltstack-formulas/iscsi-formula/issues/12
+  - kubernetes.kubectl.clean
 
    {%- endif %}
