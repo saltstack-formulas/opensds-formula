@@ -1,4 +1,4 @@
-### opensds/backend/config/cinderbox.sls
+### opensds/backend/block/blockbox/install.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {%- from "opensds/map.jinja" import opensds, resolver with context %}

@@ -17,7 +17,7 @@ include:
   - iscsi.target
   - opensds.backend.block.release
   - opensds.backend.block.repo
-  - opensds.backend.block.config
+  - opensds.backend.block.blockbox
   - opensds.backend.block.daemon
 
    {%- endif %}
