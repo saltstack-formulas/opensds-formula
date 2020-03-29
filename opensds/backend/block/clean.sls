@@ -7,7 +7,7 @@
 
 include:
   - opensds.backend.block.daemon.clean
-  - opensds.backend.block.config.clean
+  - opensds.backend.block.blockbox.clean
   - opensds.backend.block.release.clean
   - opensds.backend.block.repo.clean
   # iscsi.target.remove        #https://github.com/saltstack-formulas/iscsi-formula/issues/12
