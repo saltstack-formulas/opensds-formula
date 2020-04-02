@@ -10,7 +10,7 @@
 {%- from 'opensds/files/macros.j2' import workflow, container_run, service_run with context %}
 
 include:
-  - opensds.backend.block.config
+  - opensds.backend.block.box
 
       {%- if opensds.backend.block.ids is iterable and opensds.backend.block.ids is string %}
           {%- set backends = opensds.backend.block.ids.split(', ') %}

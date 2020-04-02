@@ -1,4 +1,4 @@
-### opensds/backend/block/blockbox/install.sls
+### opensds/backend/block/box/install.sls
 # -*- coding: utf-8 -*-
 # vim: ft=sls
 {%- from "opensds/map.jinja" import opensds, resolver with context %}
@@ -14,7 +14,7 @@
            # Docker daemon
            ###################
            {%- if grains.os_family == 'RedHat' %}
-opensds backend block config docker daemon set dns:
+opensds backend block box docker daemon set dns:
   file.managed:
     - name: /etc/docker/daemon.json
     - source: salt://opensds/files/docker.json.j2
@@ -35,7 +35,7 @@ opensds backend block config docker daemon set dns:
            # Custom makefiles
            ###################
 
-opensds backend block config cinder Makefile set platform:
+opensds backend block box cinder Makefile set platform:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
     - pattern: 'PLATFORM.*\?=.*$'
@@ -43,7 +43,7 @@ opensds backend block config cinder Makefile set platform:
     - backup: '.salt.bak.original'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
 
-opensds backend block config cinder Makefile set image tag:
+opensds backend block box cinder Makefile set image tag:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
     - pattern: 'TAG.*\?=.*$'
@@ -51,7 +51,7 @@ opensds backend block config cinder Makefile set image tag:
     - backup: '.salt.bak'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/Makefile
 
-opensds backend block config cinder docker-compose modify default username:
+opensds backend block box cinder docker-compose modify default username:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/docker-compose.yml
     - pattern: 'image: debian-cinder'
@@ -59,7 +59,7 @@ opensds backend block config cinder docker-compose modify default username:
     - backup: '.salt.bak'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/docker-compose.yml
 
-opensds backend block config cinder docker-compose set image:
+opensds backend block box cinder docker-compose set image:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/docker-compose.yml
     - pattern: 'image: lvm-debian-cinder'
@@ -67,7 +67,7 @@ opensds backend block config cinder docker-compose set image:
     - backup: '.salt.bak'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/docker-compose.yml
 
-opensds backend block config cinder docker-compose set dbport:
+opensds backend block box cinder docker-compose set dbport:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/docker-compose.yml
     - pattern: '3306:3306'
@@ -82,7 +82,7 @@ opensds backend block config cinder docker-compose set dbport:
                {%- if opensds.backend.block.custom['cinder'] is iterable %}
                    {%- for file in opensds.backend.block.custom['cinder'] %}
 
-opensds backend block config cinder {{ file }} modify default volumegroup:
+opensds backend block box cinder {{ file }} modify default volumegroup:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
     - pattern: 'volume_group = cinder-volumes '
@@ -90,14 +90,14 @@ opensds backend block config cinder {{ file }} modify default volumegroup:
     - backup: '.salt2.bak'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 
-opensds backend block config cinder {{ file }} modify default enabled_backends:
+opensds backend block box cinder {{ file }} modify default enabled_backends:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
     - pattern: 'enabled_backends.*'
     - repl: 'enabled_backends = {{ opensds.dock.opensdsconf.osdsdock.enabled_backends }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 
-#opensds backend block config cinder {{ file }} modify default volumes_dir:
+#opensds backend block box cinder {{ file }} modify default volumes_dir:
 #  file.replace:
 #    - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/etc/cinder.conf
 #    - pattern: 'volumes_dir.*'
@@ -106,70 +106,70 @@ opensds backend block config cinder {{ file }} modify default enabled_backends:
 
                        {%- if "DISABLED DISABLED keystone" in file %}
 
-opensds backend block config cinder {{ file }} set opensdsendpoint:
+opensds backend block box cinder {{ file }} set opensdsendpoint:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^www_authenticate_uri.*$'
     - repl: 'www_authenticate_uri = {{ opensds.auth.daemon.osdsauth.endpoint_ipv4 }}:{{ opensds.auth.daemon.osdsauth.endpoint_port }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set auth_type:
+opensds backend block box cinder {{ file }} set auth_type:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^auth_type.*$'
     - repl: 'auth_type = password'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set auth_url:
+opensds backend block box cinder {{ file }} set auth_url:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^auth_url.*$'
     - repl: 'auth_url = {{ opensds.auth.opensdsconf.keystone_authtoken.auth_url }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set memcached_servers:
+opensds backend block box cinder {{ file }} set memcached_servers:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^memcached_servers.*$'
     - repl: 'memcached_servers = {{ opensds.auth.daemon.osdsauth.endpoint_ipv4 }}:11211'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set username:
+opensds backend block box cinder {{ file }} set username:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^username.*$'
     - repl: 'username = {{ opensds.backend.drivers.cinder.authOptions.username }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set password:
+opensds backend block box cinder {{ file }} set password:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^password.*$'
     - repl: 'password = {{ opensds.backend.drivers.cinder.authOptions.password }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set project_domain_name:
+opensds backend block box cinder {{ file }} set project_domain_name:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^project_domain_name.*$'
     - repl: 'project_domain_name = {{ opensds.backend.drivers.cinder.authOptions.domainId }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set user_domain_name:
+opensds backend block box cinder {{ file }} set user_domain_name:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^user_domain_name.*$'
     - repl: 'user_domain_name = {{ opensds.backend.drivers.cinder.authOptions.domainName }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set project_name:
+opensds backend block box cinder {{ file }} set project_name:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^project_name.*$'
     - repl: 'project_name = {{ opensds.backend.drivers.cinder.authOptions.projectName }}'
     - onlyif: test -f {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
 
-opensds backend block config cinder {{ file }} set connection:
+opensds backend block box cinder {{ file }} set connection:
   file.replace:
     - name: {{ opensds.dir.sushi }}/cinder/contrib/block-box/{{ file }}
     - pattern: '^connection.*$'

@@ -30,6 +30,7 @@ RedHat:
     - python-brick-cinderclient-ext
     - python-cinderclient 
   pkgs:
+    - ceph-dev
     - python2-pip
     - python2-click
     - python-tox
