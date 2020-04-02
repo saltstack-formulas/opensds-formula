@@ -4,7 +4,7 @@ opensds-formula
 
 Deploy official releases of OpenSDS (www.opensds.io) using Salt on CENTOS-7, UBUNTU-18, and OPENSUSE-15. This is an experimental solution using repeatable patterns to deploy cloud-native stack using infrastructure as code.  This formula compliments the OpenSDS-Installer_ project.
 
-.. _OpenSDS-Installer: https://github.com/opensds/opensds-installer
+.. _OpenSDS-Installer: https://github.com/sodafoundation/opensds-installer
 
 
 .. notes::
@@ -16,7 +16,7 @@ Architectural View
 ===================
 
 .. image:: solutionDesign.png
-   :target: https://github.com/opensds/opensds
+   :target: https://github.com/sodafoundation/opensds
    :scale: 25 %
    :alt: salt formula high level architecture
 

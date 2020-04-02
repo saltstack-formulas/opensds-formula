@@ -88,7 +88,7 @@
 {{ name }} {{ tag }} {{ id }} cleanup filesystem:
   file.absent:
     - names:
-      - /usr/local/golang/packages/src/github.com/opensds/{{ id }}
+      - /usr/local/golang/packages/src/github.com/sodafoundation/{{ id }}
             {%- if dir %}
       - {{ dir }}
             {%- endif %}
@@ -225,7 +225,7 @@
       stop: {{ daemon.stop }}
          {%- endif %}
          {%- if id|lower in ('provisioner',) %}
-         ##### workaround https://github.com/opensds/opensds-installer/issues/110
+         ##### workaround https://github.com/sodafoundation/opensds-installer/issues/110
       workdir: {{ self.dir.sushi }}/nbp/{{ id }}
          {%- elif id|lower in ('cinder',) %}
       workdir: {{ self.dir.sushi }}/{{ id }}/{{ daemon.repo.build_subdir }}
@@ -379,7 +379,7 @@
     - force: False
     - subdir: True
           {%- if id|lower == 'provisioner' %}
-              ### workaround https://github.com/opensds/opensds-installer/issues/110 #####
+              # workaround https://github.com/sodafoundation/opensds-installer/issues/110
     - name: {{ opt.dir.sushi }}/nbp/provisioner/
     - source: {{ dir }}/{{ id }}/opensds-{{ b }}
     - onlyif: test -f {{ dir }}/{{ id }}/bin/opensds-{{ b }}

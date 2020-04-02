@@ -6,7 +6,7 @@
 opensds infra base directories created:
   file.directory:
     - names:
-      - {{ opensds.dir.sushi }}/nbp/provisioner       ####https://github.com/opensds/opensds-installer/issues/110
+      - {{ opensds.dir.sushi }}/nbp/provisioner  # https://github.com/sodafoundation/opensds-installer/issues/110
       {%- for k, v in opensds.dir.items() %}
       - {{ v }}
       {%- endfor %}
@@ -23,12 +23,16 @@ opensds config ensure opensds conf exists:
    - user: root
    - mode: {{ opensds.file_mode or '0644' }}
 
+     {%- if grains.os_family not in ('FreeBSD',) %}
+
 opensds config ensure docker running:
   service.running:
     - name: docker
     - enable: True
   #cmd.run:
   #  - name: echo $DOCKER_PASS | docker login -u$DOCKER_USER --password-stdin $DOCKER_HOST
+
+     {%- endif %}
 
 ### sdsrc
 opensds config sdsrc file generated:

@@ -11,5 +11,5 @@ opensds:
       nbp:
         strategy: repo-config-systemd
         repo:
-          url: https://github.com/opensds/nbp.git
+          url: https://github.com/sodafoundation/nbp.git
           branch: stable/bali

@@ -37,7 +37,7 @@ opensds:
         endpoint_ipv4: 127.0.0.1
         endpoint_port: 50040
         repo:
-          url: https://github.com/opensds/opensds.git
+          url: https://github.com/sodafoundation/opensds.git
           branch: stable/bali
           build_cmd: make
           build_subdir: ''
