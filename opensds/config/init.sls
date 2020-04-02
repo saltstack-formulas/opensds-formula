@@ -6,7 +6,7 @@
 opensds infra base directories created:
   file.directory:
     - names:
-      - {{ opensds.dir.sushi }}/nbp/provisioner       ####https://github.com/opensds/opensds-installer/issues/110
+      - {{ opensds.dir.sushi }}/nbp/provisioner  # https://github.com/sodafoundation/opensds-installer/issues/110
       {%- for k, v in opensds.dir.items() %}
       - {{ v }}
       {%- endfor %}

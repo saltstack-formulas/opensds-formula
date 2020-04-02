@@ -23,6 +23,6 @@ opensds:
 
     daemon:
       osdsauth:
-        strategy: config-keystone   ##verified on Ubuntu opensds-installer/salt
+        strategy: config-keystone   # verified on Ubuntu opensds-installer/salt
         endpoint_ipv4: '127.0.0.1'
         endpoint_port: '50040'

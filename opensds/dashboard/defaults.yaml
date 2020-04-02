@@ -26,7 +26,7 @@ opensds:
       dashboard:
         strategy: config-container
         repo:
-          url: https://github.com/opensds/opensds-dashboard.git
+          url: https://github.com/sodafoundation/opensds-dashboard.git
           branch: stable/bali
           build_cmd: make && make docker
           build_subdir: ''
