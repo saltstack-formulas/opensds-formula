@@ -34,7 +34,8 @@ RedHat:
     - python2-pip
     - python2-click
     - python-tox
-    - librados2-devel
+    # librados2-devel
+    - librados-devel
     - librbd1-devel
     - docker-compose
     - device-mapper-persistent-data
