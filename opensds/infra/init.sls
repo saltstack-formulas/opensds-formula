@@ -5,6 +5,9 @@
 
 include:
   {{ '- epel' if grains.os_family in ('RedHat',) else '' }}
+      {%- if grains.os_family not in ('Suse',) %}
+  - ceph.repo
+      {%- endif %}
   - packages.pkgs
   - packages.pips
   - packages.archives

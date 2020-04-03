@@ -11,7 +11,7 @@ Arch:
 Debian:
   pkgs:
     - python-pip
-    - librados-dev
+    - librados-devel    # requires ceph.repo. Obsoletes librados2
     - librbd-dev
     - gcc
     - make
