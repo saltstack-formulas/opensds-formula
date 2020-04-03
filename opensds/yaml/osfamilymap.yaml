@@ -13,6 +13,7 @@ Debian:
     - python-pip
     - librados-dev
     - librbd-dev
+    - libradosstriper-dev
     - gcc
     - make
     - dos2unix
